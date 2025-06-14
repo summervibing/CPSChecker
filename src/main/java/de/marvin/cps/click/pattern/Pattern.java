@@ -1,8 +1,6 @@
 package de.marvin.cps.click.pattern;
 
 import org.bukkit.ChatColor;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -72,26 +70,45 @@ public class Pattern {
      * with streaks.
      */
     public String streak() {
-        var builder = new StringBuilder();
+        var prefix = new String[DISPLAY_SIZE];
+        var suffix = new String[DISPLAY_SIZE];
 
-        var streakTicks = new ArrayList<String>();
-        for (int i = 0; i < DISPLAY_SIZE; i++) {
-            var tick = this.ticks[indexFrom(i)];
-            if (tick.isEmpty()) {
-                if (!streakTicks.isEmpty()) {
-                    appendStreak(builder, streakTicks);
-                    streakTicks.clear();
-                }
-                builder.append(tick.toFormattedChar());
+        // Scan entire pattern to find streaks of consecutive clicks
+        var pos = 0;
+        while (pos < SIZE) {
+            if (this.ticks[indexFrom(pos)].isEmpty()) {
+                pos++;
                 continue;
             }
 
-            streakTicks.add(tick.toFormattedChar());
+            var start = pos;
+            while (pos < SIZE && !this.ticks[indexFrom(pos)].isEmpty())
+                pos++;
+            var length = pos - start;
+
+            // Only highlight streaks with at least six ticks
+            if (length >= 6) {
+                var color = length >= 10 ? ChatColor.RED : ChatColor.YELLOW;
+                if (start < DISPLAY_SIZE)
+                    prefix[start] = color + Integer.toString(length) + "(";
+
+                int end = start + length - 1;
+                if (end < DISPLAY_SIZE)
+                    suffix[end] = color + ")";
+            }
         }
 
-        if (!streakTicks.isEmpty())
-            appendStreak(builder, streakTicks);
+        // Build display
+        var builder = new StringBuilder();
+        for (int i = 0; i < DISPLAY_SIZE; i++) {
+            if (prefix[i] != null)
+                builder.append(prefix[i]);
 
+            builder.append(this.ticks[indexFrom(i)].toFormattedChar());
+
+            if (suffix[i] != null)
+                builder.append(suffix[i]);
+        }
         return builder.toString();
     }
 
@@ -130,30 +147,6 @@ public class Pattern {
      */
     private int indexFrom(int position) {
         return (this.currentIndex - position + SIZE) % SIZE;
-    }
-
-    /**
-     * Adds a formatted streak to
-     * given {@link StringBuilder}.
-     *
-     * @param builder {@link StringBuilder} to append to
-     * @param ticks {@link List} of {@link Tick Ticks} to append
-     * @param count number of consecutive clicks in the streak
-     * @param color {@link ChatColor} of the streak
-     */
-    private static void appendStreak(
-            StringBuilder builder,
-            List<String> ticks
-    ) {
-        if (ticks.size() < 6) {
-            ticks.forEach(builder::append);
-            return;
-        }
-
-        var color = ticks.size() >= 10 ? ChatColor.RED : ChatColor.YELLOW;
-        builder.append(color).append(ticks.size()).append("(");
-        ticks.forEach(builder::append);
-        builder.append(color).append(")");
     }
 
 }
