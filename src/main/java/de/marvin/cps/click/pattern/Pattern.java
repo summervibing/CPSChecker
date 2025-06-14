@@ -1,5 +1,10 @@
 package de.marvin.cps.click.pattern;
 
+import org.bukkit.ChatColor;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents a {@link Pattern} of clicks over a fixed time window.
  */
@@ -69,7 +74,23 @@ public class Pattern {
     public String streak() {
         var builder = new StringBuilder();
 
-        //TODO: Implement streak display logic
+        var streakTicks = new ArrayList<String>();
+        for (int i = 0; i < DISPLAY_SIZE; i++) {
+            var tick = this.ticks[indexFrom(i)];
+            if (tick.isEmpty()) {
+                if (!streakTicks.isEmpty()) {
+                    appendStreak(builder, streakTicks);
+                    streakTicks.clear();
+                }
+                builder.append(tick.toFormattedChar());
+                continue;
+            }
+
+            streakTicks.add(tick.toFormattedChar());
+        }
+
+        if (!streakTicks.isEmpty())
+            appendStreak(builder, streakTicks);
 
         return builder.toString();
     }
@@ -99,6 +120,8 @@ public class Pattern {
         return totalClicks;
     }
 
+    // Helper methods
+
     /**
      * Gets index of {@link Tick} in {@link Pattern#ticks}
      * based on the given position in the {@link Pattern}.
@@ -107,6 +130,30 @@ public class Pattern {
      */
     private int indexFrom(int position) {
         return (this.currentIndex - position + SIZE) % SIZE;
+    }
+
+    /**
+     * Adds a formatted streak to
+     * given {@link StringBuilder}.
+     *
+     * @param builder {@link StringBuilder} to append to
+     * @param ticks {@link List} of {@link Tick Ticks} to append
+     * @param count number of consecutive clicks in the streak
+     * @param color {@link ChatColor} of the streak
+     */
+    private static void appendStreak(
+            StringBuilder builder,
+            List<String> ticks
+    ) {
+        if (ticks.size() < 6) {
+            ticks.forEach(builder::append);
+            return;
+        }
+
+        var color = ticks.size() >= 10 ? ChatColor.RED : ChatColor.YELLOW;
+        builder.append(color).append(ticks.size()).append("(");
+        ticks.forEach(builder::append);
+        builder.append(color).append(")");
     }
 
 }
