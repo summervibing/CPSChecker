@@ -41,11 +41,11 @@ public class TestPattern {
     public void testHistoryPatternDisplay() {
         var display = this.pattern.history();
         assertEquals(
-                "§c §c §c §c §c " +
+                "§r §r §r §r §r " +
                         "§cA§cA§cA§cA§cA§cA§cA§cA§cA§cA§cA§cA§cA§cA§cA" +
-                        "§c §c §c §c §c §c " +
+                        "§r §r §r §r §r §r " +
                         "§aC§aC§aC§aC§aC§aC§aC§aC§aC" +
-                        "§c §c §c §c §c ",
+                        "§r §r §r §r §r ",
                 display,
                 "History display does not match expected output."
         );
@@ -56,11 +56,11 @@ public class TestPattern {
         var display = this.pattern.streak();
 
         assertEquals(
-                "§c §c §c §c §c " +
+                "§r §r §r §r §r " +
                         "§c15(§cA§cA§cA§cA§cA§cA§cA§cA§cA§cA§cA§cA§cA§cA§cA§c)" +
-                        "§c §c §c §c §c §c " +
+                        "§r §r §r §r §r §r " +
                         "§e9(§aC§aC§aC§aC§aC§aC§aC§aC§aC§e)" +
-                        "§c §c §c §c §c ",
+                        "§r §r §r §r §r ",
                 display,
                 "Streak display does not match expected output."
         );
