@@ -1,0 +1,1 @@
+"/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/bin/java" -Xmx2G -jar spigot-1.8.8.jar
