@@ -1,0 +1,11 @@
+name: CPSChecker
+version: 1.0.0
+main: de.marvin.cps.CPSChecker
+author: summervibing
+description: |
+  CPSChecker is a plugin that helps monitoring players' clicks per second.
+  It provides live statistics and auto clicker checks.
+depends: [ProtocolLib]
+commands:
+    cps:
+        description: Monitor the cps of a player.
