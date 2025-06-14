@@ -1,0 +1,51 @@
+### General ###
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store
+
+### Test-Server ###
+test-server/
+!test-server/bukkit.yml
+!test-server/eula.txt
+!test-server/server.properties
+!test-server/spigot.yml
+!test-server/spigot-1.8.8.jar
+!test-server/spigot-1.21.5.jar
+!test-server/start.bat
+!test-server/start.sh
