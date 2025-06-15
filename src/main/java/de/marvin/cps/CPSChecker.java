@@ -2,7 +2,6 @@ package de.marvin.cps;
 
 import de.marvin.cps.click.ClickHandler;
 import de.marvin.cps.command.CPSCommand;
-import de.marvin.cps.listener.EntityDamageByEntityListener;
 import de.marvin.cps.listener.PacketListener;
 import de.marvin.cps.listener.PlayerConnectionListener;
 import de.marvin.cps.message.Messages;
