@@ -116,7 +116,13 @@ public class MonitorHandler {
             var monitor = entry.getValue();
             var user = monitor.user();
 
-            // Stop monitor when user leaves
+            // Stop monitor when player who monitors leaves
+            if (!player.isOnline()) {
+                iterator.remove();
+                continue;
+            }
+
+            // Stop monitor when monitored user leaves
             if (!monitor.user().isOnline()) {
                 iterator.remove();
                 ActionBarUtil.sendActionBarMessage(player, Messages.formatted(
