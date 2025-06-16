@@ -15,9 +15,9 @@ public enum Message {
     ALREADY_MONITORING("already-monitoring", "§cYou are already monitoring §e%player% §cin §e%mode% §cmode."),
     NOT_MONITORING("not-monitoring", "§cYou are currently not monitoring any player."),
 
-    MONITOR_BASIC("monitor-basic", "§f%player_name% §8| §e%cps%§7/§e%attack_cps%"),
-    MONITOR_HISTORY("monitor-history", "§f%player_name% §8| §e%cps%§7/§e%attack_cps% §8| §a%pattern%"),
-    MONITOR_STREAK("monitor-streak", "§f%player_name% §8| §e%cps%§7/§e%attack_cps% §8| §a%pattern%"),
+    MONITOR_BASIC("monitor-basic", "§f%player_name% §8┃ §e%cps%§7/§e%attack_cps%"),
+    MONITOR_HISTORY("monitor-history", "§f%player_name% §8┃ §e%cps%§7/§e%attack_cps% §8┃ §a%pattern%"),
+    MONITOR_STREAK("monitor-streak", "§f%player_name% §8┃ §e%cps%§7/§e%attack_cps% §8┠ §a%pattern%"),
     MONITOR_PLAYER_LEFT("monitor-player-left", "§e%player_name% §cleft the server. Monitoring stopped."),
 
     ADMIN_CURRENT_MONITORS_HEADER("admin-current-monitors-header", "§7Currently §e%count% §7player(s) are monitoring:"),
