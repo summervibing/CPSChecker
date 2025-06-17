@@ -42,7 +42,7 @@ public class CPSCommand implements CommandExecutor {
         }
 
         if (strings.length == 0) {
-            if (!player.hasPermission("cps.use.admin")) {
+            if (player.hasPermission("cps.use.admin")) {
                 Messages.send(player, Message.ADMIN_USAGE);
                 return false;
             }
