@@ -36,11 +36,6 @@ public class CPSCommand implements CommandExecutor {
             return false;
         }
 
-        if (!player.hasPermission("cps.use")) {
-            Messages.send(player, Message.NO_PERMISSION);
-            return false;
-        }
-
         if (strings.length == 0) {
             if (player.hasPermission("cps.use.admin")) {
                 Messages.send(player, Message.ADMIN_USAGE);

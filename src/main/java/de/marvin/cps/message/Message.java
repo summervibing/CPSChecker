@@ -4,7 +4,6 @@ import de.marvin.cps.config.MessageConfig;
 
 public enum Message {
 
-    NO_PERMISSION("no-permission", "Unknown command. Type \"/help\" for help."),
     COMMAND_USAGE("command-usage", "§7Usage: §c/cps <username/uuid/off> [<mode>]"),
     ADMIN_USAGE("admin-usage", "§7Usage: §c/cps <username/uuid/off/list/stop> [<mode>/<username/uuid>]"),
 

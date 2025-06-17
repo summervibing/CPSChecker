@@ -9,3 +9,5 @@ depends: [ProtocolLib]
 commands:
     cps:
         description: Monitor the cps of a player.
+        permission: cps.use
+        permission-message: Unknown command. Type "/help" for help.
