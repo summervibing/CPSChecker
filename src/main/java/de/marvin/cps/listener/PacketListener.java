@@ -14,7 +14,9 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Handles registering of clicks and switching
@@ -75,9 +77,8 @@ public class PacketListener {
                 var digType = event.getPacket().getPlayerDigTypes().read(0);
 
                 if (digType != EnumWrappers.PlayerDigType.DROP_ITEM) return;
-                var monitor = monitorHandler.access(player);
-                if (monitor == null) return;
-                monitor.nextMode();
+                if (player.getItemInHand() != null && player.getItemInHand().getType() != Material.AIR) return;
+                monitorHandler.nextMode(player);
             }
         });
     }

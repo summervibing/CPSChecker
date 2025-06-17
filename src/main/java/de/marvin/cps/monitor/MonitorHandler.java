@@ -4,18 +4,22 @@ import de.marvin.cps.message.Message;
 import de.marvin.cps.message.Messages;
 import de.marvin.cps.user.UserHandler;
 import de.marvin.cps.util.ActionBarUtil;
+import de.marvin.cps.util.SchedulerUtil;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class MonitorHandler {
 
     private final UserHandler userHandler;
 
+    // Holds currently monitoring players and their monitors
     private final Map<Player, Monitor> monitoring = new HashMap<>();
+    // Holds players that are switching between monitor modes
+    private final Map<UUID, List<BukkitTask>> switching = new HashMap<>();
 
     public MonitorHandler(
             @NotNull final UserHandler userHandler
@@ -105,6 +109,57 @@ public class MonitorHandler {
     }
 
     /**
+     * Switches to {@link Monitor#nextMode()} for
+     * the given {@link Player}.
+     *
+     * @param player {@link Player} to switch {@link MonitorMode} for
+     * @return {@link Result} of the operation.
+     */
+    public Result nextMode(
+            @NotNull final Player player
+    ) {
+        var monitor = this.access(player);
+        if (monitor == null) return Result.NOT_MONITORING;
+
+        this.switching.computeIfPresent(player.getUniqueId(), (uuid, tasks) -> {
+            tasks.forEach(BukkitTask::cancel);
+            return null;
+        });
+
+        var next = monitor.nextMode();
+        monitor.setPaused(true);
+
+        ActionBarUtil.sendActionBarMessage(
+                player,
+                selection(next)
+        );
+
+        var tasks = new ArrayList<BukkitTask>();
+        this.switching.put(player.getUniqueId(), tasks);
+
+        tasks.add(SchedulerUtil.delayAsync(() -> ActionBarUtil.sendActionBarMessage(
+                player,
+                Messages.formatted(
+                        monitor.mode().format(),
+                        Map.of(
+                                "player_name", "player",
+                                "cps", "clicks",
+                                "attack_cps", "attacks",
+                                "pattern", monitor.mode().equals(MonitorMode.STREAK)
+                                        ? "§aC = Click§7, §aA = Attack§7, §a§mC§r§a = Invalid click§7; §eStreakCount(§aCCCCCC§e)"
+                                        : "§aC = Click§7, §aA = Attack§7, §a§mC§r§a = Invalid click§7; §eC = 2 c/t§7, §cC = 3+ c/t"
+                        )
+                )
+        ), 20L));
+        tasks.add(SchedulerUtil.delayAsync(() -> {
+            monitor.setPaused(false);
+            this.switching.remove(player.getUniqueId());
+        }, 40L));
+
+        return Result.SUCCESS;
+    }
+
+    /**
      * Updates the action bar of every
      * currently monitoring player.
      */
@@ -160,6 +215,29 @@ public class MonitorHandler {
         USER_NOT_FOUND,
         ALREADY_MONITORING,
         NOT_MONITORING
+    }
+
+    /**
+     * Gets a formatted selection of all {@link MonitorMode MonitorModes}.
+     *
+     * @param selected {@link MonitorMode} that is currently selected
+     * @return Formatted selection of all {@link MonitorMode MonitorModes}.
+     */
+    private String selection(
+            @NotNull final MonitorMode selected
+    ) {
+        var builder = new StringBuilder();
+        for (var mode : MonitorMode.values()) {
+            builder.append(mode.equals(selected)
+                    ? "" + ChatColor.RED + ChatColor.UNDERLINE
+                    : ChatColor.GRAY).append(mode.name());
+            if (mode != MonitorMode.values()[MonitorMode.values().length - 1])
+                builder.append(ChatColor.RESET)
+                        .append(ChatColor.DARK_GRAY)
+                        .append(" ┃ ")
+                        .append(ChatColor.RESET);
+        }
+        return builder.toString();
     }
 
 }
