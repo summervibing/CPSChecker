@@ -132,6 +132,9 @@ public class MonitorHandler {
                 continue;
             }
 
+            // Do not send update if the monitor is paused
+            if (monitor.isPaused()) continue;
+
             var pattern = user.currentPattern();
             ActionBarUtil.sendActionBarMessage(
                     player,

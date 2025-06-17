@@ -11,6 +11,7 @@ public class Monitor {
 
     private final User user;
     private MonitorMode mode;
+    private boolean paused = false;
 
     public Monitor(
             @NotNull final User user
@@ -21,7 +22,7 @@ public class Monitor {
 
     public Monitor(
             @NotNull final User user,
-            @NotNull MonitorMode mode
+            @NotNull final MonitorMode mode
     ) {
         this.user = user;
         this.mode = mode;
@@ -46,6 +47,15 @@ public class Monitor {
     }
 
     /**
+     * Checks if the monitor is paused.
+     *
+     * @return {@code true} if the monitor is paused, otherwise {@code false}.
+     */
+    public boolean isPaused() {
+        return this.paused;
+    }
+
+    /**
      * Sets the {@link MonitorMode} of the monitor.
      *
      * @param mode {@link MonitorMode} to set
@@ -61,9 +71,24 @@ public class Monitor {
      * <p>
      * <b>Note:</b> The order is determined by the
      * {@link MonitorMode#ordinal()} of the modes.
+     *
+     * @return The {@link MonitorMode} the {@link Monitor} switched to.
      */
-    public void nextMode() {
-        this.setMode(MonitorMode.next(this.mode));
+    public MonitorMode nextMode() {
+        var next = MonitorMode.next(this.mode);
+        this.setMode(next);
+        return next;
+    }
+
+    /**
+     * Sets the paused state of the monitor.
+     *
+     * @param paused {@code true} to pause the monitor, otherwise {@code false}.
+     */
+    public void setPaused(
+            final boolean paused
+    ) {
+        this.paused = paused;
     }
 
 }
