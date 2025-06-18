@@ -4,8 +4,24 @@ import de.marvin.cps.config.MessageConfig;
 
 public enum Message {
 
-    COMMAND_USAGE("command-usage", "§7Usage: §c/cps <username/uuid/off> [<mode>]"),
-    ADMIN_USAGE("admin-usage", "§7Usage: §c/cps <username/uuid/off/list/stop> [<mode>/<username/uuid>]"),
+    COMMAND_USAGE("command-usage", "§7Usage: §c/cps <username/uuid/off/help> [<mode>]"),
+    ADMIN_USAGE("admin-usage", "§7Usage: §c/cps <username/uuid/off/list/stop/help> [<mode>/<username/uuid>]"),
+    PATTERN_HELP("pattern-help", """
+            §7§m------------------------------
+            §6§lClick pattern monitor explanation
+            \n§7 §r
+            §7A live monitor shows the click pattern of the targeted player over the last §e%seconds% §7seconds (= %ticks% ticks).
+            \n§7 §r
+            §9Ticks with clicks only:
+            §aC = 1 clicks/tick§7; §eC = 2 c/t§7; §cC = 3+ c/t
+            §9Ticks with attacks:
+            §aA = 1 clicks/tick§7; §eA = 2 c/t§7; §cA = 3+ c/t
+            \n§7 §r
+            §9Streaks:
+            §eCount(§aCCAAAA§e) §7= §eyellow streak §7with is shown at a min. of §e6 §7consecutive ticks with clicks.
+            §cCount(§aAAACCCAAAA§c) §7= §cred streak §7with is shown at a min. of §e10 §7consecutive ticks with clicks.
+            §7§m------------------------------
+            """),
 
     PLAYER_NOT_FOUND("player-not-found", "§cThe player was not found."),
 

@@ -1,5 +1,6 @@
 package de.marvin.cps.command;
 
+import de.marvin.cps.click.pattern.Pattern;
 import de.marvin.cps.message.Message;
 import de.marvin.cps.message.Messages;
 import de.marvin.cps.monitor.MonitorHandler;
@@ -43,6 +44,15 @@ public class CPSCommand implements CommandExecutor {
             }
             Messages.send(player, Message.COMMAND_USAGE);
             return false;
+        }
+
+        if (strings[0].equalsIgnoreCase("help")) {
+            var displaySize = Pattern.displaySize();
+            Messages.send(player, Message.PATTERN_HELP, Map.of(
+                    "seconds", displaySize / 20,
+                    "ticks", displaySize
+            ));
+            return true;
         }
 
         if (strings[0].equalsIgnoreCase("list") && player.hasPermission("cps.use.admin")) {
