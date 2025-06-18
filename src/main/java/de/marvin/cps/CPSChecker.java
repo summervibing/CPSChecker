@@ -1,7 +1,9 @@
 package de.marvin.cps;
 
 import de.marvin.cps.click.ClickHandler;
+import de.marvin.cps.click.pattern.Pattern;
 import de.marvin.cps.command.CPSCommand;
+import de.marvin.cps.config.SettingConfig;
 import de.marvin.cps.listener.PacketListener;
 import de.marvin.cps.listener.PlayerConnectionListener;
 import de.marvin.cps.message.Messages;
@@ -21,12 +23,21 @@ public class CPSChecker extends JavaPlugin {
     private ClickHandler clickHandler;
     private MonitorHandler monitorHandler;
 
+    private SettingConfig settingConfig;
+
     @Override
     public void onEnable() {
         instance = this;
 
         // Caches messages from messages.yml
         Messages.initialize(this);
+
+        // Loads configured values from configuration.yml
+        this.settingConfig = new SettingConfig(this);
+        Pattern.configure(
+                this.settingConfig.patternSize(),
+                this.settingConfig.patternDisplaySize()
+        );
 
         // Initialize instances
         this.userHandler = new UserHandler();

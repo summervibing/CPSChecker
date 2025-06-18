@@ -1,24 +1,82 @@
 package de.marvin.cps.click.pattern;
 
+import de.marvin.cps.CPSChecker;
 import org.bukkit.ChatColor;
-import java.util.List;
 
 /**
  * Represents a {@link Pattern} of clicks over a fixed time window.
  */
 public class Pattern {
 
-    private static final int SIZE = 100; // 100 Ticks = 5 seconds
-    public static final int DISPLAY_SIZE = 40; // Display only the last 40 ticks = 2 seconds
-    private final Tick[] ticks = new Tick[SIZE];
+    private static int size = 100; // In ticks
+    private static int displaySize = 40; // In ticks
+
+    private final Tick[] ticks = new Tick[size];
     private int currentIndex = 0;
 
     /**
-     * Creates a new {@link Pattern} with a fixed size of {@link Pattern#SIZE} ticks.
+     * Creates a new {@link Pattern} with a fixed size of {@link Pattern#size} ticks.
      */
     public Pattern() {
-        for (int i = 0; i < SIZE; i++)
+        for (int i = 0; i < size; i++)
             this.ticks[i] = new Tick();
+    }
+
+    /**
+     * Configures the cached size and display size of {@link Pattern Patterns}.
+     * <p>
+     * If the given values are invalid, default values are used.
+     *
+     * @param size        Size of the pattern in ticks (default: 100).
+     * @param displaySize Display size of the pattern in ticks (default: 40).
+     */
+    public static void configure(
+            final int size,
+            final int displaySize
+    ) {
+        if (size < 20 || size > 1200) {
+            CPSChecker.instance().getLogger().warning(
+                    "Invalid pattern size '" + size + "' given in configuration. " +
+                            "Only values between 20-1200 are allowed. Using default size of " + Pattern.size + " ticks."
+            );
+            return;
+        }
+        if (displaySize < 10 || displaySize > 60) {
+            CPSChecker.instance().getLogger().warning(
+                    "Invalid pattern display size '" + displaySize + "' given in configuration. " +
+                            "Only values between 10-60 are allowed. Using default display size of " + Pattern.displaySize + " ticks."
+            );
+            return;
+        }
+        if (displaySize > size) {
+            CPSChecker.instance().getLogger().warning(
+                    "Pattern display size '" + displaySize + "' given in configuration exceeds pattern cache size '" +
+                            size + "'. " + "Using default display size of " + Pattern.displaySize + " ticks."
+            );
+            return;
+        }
+
+        // Update static fields
+        Pattern.size = size;
+        Pattern.displaySize = displaySize;
+    }
+
+    /**
+     * Gets the set size of the {@link Pattern} in ticks.
+     *
+     * @return Size of the {@link Pattern} in ticks.
+     */
+    public static int size() {
+        return size;
+    }
+
+    /**
+     * Gets the set display size of the {@link Pattern} in ticks.
+     *
+     * @return Display size of the {@link Pattern} in ticks.
+     */
+    public static int displaySize() {
+        return displaySize;
     }
 
     /**
@@ -27,7 +85,7 @@ public class Pattern {
      * <b>Note:</b> Needs to be called every tick to update the pattern.
      */
     public void nextTick() {
-        this.currentIndex = (this.currentIndex + 1) % SIZE;
+        this.currentIndex = (this.currentIndex + 1) % size;
         // Reset the current tick
         this.ticks[currentIndex] = new Tick();
     }
@@ -55,7 +113,7 @@ public class Pattern {
      */
     public String history() {
         var stringBuilder = new StringBuilder();
-        for (int i = 0; i < DISPLAY_SIZE; i++)
+        for (int i = 0; i < displaySize; i++)
             stringBuilder.append(this.ticks[indexFrom(i)].toFormattedChar());
         return stringBuilder.toString();
     }
@@ -70,37 +128,37 @@ public class Pattern {
      * with streaks.
      */
     public String streak() {
-        var prefix = new String[DISPLAY_SIZE];
-        var suffix = new String[DISPLAY_SIZE];
+        var prefix = new String[displaySize];
+        var suffix = new String[displaySize];
 
         // Scan entire pattern to find streaks of consecutive clicks
         var pos = 0;
-        while (pos < SIZE) {
+        while (pos < size) {
             if (this.ticks[indexFrom(pos)].isEmpty()) {
                 pos++;
                 continue;
             }
 
             var start = pos;
-            while (pos < SIZE && !this.ticks[indexFrom(pos)].isEmpty())
+            while (pos < size && !this.ticks[indexFrom(pos)].isEmpty())
                 pos++;
             var length = pos - start;
 
             // Only highlight streaks with at least six ticks
             if (length >= 6) {
                 var color = length >= 10 ? ChatColor.RED : ChatColor.YELLOW;
-                if (start < DISPLAY_SIZE)
+                if (start < displaySize)
                     prefix[start] = color + Integer.toString(length) + "(";
 
                 int end = start + length - 1;
-                if (end < DISPLAY_SIZE)
+                if (end < displaySize)
                     suffix[end] = color + ")";
             }
         }
 
         // Build display
         var builder = new StringBuilder();
-        for (int i = 0; i < DISPLAY_SIZE; i++) {
+        for (int i = 0; i < displaySize; i++) {
             if (prefix[i] != null)
                 builder.append(prefix[i]);
 
@@ -125,7 +183,7 @@ public class Pattern {
         var totalClicks = 0;
 
         for (int i = 0; i < 20; i++) {
-            var index = (this.currentIndex - i + SIZE) % SIZE;
+            var index = (this.currentIndex - i + size) % size;
             var tick = this.ticks[index];
             if (onlyAttacks) {
                 totalClicks += tick.attacks();
@@ -146,7 +204,7 @@ public class Pattern {
      * @return Index in {@link Pattern#ticks} based on given position.
      */
     private int indexFrom(int position) {
-        return (this.currentIndex - position + SIZE) % SIZE;
+        return (this.currentIndex - position + size) % size;
     }
 
 }
