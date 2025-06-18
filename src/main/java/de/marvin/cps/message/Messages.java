@@ -37,7 +37,8 @@ public class Messages {
             @NotNull final Message message
     ) {
         if (cached == null) {
-            throw new IllegalStateException("Messages not initialized. Call Messages.init() first.");
+            CPSChecker.instance().getLogger().severe("Messages not initialized. Call Messages#initialize() first.");
+            return ChatColor.RED + "CPSChecker is not working properly. Please contact an administrator.";
         }
         return cached.getOrDefault(message, "Message not found: " + message.name());
     }
