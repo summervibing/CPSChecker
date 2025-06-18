@@ -182,7 +182,7 @@ public class MonitorHandler {
                 iterator.remove();
                 ActionBarUtil.sendActionBarMessage(player, Messages.formatted(
                         Message.MONITOR_PLAYER_LEFT,
-                        Map.of("player", user.name())
+                        Map.of("player_name", user.name())
                 ));
                 continue;
             }
