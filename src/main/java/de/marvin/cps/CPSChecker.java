@@ -3,6 +3,7 @@ package de.marvin.cps;
 import de.marvin.cps.click.ClickHandler;
 import de.marvin.cps.click.pattern.Pattern;
 import de.marvin.cps.command.CPSCommand;
+import de.marvin.cps.command.CPSTabCompletion;
 import de.marvin.cps.config.SettingConfig;
 import de.marvin.cps.listener.PacketListener;
 import de.marvin.cps.listener.PlayerConnectionListener;
@@ -72,10 +73,12 @@ public class CPSChecker extends JavaPlugin {
     }
 
     /**
-     * Registers all commands.
+     * Registers all {@link org.bukkit.command.Command Commands} and
+     * their {@link org.bukkit.command.TabCompleter TabCompleters}.
      */
     private void registerCommands() {
         this.getCommand("cps").setExecutor(new CPSCommand(monitorHandler));
+        this.getCommand("cps").setTabCompleter(new CPSTabCompletion(this, this.monitorHandler));
     }
 
     /**
