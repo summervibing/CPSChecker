@@ -87,10 +87,13 @@ public class MonitorHandler {
         if (monitor != null && monitor.user().uniqueId().equals(uniqueId)) {
             if (monitor.mode().equals(mode)) return Result.ALREADY_MONITORING;
             monitor.setMode(mode);
+            this.displayModeExplanation(player, monitor);
             return Result.SUCCESS;
         }
 
-        this.monitoring.put(player, new Monitor(user, mode));
+        monitor = new Monitor(user, mode);
+        this.monitoring.put(player, monitor);
+        this.displayModeExplanation(player, monitor);
         return Result.SUCCESS;
     }
 
@@ -126,36 +129,8 @@ public class MonitorHandler {
             return null;
         });
 
-        var next = monitor.nextMode();
-        monitor.setPaused(true);
-
-        ActionBarUtil.sendActionBarMessage(
-                player,
-                selection(next)
-        );
-
-        var tasks = new ArrayList<BukkitTask>();
-        this.switching.put(player.getUniqueId(), tasks);
-
-        tasks.add(SchedulerUtil.delayAsync(() -> ActionBarUtil.sendActionBarMessage(
-                player,
-                Messages.formatted(
-                        monitor.mode().format(),
-                        Map.of(
-                                "player_name", "player",
-                                "cps", "clicks",
-                                "attack_cps", "attacks",
-                                "pattern", monitor.mode().equals(MonitorMode.STREAK)
-                                        ? "§aC = Click§7, §aA = Attack§7, §a§mC§r§a = Invalid click§7; §eStreakCount(§aCCCCCC§e)"
-                                        : "§aC = Click§7, §aA = Attack§7, §a§mC§r§a = Invalid click§7; §eC = 2 c/t§7, §cC = 3+ c/t"
-                        )
-                )
-        ), 20L));
-        tasks.add(SchedulerUtil.delayAsync(() -> {
-            monitor.setPaused(false);
-            this.switching.remove(player.getUniqueId());
-        }, 40L));
-
+        monitor.nextMode();
+        this.displayModeExplanation(player, monitor);
         return Result.SUCCESS;
     }
 
@@ -215,6 +190,49 @@ public class MonitorHandler {
         USER_NOT_FOUND,
         ALREADY_MONITORING,
         NOT_MONITORING
+    }
+
+    // Helper methods
+
+    /**
+     * Displays the explanation of the current {@link MonitorMode}
+     * in the action bar of the given {@link Player}.
+     *
+     * @param player {@link Player} to display the explanation to
+     * @param monitor {@link Monitor} to display current mode of
+     */
+    private void displayModeExplanation(
+            @NotNull final Player player,
+            @NotNull final Monitor monitor
+    ) {
+        monitor.setPaused(true);
+
+        ActionBarUtil.sendActionBarMessage(
+                player,
+                selection(monitor.mode())
+        );
+
+        var tasks = new ArrayList<BukkitTask>();
+        this.switching.put(player.getUniqueId(), tasks);
+
+        tasks.add(SchedulerUtil.delayAsync(() -> ActionBarUtil.sendActionBarMessage(
+                player,
+                Messages.formatted(
+                        monitor.mode().format(),
+                        Map.of(
+                                "player_name", "player",
+                                "cps", "clicks",
+                                "attack_cps", "attacks",
+                                "pattern", monitor.mode().equals(MonitorMode.STREAK)
+                                        ? "§aC = Click§7, §aA = Attack§7, §a§mC§r§a = Invalid click§7; §eStreakCount(§aCCCCCC§e)"
+                                        : "§aC = Click§7, §aA = Attack§7, §a§mC§r§a = Invalid click§7; §eC = 2 c/t§7, §cC = 3+ c/t"
+                        )
+                )
+        ), 20L));
+        tasks.add(SchedulerUtil.delayAsync(() -> {
+            monitor.setPaused(false);
+            this.switching.remove(player.getUniqueId());
+        }, 40L));
     }
 
     /**
