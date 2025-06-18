@@ -18,6 +18,7 @@ import java.util.stream.Stream;
  * Handles tab completion for the {@link CPSCommand}.
  * Provides completions based on the command context.
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class CPSTabCompletion implements TabCompleter {
 
     private final JavaPlugin plugin;
