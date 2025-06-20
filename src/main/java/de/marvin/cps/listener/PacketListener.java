@@ -10,6 +10,7 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import de.marvin.cps.CPSChecker;
 import de.marvin.cps.click.ClickHandler;
 import de.marvin.cps.monitor.MonitorHandler;
+import de.marvin.cps.util.MaterialUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
@@ -168,11 +169,7 @@ public class PacketListener {
                         var block = player.getWorld().getBlockAt(position.getX(), position.getY(), position.getZ());
 
                         // Ignore blocks that can be broken instantly
-                        if (
-                                block == null
-                                || block.getType() == null
-                                || INSTANT_BREAKABLE.contains(block.getType())
-                        ) {
+                        if (MaterialUtil.isInstantBreakable(block.getType())) {
                             lastClickInvalid.add(uniqueId);
                             return;
                         }
@@ -231,33 +228,5 @@ public class PacketListener {
             }
         });
     }
-
-    /**
-     * {@link Set} of {@link Material Materials} that can be broken instantly.
-     */
-    private static final Set<Material> INSTANT_BREAKABLE = Set.of(
-            Material.SAPLING,
-            Material.LONG_GRASS,
-            Material.DEAD_BUSH,
-            Material.YELLOW_FLOWER,
-            Material.RED_ROSE,
-            Material.BROWN_MUSHROOM,
-            Material.RED_MUSHROOM,
-            Material.TORCH,
-            Material.WATER_LILY,
-            Material.DOUBLE_PLANT,
-            Material.LEVER,
-            Material.REDSTONE,
-            Material.REDSTONE_TORCH_OFF,
-            Material.REDSTONE_TORCH_ON,
-            Material.TRIPWIRE_HOOK,
-            Material.TRIPWIRE,
-            Material.DIODE_BLOCK_OFF,
-            Material.DIODE_BLOCK_ON,
-            Material.DIODE,
-            Material.REDSTONE_COMPARATOR_OFF,
-            Material.REDSTONE_COMPARATOR_ON,
-            Material.REDSTONE_COMPARATOR
-    );
 
 }
