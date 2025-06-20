@@ -1,9 +1,11 @@
 package de.marvin.cps.util;
 
 import de.marvin.cps.CPSChecker;
-import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.wrappers.EnumWrappers;
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -15,6 +17,7 @@ import java.util.Map;
 public class ActionBarUtil {
 
     private static final Map<Player, BukkitTask> PENDING_MESSAGES = new HashMap<>();
+    private static final ProtocolManager PROTOCOL_MANAGER = ProtocolLibrary.getProtocolManager();
 
     /**
      * Sends a message to the player's action bar.
@@ -26,8 +29,8 @@ public class ActionBarUtil {
      * @param message the message to send.
      */
     public static void sendActionBarMessage(
-            @NotNull Player bukkitPlayer,
-            @NotNull String message
+            @NotNull final Player bukkitPlayer,
+            @NotNull final String message
     ) {
         sendRawActionBarMessage(bukkitPlayer, "{\"text\": \"" + message + "\"}");
     }
@@ -46,13 +49,20 @@ public class ActionBarUtil {
      * @param rawMessage the json format message to send.
      */
     public static void sendRawActionBarMessage(
-            @NotNull Player bukkitPlayer,
-            @NotNull String rawMessage
+            @NotNull final Player bukkitPlayer,
+            @NotNull final String rawMessage
     ) {
-        var player = (CraftPlayer) bukkitPlayer;
-        var chatBaseComponent = ChatSerializer.a(rawMessage);
-        var packetPlayOutChat = new PacketPlayOutChat(chatBaseComponent, (byte) 2);
-        player.getHandle().playerConnection.sendPacket(packetPlayOutChat);
+        var packet = PROTOCOL_MANAGER.createPacket(PacketType.Play.Server.CHAT);
+        packet.getChatComponents().write(0, WrappedChatComponent.fromJson(rawMessage));
+        packet.getChatTypes().writeSafely(0, EnumWrappers.ChatType.GAME_INFO);
+        packet.getBytes().writeSafely(0, (byte) 2);
+        try {
+            PROTOCOL_MANAGER.sendServerPacket(bukkitPlayer, packet, false);
+        } catch (Exception exception) {
+            CPSChecker.instance().getLogger().warning(
+                    "Failed to send action bar message to " + bukkitPlayer.getName() + ": " + exception.getMessage()
+            );
+        }
     }
 
     /**
