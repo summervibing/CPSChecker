@@ -41,6 +41,19 @@ public class MonitorHandler {
     }
 
     /**
+     * Checks if the given {@link Player} is
+     * currently monitoring any user.
+     *
+     * @param player {@link Player} to check monitoring status for
+     * @return {@code true} if the player is monitoring, otherwise {@code false}.
+     */
+    public boolean isMonitoring(
+            @NotNull final Player player
+    ) {
+        return this.monitoring.containsKey(player);
+    }
+
+    /**
      * Retrieves all currently monitoring {@link Player Players}
      * and their associated {@link Monitor Monitors}.
      *
