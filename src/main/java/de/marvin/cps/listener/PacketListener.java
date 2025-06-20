@@ -104,35 +104,41 @@ public class PacketListener {
         ) {
             @Override
             public void onPacketSending(PacketEvent event) {
-                var pc = event.getPacket();
-                var type  = pc.getType();
-                var cancel = false;
+                if (!monitorHandler.isMonitoring(event.getPlayer())) return;
+
+                var packetContainer = event.getPacket();
+                var type = packetContainer.getType();
 
                 // ===== 1.8 – 1.11 =====
-                if (pc.getBytes().size() > 0) {
-                    cancel = pc.getBytes().read(0) == (byte) 2;
+                if (packetContainer.getBytes().size() > 0 && packetContainer.getBytes().read(0) == (byte) 2) {
+                    event.setCancelled(true);
+                    return;
                 }
 
                 // ===== 1.12 – 1.19.3 =====
-                if (pc.getChatTypes().size() > 0) {
-                    cancel |= pc.getChatTypes().read(0) == EnumWrappers.ChatType.GAME_INFO;
+                if (packetContainer.getChatTypes().size() > 0
+                        && packetContainer.getChatTypes().read(0) == EnumWrappers.ChatType.GAME_INFO) {
+                    event.setCancelled(true);
+                    return;
                 }
 
                 // ===== 1.19.4 + =====
-                if (type == PacketType.Play.Server.SYSTEM_CHAT) {
-                    // bool 0 = overlay?, action bars are true
-                    cancel |= pc.getBooleans().read(0);
+                // bool 0 = overlay?, action bars are true
+                if (type == PacketType.Play.Server.SYSTEM_CHAT && packetContainer.getBooleans().read(0)) {
+                    event.setCancelled(true);
+                    return;
                 }
-                if (type == PacketType.Play.Server.SET_ACTION_BAR_TEXT) cancel = true;
+
+                if (type == PacketType.Play.Server.SET_ACTION_BAR_TEXT) {
+                    event.setCancelled(true);
+                    return;
+                }
 
                 // ===== Titel-API (all newer versions) =====
                 if (type == PacketType.Play.Server.TITLE &&
-                        pc.getTitleActions().read(0) == EnumWrappers.TitleAction.ACTIONBAR) {
-                    cancel = true;
+                        packetContainer.getTitleActions().read(0) == EnumWrappers.TitleAction.ACTIONBAR) {
+                    event.setCancelled(true);
                 }
-
-                if (!cancel || !monitorHandler.isMonitoring(event.getPlayer())) return;
-                event.setCancelled(true);
             }
         });
     }
