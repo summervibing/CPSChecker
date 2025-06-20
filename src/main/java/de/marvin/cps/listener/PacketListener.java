@@ -59,10 +59,12 @@ public class PacketListener {
         this.monitorHandler = monitorHandler;
         this.protocolManager = ProtocolLibrary.getProtocolManager();
 
-        handleMonitorSwitch();
-        handleInvalidClicks();
-        handleClicks();
-        handleAttacks();
+        this.handleMonitorSwitch();
+        this.preventOtherActionbars();
+
+        this.handleInvalidClicks();
+        this.handleClicks();
+        this.handleAttacks();
     }
 
     /**
@@ -70,7 +72,11 @@ public class PacketListener {
      * {@link de.marvin.cps.monitor.MonitorMode}.
      */
     private void handleMonitorSwitch() {
-        this.protocolManager.addPacketListener(new PacketAdapter(this.plugin, ListenerPriority.NORMAL, PacketType.Play.Client.BLOCK_DIG) {
+        this.protocolManager.addPacketListener(new PacketAdapter(
+                this.plugin,
+                ListenerPriority.NORMAL,
+                PacketType.Play.Client.BLOCK_DIG
+        ) {
             @Override
             public void onPacketReceiving(PacketEvent event) {
                 var player = event.getPlayer();
@@ -79,6 +85,54 @@ public class PacketListener {
                 if (digType != EnumWrappers.PlayerDigType.DROP_ITEM) return;
                 if (player.getItemInHand() != null && player.getItemInHand().getType() != Material.AIR) return;
                 monitorHandler.nextMode(player);
+            }
+        });
+    }
+
+    /**
+     * Prevents other action bars from being displayed
+     * while monitoring a player.
+     */
+    private void preventOtherActionbars() {
+        this.protocolManager.addPacketListener(new PacketAdapter(
+                this.plugin,
+                ListenerPriority.NORMAL,
+                PacketType.Play.Server.CHAT,                    // 1.8 – 1.19.3
+                PacketType.Play.Server.SYSTEM_CHAT,             // 1.19.4+
+                PacketType.Play.Server.SET_ACTION_BAR_TEXT,     // 1.19.4+
+                PacketType.Play.Server.TITLE                    // title api in newer versions
+        ) {
+            @Override
+            public void onPacketSending(PacketEvent event) {
+                var pc = event.getPacket();
+                var type  = pc.getType();
+                var cancel = false;
+
+                // ===== 1.8 – 1.11 =====
+                if (pc.getBytes().size() > 0) {
+                    cancel = pc.getBytes().read(0) == (byte) 2;
+                }
+
+                // ===== 1.12 – 1.19.3 =====
+                if (pc.getChatTypes().size() > 0) {
+                    cancel |= pc.getChatTypes().read(0) == EnumWrappers.ChatType.GAME_INFO;
+                }
+
+                // ===== 1.19.4 + =====
+                if (type == PacketType.Play.Server.SYSTEM_CHAT) {
+                    // bool 0 = overlay?, action bars are true
+                    cancel |= pc.getBooleans().read(0);
+                }
+                if (type == PacketType.Play.Server.SET_ACTION_BAR_TEXT) cancel = true;
+
+                // ===== Titel-API (all newer versions) =====
+                if (type == PacketType.Play.Server.TITLE &&
+                        pc.getTitleActions().read(0) == EnumWrappers.TitleAction.ACTIONBAR) {
+                    cancel = true;
+                }
+
+                if (!cancel || !monitorHandler.isMonitoring(event.getPlayer())) return;
+                event.setCancelled(true);
             }
         });
     }
