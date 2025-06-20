@@ -105,15 +105,14 @@ public class Tick {
      * @see Tick#toChar()
      */
     public String toFormattedChar() {
-        char click = this.toChar();
+        var click = this.toChar();
 
-        ChatColor color;
-        switch (this.clicks) {
-            case 0 -> color = ChatColor.RESET; // no clicks
-            case 1 -> color = ChatColor.GREEN; // one click per tick
-            case 2 -> color = ChatColor.YELLOW; // two clicks per tick
-            default -> color = ChatColor.RED; // three or more clicks per tick
-        }
+        var color = switch (this.clicks) {
+            case 0 -> ChatColor.RESET;      // no clicks
+            case 1 -> ChatColor.GREEN;      // one click per tick
+            case 2 -> ChatColor.YELLOW;     // two clicks per tick
+            default -> ChatColor.RED;       // three or more clicks per tick
+        };
 
         return color.toString() + (this.invalid() > 0 ? ChatColor.STRIKETHROUGH : "") + click;
     }
