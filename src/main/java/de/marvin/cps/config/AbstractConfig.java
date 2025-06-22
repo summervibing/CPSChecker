@@ -4,6 +4,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,8 +17,8 @@ public abstract class AbstractConfig {
     private final FileConfiguration configuration;
 
     public AbstractConfig(
-            final JavaPlugin plugin,
-            final String fileName
+            @NotNull final JavaPlugin plugin,
+            @NotNull final String fileName
     ) {
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), fileName);

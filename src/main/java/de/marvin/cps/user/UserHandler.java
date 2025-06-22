@@ -28,7 +28,9 @@ public class UserHandler {
      *               with {@link User#isOnline()} status as {@code true}.
      * @return {@link Collection} of all registered {@link User Users}.
      */
-    public Collection<User> users(boolean online) {
+    public Collection<User> users(
+            final boolean online
+    ) {
         if (!online) return this.users.values();
         return this.users.values().stream().filter(User::isOnline).toList();
     }

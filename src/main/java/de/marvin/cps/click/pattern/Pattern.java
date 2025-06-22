@@ -18,7 +18,7 @@ public class Pattern {
      * Creates a new {@link Pattern} with a fixed size of {@link Pattern#size} ticks.
      */
     public Pattern() {
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < Pattern.size; i++)
             this.ticks[i] = new Tick();
     }
 
@@ -36,22 +36,24 @@ public class Pattern {
     ) {
         if (size < 20 || size > 1200) {
             CPSChecker.instance().getLogger().warning(
-                    "Invalid pattern size '" + size + "' given in configuration. " +
-                            "Only values between 20-1200 are allowed. Using default size of " + Pattern.size + " ticks."
+                    "Invalid pattern size '" + size + "' given in configuration. "
+                            + "Only values between 20-1200 are allowed. Using default size of "
+                            + Pattern.size + " ticks."
             );
             return;
         }
         if (displaySize < 10 || displaySize > 60) {
             CPSChecker.instance().getLogger().warning(
-                    "Invalid pattern display size '" + displaySize + "' given in configuration. " +
-                            "Only values between 10-60 are allowed. Using default display size of " + Pattern.displaySize + " ticks."
+                    "Invalid pattern display size '" + displaySize + "' given in configuration. "
+                            + "Only values between 10-60 are allowed. Using default display size of "
+                            + Pattern.displaySize + " ticks."
             );
             return;
         }
         if (displaySize > size) {
             CPSChecker.instance().getLogger().warning(
-                    "Pattern display size '" + displaySize + "' given in configuration exceeds pattern cache size '" +
-                            size + "'. " + "Using default display size of " + Pattern.displaySize + " ticks."
+                    "Pattern display size '" + displaySize + "' given in configuration exceeds pattern cache size '"
+                            + size + "'. " + "Using default display size of " + Pattern.displaySize + " ticks."
             );
             return;
         }
@@ -67,7 +69,7 @@ public class Pattern {
      * @return Size of the {@link Pattern} in ticks.
      */
     public static int size() {
-        return size;
+        return Pattern.size;
     }
 
     /**
@@ -76,7 +78,7 @@ public class Pattern {
      * @return Display size of the {@link Pattern} in ticks.
      */
     public static int displaySize() {
-        return displaySize;
+        return Pattern.displaySize;
     }
 
     /**
@@ -85,7 +87,7 @@ public class Pattern {
      * <b>Note:</b> Needs to be called every tick to update the pattern.
      */
     public void nextTick() {
-        this.currentIndex = (this.currentIndex + 1) % size;
+        this.currentIndex = (this.currentIndex + 1) % Pattern.size;
         // Reset the current tick
         this.ticks[currentIndex] = new Tick();
     }
@@ -95,15 +97,17 @@ public class Pattern {
      *
      *  @param invalid {@code true} if the click is invalid (e.g., hitting a block)
      */
-    public void registerClick(boolean invalid) {
-        this.ticks[currentIndex].addClick(invalid);
+    public void registerClick(
+            final boolean invalid
+    ) {
+        this.ticks[this.currentIndex].addClick(invalid);
     }
 
     /**
      * Adds an attack to the current tick.
      */
     public void registerAttack() {
-        this.ticks[currentIndex].addAttack();
+        this.ticks[this.currentIndex].addAttack();
     }
 
     /**
@@ -113,7 +117,7 @@ public class Pattern {
      */
     public String history() {
         var stringBuilder = new StringBuilder();
-        for (int i = 0; i < displaySize; i++)
+        for (int i = 0; i < Pattern.displaySize; i++)
             stringBuilder.append(this.ticks[indexFrom(i)].toFormattedChar());
         return stringBuilder.toString();
     }
@@ -128,44 +132,41 @@ public class Pattern {
      * with streaks.
      */
     public String streak() {
-        var prefix = new String[displaySize];
-        var suffix = new String[displaySize];
+        var prefix = new String[Pattern.displaySize];
+        var suffix = new String[Pattern.displaySize];
 
         // Scan entire pattern to find streaks of consecutive clicks
         var pos = 0;
-        while (pos < size) {
+        while (pos < Pattern.size) {
             if (this.ticks[indexFrom(pos)].isEmpty()) {
                 pos++;
                 continue;
             }
 
             var start = pos;
-            while (pos < size && !this.ticks[indexFrom(pos)].isEmpty())
-                pos++;
+            while (pos < Pattern.size && !this.ticks[indexFrom(pos)].isEmpty()) pos++;
             var length = pos - start;
 
             // Only highlight streaks with at least six ticks
             if (length >= 6) {
                 var color = length >= 10 ? ChatColor.RED : ChatColor.YELLOW;
-                if (start < displaySize)
+                if (start < Pattern.displaySize)
                     prefix[start] = color + Integer.toString(length) + "(";
 
                 int end = start + length - 1;
-                if (end < displaySize)
+                if (end < Pattern.displaySize)
                     suffix[end] = color + ")";
             }
         }
 
         // Build display
         var builder = new StringBuilder();
-        for (int i = 0; i < displaySize; i++) {
-            if (prefix[i] != null)
-                builder.append(prefix[i]);
+        for (int i = 0; i < Pattern.displaySize; i++) {
+            if (prefix[i] != null) builder.append(prefix[i]);
 
             builder.append(this.ticks[indexFrom(i)].toFormattedChar());
 
-            if (suffix[i] != null)
-                builder.append(suffix[i]);
+            if (suffix[i] != null) builder.append(suffix[i]);
         }
         return builder.toString();
     }
@@ -183,7 +184,7 @@ public class Pattern {
         var totalClicks = 0;
 
         for (int i = 0; i < 20; i++) {
-            var index = (this.currentIndex - i + size) % size;
+            var index = (this.currentIndex - i + Pattern.size) % Pattern.size;
             var tick = this.ticks[index];
             if (onlyAttacks) {
                 totalClicks += tick.attacks();
@@ -204,7 +205,7 @@ public class Pattern {
      * @return Index in {@link Pattern#ticks} based on given position.
      */
     private int indexFrom(int position) {
-        return (this.currentIndex - position + size) % size;
+        return (this.currentIndex - position + Pattern.size) % Pattern.size;
     }
 
 }

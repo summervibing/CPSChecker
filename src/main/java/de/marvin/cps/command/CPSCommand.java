@@ -25,12 +25,49 @@ public class CPSCommand implements CommandExecutor {
         this.monitorHandler = monitorHandler;
     }
 
+    /**
+     * Main command of the plugin. Handles monitoring players,
+     * stopping monitoring, listing currently active monitors,
+     * and displaying the pattern explanation.
+     * <p>
+     *     Requires the <code>cps.use</code> permission to execute
+     *     the command, and the <code>cps.use.admin</code> permission
+     *     to access administrative features such as
+     *     listing current monitors and stopping others' monitors.
+     * </p>
+     * <p>
+     *     Command usage:
+     *     <pre>
+     *         <strong>/cps &lt;player&gt; [mode]</strong> - Starts monitoring the specified
+     *         player. If no mode is specified, defaults to BASIC mode.
+     *         <strong>/cps off</strong> - Stops monitoring for the player who executed
+     *         the command. If no player is being monitored, a message is sent
+     *         indicating that monitor is not active.
+     *         <strong>/cps stop &lt;player&gt;</strong> - Stops monitor for the specified
+     *         player. If the player is not monitoring anyone, a message
+     *         is sent indicating that the monitor is not active.
+     *         <strong>/cps list</strong> - Lists all currently monitoring players,
+     *         who they are monitoring and which mode they are using to do so. If
+     *         no players are being monitored, a message is sent indicating that
+     *         no monitors are active.
+     *         <strong>/cps help</strong> - Displays the pattern explanation page.
+     *     </pre>
+     * </p>
+     *
+     * @param sender Source of the command
+     * @param command Command which was executed
+     * @param label Alias of the command which was used
+     * @param strings Passed command arguments
+     * @return {@code true} if the command was executed successfully,
+     *         {@code false} if an error or usage message is being
+     *         sent to the player.
+     */
     @Override
     public boolean onCommand(
-            CommandSender sender,
-            Command command,
-            String label,
-            String[] strings
+            @NotNull final CommandSender sender,
+            @NotNull final Command command,
+            @NotNull final String label,
+            @NotNull final String[] strings
     ) {
         if (!(sender instanceof final Player player)) {
             sender.sendMessage("This command can only be executed by a player.");

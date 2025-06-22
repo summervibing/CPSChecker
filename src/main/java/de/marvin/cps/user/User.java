@@ -82,7 +82,9 @@ public class User {
      * @return Clicks per second of last 20 {@link de.marvin.cps.click.pattern.Tick Ticks}
      * of the current {@link Pattern}.
      */
-    public int clicksPerSecond(boolean onlyAttacks) {
+    public int clicksPerSecond(
+            final boolean onlyAttacks
+    ) {
         return this.currentPattern.clicksPerSecond(onlyAttacks);
     }
 
@@ -101,7 +103,9 @@ public class User {
      *
      * @param isOnline {@code true} if the user is online, {@code false} otherwise.
      */
-    public void setOnline(boolean isOnline) {
+    public void setOnline(
+            final boolean isOnline
+    ) {
         this.isOnline = isOnline;
         if (!isOnline) this.resetPattern();
     }
@@ -129,7 +133,9 @@ public class User {
      *
      * @param violation {@link Violation} to add
      */
-    public void addViolation(Violation violation) {
+    public void addViolation(
+            @NotNull final Violation violation
+    ) {
         this.violations.add(violation);
     }
 

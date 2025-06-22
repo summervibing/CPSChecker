@@ -2,6 +2,7 @@ package de.marvin.cps.event;
 
 import de.marvin.cps.check.Violation;
 import de.marvin.cps.user.User;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Event that is triggered when a {@link User} receives
@@ -15,10 +16,10 @@ public class CPSViolationEvent extends AbstractEvent {
     private final int newViolationLevel;
 
     public CPSViolationEvent(
-            User user,
-            Violation violation,
-            int previousViolationLevel,
-            int newViolationLevel
+            @NotNull final User user,
+            @NotNull final Violation violation,
+            final int previousViolationLevel,
+            final int newViolationLevel
     ) {
         this.user = user;
         this.violation = violation;

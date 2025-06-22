@@ -4,6 +4,8 @@ import de.marvin.cps.CPSChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SchedulerUtil {
 
@@ -12,7 +14,9 @@ public class SchedulerUtil {
      *
      * @param runnable task to be run
      */
-    public static void sync(Runnable runnable) {
+    public static void sync(
+            @NotNull final Runnable runnable
+    ) {
         if (!Bukkit.isPrimaryThread()) {
             scheduler().runTask(CPSChecker.instance(), runnable);
             return;
@@ -25,7 +29,9 @@ public class SchedulerUtil {
      *
      * @param runnable task to be run
      */
-    public static void async(Runnable runnable) {
+    public static void async(
+            @NotNull final Runnable runnable
+    ) {
         scheduler().runTaskAsynchronously(CPSChecker.instance(), runnable);
     }
 
@@ -39,7 +45,11 @@ public class SchedulerUtil {
      * @param period   the ticks to wait between runs
      * @return a {@link BukkitTask} that can be used to cancel the task
      */
-    public static BukkitTask repeatSync(Runnable runnable, long delay, long period) {
+    public static BukkitTask repeatSync(
+            @NotNull final Runnable runnable,
+            final long delay,
+            final long period
+    ) {
         return scheduler().runTaskTimer(CPSChecker.instance(), runnable, delay, period);
     }
 
@@ -50,7 +60,10 @@ public class SchedulerUtil {
      * @param period   the ticks to wait between runs
      * @return a {@link BukkitTask} that can be used to cancel the task
      */
-    public static BukkitTask repeatSync(Runnable runnable, long period) {
+    public static BukkitTask repeatSync(
+            @NotNull final Runnable runnable,
+            final long period
+    ) {
         return repeatSync(runnable, 0L, period);
     }
 
@@ -62,7 +75,11 @@ public class SchedulerUtil {
      * @param period   the ticks to wait between runs
      * @return a {@link BukkitTask} that can be used to cancel the task
      */
-    public static BukkitTask repeatAsync(Runnable runnable, long delay, long period) {
+    public static BukkitTask repeatAsync(
+            @NotNull final Runnable runnable,
+            final long delay,
+            final long period
+    ) {
         return scheduler().runTaskTimerAsynchronously(CPSChecker.instance(), runnable, delay, period);
     }
 
@@ -86,7 +103,10 @@ public class SchedulerUtil {
      * @param delay    the ticks to wait before starting the runnable
      * @return a {@link BukkitTask} that can be used to cancel the task
      */
-    public static BukkitTask delaySync(Runnable runnable, long delay) {
+    public static BukkitTask delaySync(
+            @NotNull final Runnable runnable,
+            final long delay
+    ) {
         return scheduler().runTaskLater(CPSChecker.instance(), runnable, delay);
     }
 
@@ -97,7 +117,10 @@ public class SchedulerUtil {
      * @param delay    the ticks to wait before starting the runnable
      * @return a {@link BukkitTask} that can be used to cancel the task
      */
-    public static BukkitTask delayAsync(Runnable runnable, long delay) {
+    public static BukkitTask delayAsync(
+            @NotNull final Runnable runnable,
+            final long delay
+    ) {
         return scheduler().runTaskLater(CPSChecker.instance(), runnable, delay);
     }
 
@@ -106,7 +129,9 @@ public class SchedulerUtil {
      *
      * @param task task to cancel
      */
-    public static void cancel(BukkitTask task) {
+    public static void cancel(
+            @Nullable final BukkitTask task
+    ) {
         if (task == null) return;
         task.cancel();
     }
@@ -116,7 +141,9 @@ public class SchedulerUtil {
      *
      * @param id id of the task to cancel
      */
-    public static void cancel(int id) {
+    public static void cancel(
+            final int id
+    ) {
         if (id < 0) return;
         scheduler().cancelTask(id);
     }

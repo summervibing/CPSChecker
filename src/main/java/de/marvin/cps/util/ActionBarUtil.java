@@ -92,11 +92,11 @@ public class ActionBarUtil {
             private int count = 0;
             @Override
             public void run() {
-                if (count >= (duration - 3)) {
+                if (this.count >= (duration - 3)) {
                     this.cancel();
                 }
                 sendActionBarMessage(bukkitPlayer, message);
-                count++;
+                this.count++;
             }
         }.runTaskTimer(CPSChecker.instance(), 0L, 20L);
         PENDING_MESSAGES.put(bukkitPlayer, messageTask);

@@ -5,6 +5,7 @@ import de.marvin.cps.config.MessageConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,9 +23,9 @@ public class Messages {
             @NotNull final CPSChecker plugin
     ) {
         var config = new MessageConfig(plugin);
-        Map<Message, String> map = new HashMap<>();
+        var map = new HashMap<Message, String>();
         for (var message : Message.values()) map.put(message, config.message(message));
-        cached = Map.copyOf(map);
+        Messages.cached = Map.copyOf(map);
     }
 
     /**
@@ -36,11 +37,11 @@ public class Messages {
     private static String get(
             @NotNull final Message message
     ) {
-        if (cached == null) {
+        if (Messages.cached == null) {
             CPSChecker.instance().getLogger().severe("Messages not initialized. Call Messages#initialize() first.");
             return ChatColor.RED + "CPSChecker is not working properly. Please contact an administrator.";
         }
-        return cached.getOrDefault(message, "Message not found: " + message.name());
+        return Messages.cached.getOrDefault(message, "Message not found: " + message.name());
     }
 
     /**
@@ -64,7 +65,7 @@ public class Messages {
      */
     public static String formatted(
             @NotNull final Message message,
-            final Map<String, Object> placeholders
+            @Nullable final Map<String, Object> placeholders
     ) {
         var raw = get(message);
         if (placeholders == null || placeholders.isEmpty())
@@ -99,7 +100,7 @@ public class Messages {
     public static void send(
             @NotNull final Player player,
             @NotNull final Message message,
-            final Map<String, Object> placeholders
+            @Nullable final Map<String, Object> placeholders
     ) {
         if (!player.isOnline()) return;
         player.sendMessage(formatted(message, placeholders));

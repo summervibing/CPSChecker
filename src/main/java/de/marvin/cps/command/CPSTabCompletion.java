@@ -34,12 +34,13 @@ public class CPSTabCompletion implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(
-            CommandSender sender,
-            Command command,
-            String label,
-            String[] strings
+            @NotNull final CommandSender sender,
+            @NotNull final Command command,
+            @NotNull final String label,
+            @NotNull final String[] strings
     ) {
 
+        // Suggestions for the first argument
         if (strings.length == 1) {
             var completions = new ArrayList<>(List.of("off", "help"));
             if (sender.hasPermission("cps.use.admin")) completions.addAll(List.of("list", "stop"));
@@ -47,10 +48,11 @@ public class CPSTabCompletion implements TabCompleter {
             return completions;
         }
 
+        // Suggestions for the second argument
         if (strings.length == 2) {
             if (strings[0].equalsIgnoreCase("stop") && sender.hasPermission("cps.use.admin"))
                 return this.monitorHandler.monitors().keySet().stream().map(Player::getName).toList();
-            if ((isUniqueId(strings[0]) && this.plugin.getServer().getPlayer(UUID.fromString(strings[0])) != null)
+            if ((this.isUniqueId(strings[0]) && this.plugin.getServer().getPlayer(UUID.fromString(strings[0])) != null)
                     || this.plugin.getServer().getPlayer(strings[0]) != null)
                 return Stream.of(MonitorMode.values()).map(mode -> mode.name().toLowerCase()).toList();
         }
@@ -65,7 +67,9 @@ public class CPSTabCompletion implements TabCompleter {
      * @return {@code true} if the input is a valid {@link UUID},
      * {@code false} otherwise.
      */
-    private boolean isUniqueId(@NotNull final String input) {
+    private boolean isUniqueId(
+            @NotNull final String input
+    ) {
         try {
             UUID.fromString(input);
             return true;

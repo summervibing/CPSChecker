@@ -2,11 +2,12 @@ package de.marvin.cps.config;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import de.marvin.cps.click.pattern.Pattern;
+import org.jetbrains.annotations.NotNull;
 
 public class SettingConfig extends AbstractConfig {
 
     public SettingConfig(
-            final JavaPlugin plugin
+            @NotNull final JavaPlugin plugin
     ) {
         super(plugin, "configuration.yml");
     }

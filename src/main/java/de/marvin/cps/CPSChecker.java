@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 public class CPSChecker extends JavaPlugin {
 
@@ -28,7 +29,7 @@ public class CPSChecker extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        instance = this;
+        CPSChecker.instance = this;
 
         // Caches messages from messages.yml
         Messages.initialize(this);
@@ -52,11 +53,6 @@ public class CPSChecker extends JavaPlugin {
         this.updateTask();
     }
 
-    @Override
-    public void onDisable() {
-
-    }
-
     /**
      * Registers all listeners.
      */
@@ -77,8 +73,13 @@ public class CPSChecker extends JavaPlugin {
      * their {@link org.bukkit.command.TabCompleter TabCompleters}.
      */
     private void registerCommands() {
-        this.getCommand("cps").setExecutor(new CPSCommand(monitorHandler));
-        this.getCommand("cps").setTabCompleter(new CPSTabCompletion(this, this.monitorHandler));
+        this.getCommand("cps").setExecutor(new CPSCommand(
+                this.monitorHandler
+        ));
+        this.getCommand("cps").setTabCompleter(new CPSTabCompletion(
+                this,
+                this.monitorHandler
+        ));
     }
 
     /**
@@ -101,8 +102,13 @@ public class CPSChecker extends JavaPlugin {
      *
      * @param listener Listener to register
      */
-    private void registerListener(Listener listener) {
-        this.getServer().getPluginManager().registerEvents(listener, this);
+    private void registerListener(
+            @NotNull final Listener listener
+    ) {
+        this.getServer().getPluginManager().registerEvents(
+                listener,
+                this
+        );
     }
 
     /**
@@ -111,7 +117,7 @@ public class CPSChecker extends JavaPlugin {
      * @return Instance of {@link CPSChecker}.
      */
     public static CPSChecker instance() {
-        return instance;
+        return CPSChecker.instance;
     }
 
 }

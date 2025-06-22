@@ -2,11 +2,12 @@ package de.marvin.cps.config;
 
 import de.marvin.cps.message.Message;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 public class MessageConfig extends AbstractConfig {
 
     public MessageConfig(
-            final JavaPlugin plugin
+            @NotNull final JavaPlugin plugin
     ) {
         super(plugin, "messages.yml");
     }
@@ -19,7 +20,9 @@ public class MessageConfig extends AbstractConfig {
      * @return {@link Message} from {@link MessageConfig} if found,
      * otherwise returns {@link Message#defaultMessage()}.
      */
-    public String message(Message message) {
+    public String message(
+            @NotNull final Message message
+    ) {
         return this.file().getString(message.path(), message.defaultMessage());
     }
 

@@ -1,6 +1,7 @@
 package de.marvin.cps.message;
 
 import de.marvin.cps.config.MessageConfig;
+import org.jetbrains.annotations.NotNull;
 
 public enum Message {
 
@@ -49,8 +50,8 @@ public enum Message {
     private final String defaultMessage;
 
     Message(
-            final String path,
-            final String defaultMessage
+            @NotNull final String path,
+            @NotNull final String defaultMessage
     ) {
         this.path = path;
         this.defaultMessage = defaultMessage;

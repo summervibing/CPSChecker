@@ -29,7 +29,9 @@ public class Tick {
      * @param invalid {@code true} if the click is invalid
      *                            (e.g., hitting a block),
      */
-    public void addClick(boolean invalid) {
+    public void addClick(
+            final boolean invalid
+    ) {
         this.clicks++;
         if (invalid) this.invalid++;
     }
@@ -57,7 +59,9 @@ public class Tick {
      *                       if {@code false}, only counts valid clicks.
      * @return Number of clicks in this {@link Tick}.
      */
-    public int clicks(boolean includeInvalid) {
+    public int clicks(
+            final boolean includeInvalid
+    ) {
         if (includeInvalid) return this.clicks;
         return this.clicks - this.invalid;
     }
