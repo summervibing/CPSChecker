@@ -1,0 +1,12 @@
+name: ${pluginName}
+version: ${version}
+main: de.marvin.cps.plugin.CPSCheckerPluginLoader
+author: ${author}
+description: ${description}
+depend:
+  - ProtocolLib
+commands:
+    cps:
+        description: Monitor the cps of a player.
+        permission: cps.use
+        permission-message: Unknown command. Type "/help" for help.

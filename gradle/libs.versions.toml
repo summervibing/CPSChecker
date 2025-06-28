@@ -1,0 +1,70 @@
+[versions]
+# Shadow plugin
+shadow = "9.0.0-beta17"
+
+# Core spigot
+spigot_1_21_4 = "1.21.4-R0.1-SNAPSHOT"
+
+# Protocol spigots
+spigot_1_8_8 = "1.8.8-R0.1-SNAPSHOT"
+spigot_1_9_4 = "1.9.4-R0.1-SNAPSHOT"
+spigot_1_10_2 = "1.10.2-R0.1-SNAPSHOT"
+spigot_1_11_2 = "1.11.2-R0.1-SNAPSHOT"
+spigot_1_12_2 = "1.12.2-R0.1-SNAPSHOT"
+spigot_1_13_2 = "1.13.2-R0.1-SNAPSHOT"
+spigot_1_14_4 = "1.14.4-R0.1-SNAPSHOT"
+spigot_1_15_2 = "1.15.2-R0.1-SNAPSHOT"
+spigot_1_16_5 = "1.16.5-R0.1-SNAPSHOT"
+spigot_1_17_1 = "1.17.1-R0.1-SNAPSHOT"
+spigot_1_18_2 = "1.18.2-R0.1-SNAPSHOT"
+spigot_1_19_4 = "1.19.4-R0.1-SNAPSHOT"
+spigot_1_20_5 = "1.20.5-R0.1-SNAPSHOT"
+
+# ProtocolLib
+protocollib = "5.3.0"
+
+# Guice
+guice = "7.0.0"
+
+# Annotation processors
+jetbrains_annotations = "26.0.2"
+
+# Testing
+junit_jupiter = "5.9.2"
+mockito = "5.17.0"
+
+[plugins]
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+
+[libraries]
+# Core spigot
+spigot_latest = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_21_4" }
+
+# Protocol spigots
+spigot_1_8_8 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_8_8" }
+spigot_1_9_4 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_9_4" }
+spigot_1_10_2 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_10_2" }
+spigot_1_11_2 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_11_2" }
+spigot_1_12_2 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_12_2" }
+spigot_1_13_2 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_13_2" }
+spigot_1_14_4 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_14_4" }
+spigot_1_15_2 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_15_2" }
+spigot_1_16_5 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_16_5" }
+spigot_1_17_1 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_17_1" }
+spigot_1_18_2 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_18_2" }
+spigot_1_19_4 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_19_4" }
+spigot_1_20_5 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_20_5" }
+
+# ProtocolLib
+protocollib = { group = "com.comphenix.protocol", name = "ProtocolLib", version.ref = "protocollib" }
+
+# Guice
+guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }
+
+# Annotation processors
+jetbrains_annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains_annotations" }
+
+# Testing
+junit_jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit_jupiter" }
+junit_platform = { group = "org.junit.platform", name = "junit-platform-launcher" }
+mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }

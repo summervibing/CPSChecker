@@ -1,51 +1,52 @@
 plugins {
-    id("java")
+    `java-library`
+    alias(libs.plugins.shadow)
 }
 
-group = "de.marvin"
-version = "1.0-SNAPSHOT"
+subprojects {
+    val libs = rootProject.libs
 
-tasks.withType<JavaCompile> {
-    options.encoding = "UTF-8"
-}
+    apply {
+        plugin("java-library")
+    }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
+    group = project.property("group") as String
+    version = project.property("version") as String
+    description = project.property("description") as String
 
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://repo.dmulloy2.net/nexus/repository/public/")
-}
+    dependencies {
+        // Google Guice
+        implementation(libs.guice)
+        // Annotations
+        compileOnly(libs.jetbrains.annotations)
+        // ProtocolLib
+        compileOnly(libs.protocollib)
+    }
 
-dependencies {
-    compileOnly("org.spigotmc:spigot:1.8.8-R0.1-SNAPSHOT")
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
-
-    compileOnly("org.jetbrains:annotations:26.0.2")
-
-    // For testing purposes
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.mockito:mockito-core:5.17.0")
-    testImplementation("org.spigotmc:spigot:1.8.8-R0.1-SNAPSHOT")
-}
-
-tasks.named<Test>("test") {
-    useJUnitPlatform()
-    testLogging {
-        events("passed", "skipped", "failed")
+    tasks.compileJava {
+        options.encoding = Charsets.UTF_8.name()
     }
 }
 
-val testServerDir = file("test-server")
-val pluginsDir = File(testServerDir, "plugins")
-
-tasks.register<Copy>("copyJarToTestServer") {
-    dependsOn("jar")
-    from("${buildDir}/libs/${project.name}-$version.jar")
-    into(pluginsDir)
+dependencies {
+    subprojects.forEach() {
+        api(project(it.path))
+    }
 }
 
-tasks.named("build") {
-    finalizedBy("copyJarToTestServer")
+tasks {
+    assemble {
+        dependsOn(shadowJar)
+    }
+
+    shadowJar {
+        dependsOn(subprojects.map {
+            it.tasks.named("assemble")
+        })
+
+        relocate("com.google.common", "de.marvin.libs.guava")
+
+        archiveFileName.set("${project.property("name")}-${project.property("version")}.jar")
+        minimize()
+    }
 }
