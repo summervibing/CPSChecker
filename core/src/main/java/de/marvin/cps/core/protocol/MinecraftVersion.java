@@ -13,8 +13,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum MinecraftVersion {
 
-    v1_7_10(5),
-    v1_8(47), v1_8_3(47), v1_8_8(47, true),
+    v1_8_8(47, true),
     v1_9(107), v1_9_1(108), v1_9_2(109), v1_9_4(110),
     //1.10 and 1.10.1 are redundant
     v1_10(210), v1_10_1(210), v1_10_2(210),
