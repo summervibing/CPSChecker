@@ -7,6 +7,7 @@ import de.marvin.cps.core.CoreModule;
 import de.marvin.cps.api.protocol.ProtocolAdapter;
 import de.marvin.cps.core.protocol.MinecraftVersion;
 import de.marvin.cps.core.protocol.ProtocolProvider;
+import de.marvin.cps.core.util.MaterialUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -55,6 +56,9 @@ public class ProtocolProviderImpl implements ProtocolProvider {
             Bukkit.getPluginManager().disablePlugin(this.plugin);
             return;
         }
+
+        // Load all instant breakable materials for the detected version
+        MaterialUtil.load(this.detectedVersion);
 
         // Create Guice injector with CoreModule and version-dependent ProtocolModule
         this.injector = Guice.createInjector(
