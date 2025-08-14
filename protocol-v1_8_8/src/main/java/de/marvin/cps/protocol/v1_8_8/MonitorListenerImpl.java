@@ -60,8 +60,8 @@ public class MonitorListenerImpl implements MonitorListener {
     @Override
     public ListeningWhitelist getSendingWhitelist() {
         return ListeningWhitelist.newBuilder()
-                .priority(ListenerPriority.NORMAL)
-                .types(PacketType.Play.Client.CHAT)
+                .priority(ListenerPriority.HIGHEST)
+                .types(PacketType.Play.Server.CHAT)
                 .build();
     }
 
