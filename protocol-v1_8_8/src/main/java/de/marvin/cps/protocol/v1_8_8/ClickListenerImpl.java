@@ -11,6 +11,7 @@ import de.marvin.cps.core.CPSChecker;
 import de.marvin.cps.api.click.ClickHandler;
 import de.marvin.cps.api.protocol.ClickListener;
 import de.marvin.cps.core.util.MaterialUtil;
+import de.marvin.cps.core.util.SchedulerUtil;
 import org.bukkit.GameMode;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -56,12 +57,11 @@ public class ClickListenerImpl implements ClickListener {
         var uniqueId = player.getUniqueId();
         var packet = event.getPacket();
         var digType = packet.getPlayerDigTypes().read(0);
+        var position = packet.getBlockPositionModifier().read(0);
+        var block = player.getWorld().getBlockAt(position.getX(), position.getY(), position.getZ());
 
         switch (digType) {
-            case EnumWrappers.PlayerDigType.START_DESTROY_BLOCK -> {
-                var position = packet.getBlockPositionModifier().read(0);
-                var block = player.getWorld().getBlockAt(position.getX(), position.getY(), position.getZ());
-
+            case START_DESTROY_BLOCK -> {
                 // Ignore blocks that can be broken instantly
                 if (MaterialUtil.isInstantBreakable(block.getType())) {
                     this.lastClickInvalid.add(uniqueId);
@@ -70,8 +70,11 @@ public class ClickListenerImpl implements ClickListener {
                 this.isDigging.add(uniqueId);
             }
 
-            case EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK, EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK ->
-                    this.isDigging.remove(uniqueId);
+            case STOP_DESTROY_BLOCK -> {
+                if (!MaterialUtil.isInstantBreakable(block.getType()))
+                    SchedulerUtil.delayAsync(() -> this.isDigging.remove(uniqueId), 6L);
+            }
+            case ABORT_DESTROY_BLOCK -> this.isDigging.remove(uniqueId);
             default -> {}
         }
     }
