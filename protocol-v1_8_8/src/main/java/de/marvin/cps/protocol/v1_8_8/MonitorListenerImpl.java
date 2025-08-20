@@ -10,7 +10,7 @@ import com.google.inject.Singleton;
 import de.marvin.cps.core.CPSChecker;
 import de.marvin.cps.api.monitor.MonitorHandler;
 import de.marvin.cps.api.protocol.MonitorListener;
-import de.marvin.cps.core.monitor.MonitorMode;
+import de.marvin.cps.core.pattern.PatternType;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
@@ -42,7 +42,7 @@ public class MonitorListenerImpl implements MonitorListener {
 
     /**
      * Listens to item drop packet to switch the current
-     * {@link MonitorMode}.
+     * {@link PatternType}.
      *
      * @param event packet that has been received
      */
@@ -54,7 +54,11 @@ public class MonitorListenerImpl implements MonitorListener {
 
         if (digType != EnumWrappers.PlayerDigType.DROP_ITEM) return;
         if (player.getItemInHand() != null && player.getItemInHand().getType() != Material.AIR) return;
-        this.monitorHandler.nextMode(player);
+        if (player.isSneaking()) {
+            this.monitorHandler.nextPatternType(player);
+            return;
+        }
+        this.monitorHandler.nextClickType(player);
     }
 
     @Override

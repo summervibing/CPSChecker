@@ -2,7 +2,7 @@ package de.marvin.cps.plugin.command;
 
 import com.google.inject.Inject;
 import de.marvin.cps.api.monitor.MonitorHandler;
-import de.marvin.cps.core.monitor.MonitorMode;
+import de.marvin.cps.core.pattern.PatternType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -56,7 +56,14 @@ public class CPSTabCompletion implements TabCompleter {
                 return this.monitorHandler.monitors().keySet().stream().map(Player::getName).toList();
             if ((this.isUniqueId(strings[0]) && this.plugin.getServer().getPlayer(UUID.fromString(strings[0])) != null)
                     || this.plugin.getServer().getPlayer(strings[0]) != null)
-                return Stream.of(MonitorMode.values()).map(mode -> mode.name().toLowerCase()).toList();
+                return Stream.of(PatternType.values()).map(mode -> mode.name().toLowerCase()).toList();
+        }
+
+        // Suggestions for the third argument
+        if (strings.length == 3) {
+            if ((this.isUniqueId(strings[0]) && this.plugin.getServer().getPlayer(UUID.fromString(strings[0])) != null)
+                    || this.plugin.getServer().getPlayer(strings[0]) != null)
+                return List.of("left", "right");
         }
 
         return null;

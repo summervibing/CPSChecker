@@ -25,31 +25,16 @@ public class ClickHandlerImpl implements ClickHandler {
      * {@inheritDoc}
      *
      * @param uniqueId {@link UUID} of the user
-     * @param invalid {@code true} if the click is invalid
-     *                            (e.g., hitting a block)
+     * @param type     {@link ClickType} of the click
      */
     @Override
     public void registerClick(
             @NotNull final UUID uniqueId,
-            final boolean invalid
+            @NotNull final ClickType type
     ) {
         User user = this.user(uniqueId);
         if (user == null) return;
-        user.currentPattern().registerClick(invalid);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param uniqueId {@link UUID} of the user
-     */
-    @Override
-    public void registerAttack(
-            @NotNull final UUID uniqueId
-    ) {
-        User user = this.user(uniqueId);
-        if (user == null) return;
-        user.currentPattern().registerAttack();
+        user.clickSession().registerClick(type);
     }
 
     /**
@@ -57,7 +42,7 @@ public class ClickHandlerImpl implements ClickHandler {
      */
     @Override
     public void update() {
-        this.userHandler.users(true).forEach(User::updatePattern);
+        this.userHandler.users(true).forEach(User::updateClickSession);
     }
 
     // Helper methods

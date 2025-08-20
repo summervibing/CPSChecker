@@ -1,7 +1,7 @@
 package de.marvin.cps.core.config;
 
 import org.bukkit.plugin.java.JavaPlugin;
-import de.marvin.cps.core.click.pattern.Pattern;
+import de.marvin.cps.core.pattern.PatternType;
 import org.jetbrains.annotations.NotNull;
 
 public class SettingConfig extends AbstractConfig {
@@ -13,18 +13,18 @@ public class SettingConfig extends AbstractConfig {
     }
 
     /**
-     * Gets the cache size for {@link Pattern Patterns} in ticks.
+     * Gets the cache size for {@link PatternType Patterns} in ticks.
      *
-     * @return Cache size for {@link Pattern Patterns} in ticks.
+     * @return Cache size for {@link PatternType Patterns} in ticks.
      */
     public int patternSize() {
         return this.file().getInt("pattern.size");
     }
 
     /**
-     * Gets the display size for {@link Pattern Patterns} in ticks.
+     * Gets the display size for {@link PatternType Patterns} in ticks.
      *
-     * @return Display size for {@link Pattern Patterns} in ticks.
+     * @return Display size for {@link PatternType Patterns} in ticks.
      */
     public int patternDisplaySize() {
         return this.file().getInt("pattern.display-size");

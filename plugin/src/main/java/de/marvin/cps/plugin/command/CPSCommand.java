@@ -1,11 +1,12 @@
 package de.marvin.cps.plugin.command;
 
 import com.google.inject.Inject;
-import de.marvin.cps.core.click.pattern.Pattern;
+import de.marvin.cps.core.click.ClickSession;
+import de.marvin.cps.core.click.ClickType;
 import de.marvin.cps.core.message.Message;
 import de.marvin.cps.core.message.Messages;
 import de.marvin.cps.api.monitor.MonitorHandler;
-import de.marvin.cps.core.monitor.MonitorMode;
+import de.marvin.cps.core.pattern.PatternType;
 import de.marvin.cps.core.monitor.MonitorResult;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -82,16 +83,12 @@ public class CPSCommand implements CommandExecutor {
         }
 
         if (strings.length == 0) {
-            if (player.hasPermission("cps.use.admin")) {
-                Messages.send(player, Message.ADMIN_USAGE);
-                return false;
-            }
-            Messages.send(player, Message.COMMAND_USAGE);
+            sendUsageMessage(player);
             return false;
         }
 
         if (strings[0].equalsIgnoreCase("help")) {
-            var displaySize = Pattern.displaySize();
+            var displaySize = ClickSession.displaySize();
             Messages.send(player, Message.PATTERN_HELP, Map.of(
                     "seconds", displaySize / 20,
                     "ticks", displaySize
@@ -157,18 +154,31 @@ public class CPSCommand implements CommandExecutor {
             return false;
         }
 
-        var mode = MonitorMode.BASIC;
+        var monitor = this.monitorHandler.access(player);
+
+        var patternType = PatternType.BASIC;
         if (strings.length > 1) {
-            mode = MonitorMode.fromString(strings[1]);
-            if (mode == null) {
-                Messages.send(player, player.hasPermission("cps.use.admin")
-                        ? Message.ADMIN_USAGE
-                        : Message.COMMAND_USAGE);
+            patternType = PatternType.fromString(strings[1]);
+            if (patternType == null) {
+                sendUsageMessage(player);
                 return false;
             }
+        } else {
+            if (monitor != null) patternType = monitor.patternType();
         }
 
-        var result = this.monitorHandler.monitor(player, targetPlayer.getUniqueId(), mode);
+        var clickType = ClickType.LEFT_CLICK;
+        if (strings.length > 2) {
+            clickType = ClickType.fromString(strings[2]);
+            if (clickType == null) {
+                sendUsageMessage(player);
+                return false;
+            }
+        } else {
+            if (monitor != null) clickType = monitor.clickType();
+        }
+
+        var result = this.monitorHandler.monitor(player, targetPlayer.getUniqueId(), patternType, clickType);
         if (result == MonitorResult.USER_NOT_FOUND) {
             Messages.send(player, Message.PLAYER_NOT_FOUND);
             return false;
@@ -177,16 +187,34 @@ public class CPSCommand implements CommandExecutor {
         if (result == MonitorResult.ALREADY_MONITORING) {
             Messages.send(player, Message.ALREADY_MONITORING, Map.of(
                     "player", targetPlayer.getName(),
-                    "mode", mode.name()
+                    "pattern", patternType.name().toLowerCase(),
+                    "click", clickType.name().toLowerCase().split("_")[0]
             ));
             return false;
         }
 
         Messages.send(player, Message.MONITORING_PLAYER, Map.of(
                 "player", targetPlayer.getName(),
-                "mode", mode.name()
+                "mode", patternType.name().toLowerCase(),
+                "click", clickType.name().toLowerCase().split("_")[0]
         ));
         return true;
+    }
+
+    // Helper methods
+
+    /**
+     * Sends a usage message to the {@link Player} based on
+     * their permissions.
+     *
+     * @param player {@link Player} to send the usage message to
+     */
+    private void sendUsageMessage(
+            @NotNull final Player player
+    ) {
+        Messages.send(player, player.hasPermission("cps.use.admin")
+                ? Message.ADMIN_USAGE
+                : Message.COMMAND_USAGE);
     }
 
     /**
@@ -194,7 +222,7 @@ public class CPSCommand implements CommandExecutor {
      *
      * @param input Input to check
      * @return {@code true} if the input is a valid {@link UUID},
-     * {@code false} otherwise.
+     *         {@code false} otherwise.
      */
     private boolean isUniqueId(
             @NotNull final String input

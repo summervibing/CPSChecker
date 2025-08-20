@@ -5,18 +5,24 @@ import org.jetbrains.annotations.NotNull;
 
 public enum Message {
 
-    COMMAND_USAGE("command-usage", "§7Usage: §c/cps <username/uuid/off/help> [<mode>]"),
-    ADMIN_USAGE("admin-usage", "§7Usage: §c/cps <username/uuid/off/list/stop/help> [<mode>/<username/uuid>]"),
+    COMMAND_USAGE("command-usage", "§7Usage: §c/cps <username/uuid/off/help> [<mode>] [<left/right>]"),
+    ADMIN_USAGE("admin-usage", "§7Usage: §c/cps <username/uuid/off/list/stop/help> [<mode>/<username/uuid>] [<left/right>]"),
     PATTERN_HELP("pattern-help", """
             §7§m------------------------------
             §6§lClick pattern monitor explanation
             \n§7 §r
             §7A live monitor shows the click pattern of the targeted player over the last §e%seconds% §7seconds (= %ticks% ticks).
             \n§7 §r
+            §9Controls:
+            §fDrop §7= Switch between §eleft §7and §eright clicks
+            §fSneak + Drop §7= Switch between §epatterns
+            \n§7 §r
             §9Ticks with clicks only:
             §aC = 1 clicks/tick§7; §eC = 2 c/t§7; §cC = 3+ c/t
             §9Ticks with attacks:
-            §aA = 1 clicks/tick§7; §eA = 2 c/t§7; §cA = 3+ c/t
+            §aA = 1 attacks/tick§7; §eA = 2 a/t§7; §cA = 3+ a/t
+            §9Ticks with placements:
+            §aP = 1 placements/tick§7; §eP = 2 p/t§7; §cP = 3+ p/t
             \n§7 §r
             §9Streaks:
             §eCount(§aCCAAAA§e) §7= §eyellow streak §7with is shown at a min. of §e6 §7consecutive ticks with clicks.
@@ -26,14 +32,14 @@ public enum Message {
 
     PLAYER_NOT_FOUND("player-not-found", "§cThe player was not found."),
 
-    MONITORING_PLAYER("monitoring-player", "§7You are now monitoring §e%player% §7in §e%mode% §7mode."),
+    MONITORING_PLAYER("monitoring-player", "§7You are now monitoring §e%player%§7's §e%click% §7clicks in §e%mode% §7mode."),
     MONITORING_OFF("monitoring-off", "§7You are no longer monitoring any player."),
-    ALREADY_MONITORING("already-monitoring", "§cYou are already monitoring §e%player% §cin §e%mode% §cmode."),
+    ALREADY_MONITORING("already-monitoring", "§cYou are already monitoring §e%player%§c's §e%click% §cclicks in §e%pattern% §cmode."),
     NOT_MONITORING("not-monitoring", "§cYou are currently not monitoring any player."),
 
-    MONITOR_BASIC("monitor-basic", "§f%player_name% §8┃ §e%cps%§7/§e%attack_cps%"),
-    MONITOR_HISTORY("monitor-history", "§f%player_name% §8┃ §e%cps%§7/§e%attack_cps% §8┃ §a%pattern%"),
-    MONITOR_STREAK("monitor-streak", "§f%player_name% §8┃ §e%cps%§7/§e%attack_cps% §8┠ §a%pattern%"),
+    MONITOR_BASIC("monitor-basic", "§f%player_name% §8┃ §e%left_cps%§7/§e%attack_cps% §7| §e%right_cps%§7/§e%placement_cps%"),
+    MONITOR_HISTORY("monitor-history", "§f%player_name% §8┃ §e%left_cps%§7/§e%attack_cps% §7| §e%right_cps%§7/§e%placement_cps% §8┃ §a%pattern%"),
+    MONITOR_STREAK("monitor-streak", "§f%player_name% §8┃ §e%left_cps%§7/§e%attack_cps% §7| §e%right_cps%§7/§e%placement_cps% §8┠ §a%pattern%"),
     MONITOR_PLAYER_LEFT("monitor-player-left", "§e%player_name% §cleft the server. Monitoring stopped."),
 
     ADMIN_CURRENT_MONITORS_HEADER("admin-current-monitors-header", "§7Currently §e%count% §7player(s) are monitoring:"),

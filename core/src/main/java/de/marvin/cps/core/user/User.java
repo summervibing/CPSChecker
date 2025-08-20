@@ -1,8 +1,10 @@
 package de.marvin.cps.core.user;
 
-import de.marvin.cps.core.click.pattern.Tick;
+import de.marvin.cps.core.click.ClickSession;
+import de.marvin.cps.core.click.ClickType;
+import de.marvin.cps.core.click.tick.AbstractTick;
+import de.marvin.cps.core.pattern.AbstractPattern;
 import de.marvin.cps.core.check.Violation;
-import de.marvin.cps.core.click.pattern.Pattern;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ public class User {
     private final UUID uniqueId;
     private boolean isOnline = true;
 
-    private Pattern currentPattern;
+    private ClickSession clickSession;
     private final List<Violation> violations;
 
     public User(
@@ -24,7 +26,7 @@ public class User {
     ) {
         this.name = name;
         this.uniqueId = uniqueId;
-        this.currentPattern = new Pattern();
+        this.clickSession = new ClickSession();
         this.violations = new ArrayList<>();
     }
 
@@ -56,37 +58,25 @@ public class User {
     }
 
     /**
-     * Gets the current {@link Pattern} of the user.
+     * Gets the current {@link ClickSession} of the user.
      *
-     * @return Current {@link Pattern} of the user.
+     * @return Current {@link ClickSession} of the user.
      */
-    public Pattern currentPattern() {
-        return this.currentPattern;
+    public ClickSession clickSession() {
+        return this.clickSession;
     }
 
     /**
-     * Gets the clicks per second of the current {@link Pattern}.
-     * This method counts all clicks, including non-attacks.
+     * Gets the clicks per second of the last 20 {@link AbstractTick Ticks}
+     * of the current {@link AbstractPattern Pattern}.
      *
-     * @return Clicks per second of last 20 {@link Tick Ticks}
-     * of the current {@link Pattern}.
+     * @param type {@link ClickType} to get the clicks per second for
+     * @return Clicks per second of the current {@link AbstractPattern Pattern}.
      */
-    public double clicksPerSecond() {
-        return this.clicksPerSecond(false);
-    }
-
-    /**
-     * Gets the clicks per second of the current {@link Pattern}.
-     *
-     * @param onlyAttacks if {@code true}, only counts attack clicks;
-     *                    if {@code false}, counts all clicks.
-     * @return Clicks per second of last 20 {@link Tick Ticks}
-     * of the current {@link Pattern}.
-     */
-    public int clicksPerSecond(
-            final boolean onlyAttacks
+    public double clicksPerSecond(
+            @NotNull final ClickType type
     ) {
-        return this.currentPattern.clicksPerSecond(onlyAttacks);
+        return this.clickSession.clicksPerSecond(type);
     }
 
     /**
@@ -108,25 +98,25 @@ public class User {
             final boolean isOnline
     ) {
         this.isOnline = isOnline;
-        if (!isOnline) this.resetPattern();
+        if (!isOnline) this.resetClickSession();
     }
 
     /**
-     * Updates the current {@link Pattern} of the user.
+     * Updates the current {@link ClickSession} of the {@link User}.
      * <p>
      * <b>Note:</b> This method should be called on every
-     * tick for pattern to work correctly.
+     * tick for patterns to work correctly.
      */
-    public void updatePattern() {
-        if (this.currentPattern == null) return;
-        this.currentPattern.nextTick();
+    public void updateClickSession() {
+        if (this.clickSession == null) return;
+        this.clickSession.nextTick();
     }
 
     /**
-     * Resets the current {@link Pattern} of the user.
+     * Resets the current {@link ClickSession} of the {@link User}.
      */
-    public void resetPattern() {
-        this.currentPattern = new Pattern();
+    public void resetClickSession() {
+        this.clickSession = new ClickSession();
     }
 
     /**
@@ -141,11 +131,11 @@ public class User {
     }
 
     /**
-     * Clears user's violations.
+     * Clears {@link User}'s {@link User#violations}.
      */
     public void resetViolations() {
         this.violations.clear();
-        this.resetPattern();
+        this.resetClickSession();
     }
 
 

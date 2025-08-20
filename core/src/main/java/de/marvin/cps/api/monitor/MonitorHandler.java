@@ -1,10 +1,12 @@
 package de.marvin.cps.api.monitor;
 
 import de.marvin.cps.core.monitor.Monitor;
-import de.marvin.cps.core.monitor.MonitorMode;
+import de.marvin.cps.core.click.ClickType;
+import de.marvin.cps.core.pattern.PatternType;
 import de.marvin.cps.core.monitor.MonitorResult;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.UUID;
@@ -52,15 +54,28 @@ public interface MonitorHandler {
     MonitorResult monitor(@NotNull Player player, @NotNull UUID uniqueId);
 
     /**
-     * Starts monitor for given {@link Player} of
-     * the user with the given {@link UUID}.
+     * Starts monitor for given {@link Player} of the
+     * {@link User} with the given {@link UUID}.
      *
      * @param player {@link Player} to start monitor for
      * @param uniqueId {@link UUID} of the user to monitor
-     * @param mode {@link MonitorMode} to use for monitoring
+     * @param patternType {@link PatternType} to use for monitoring
      * @return {@link MonitorResult} of the operation.
      */
-    MonitorResult monitor(@NotNull Player player, @NotNull UUID uniqueId, @NotNull MonitorMode mode);
+    MonitorResult monitor(@NotNull Player player, @NotNull UUID uniqueId, @Nullable PatternType patternType);
+
+    /**
+     * Starts monitor for given {@link Player} of the
+     * {@link User} with the given {@link UUID}.
+     *
+     * @param player {@link Player} to start monitor for
+     * @param uniqueId {@link UUID} of the user to monitor
+     * @param patternType {@link PatternType} to use for monitoring
+     * @param clickType {@link ClickType} to use for monitoring
+     * @return {@link MonitorResult} of the operation.
+     */
+    MonitorResult monitor(@NotNull Player player, @NotNull UUID uniqueId, @Nullable PatternType patternType,
+                          @Nullable ClickType clickType);
 
     /**
      * Stops monitor for given {@link Player}.
@@ -71,13 +86,22 @@ public interface MonitorHandler {
     MonitorResult stop(@NotNull Player player);
 
     /**
-     * Switches to {@link Monitor#nextMode()} for
+     * Switches to {@link Monitor#nextClickType()} for
      * the given {@link Player}.
      *
-     * @param player {@link Player} to switch {@link MonitorMode} for
+     * @param player {@link Player} to switch {@link ClickType} for
      * @return {@link MonitorResult} of the operation.
      */
-    MonitorResult nextMode(@NotNull Player player);
+    MonitorResult nextClickType(@NotNull Player player);
+
+    /**
+     * Switches to {@link Monitor#nextPatternType()} for
+     * the given {@link Player}.
+     *
+     * @param player {@link Player} to switch {@link PatternType} for
+     * @return {@link MonitorResult} of the operation.
+     */
+    MonitorResult nextPatternType(@NotNull Player player);
 
     /**
      * Updates the action bar of every currently monitoring player.

@@ -5,6 +5,8 @@ import com.google.inject.Singleton;
 import de.marvin.cps.api.monitor.MonitorHandler;
 import de.marvin.cps.api.protocol.ProtocolAdapter;
 import de.marvin.cps.api.user.UserHandler;
+import de.marvin.cps.core.click.ClickType;
+import de.marvin.cps.core.pattern.PatternType;
 import de.marvin.cps.core.util.SchedulerUtil;
 import de.marvin.cps.core.message.Message;
 import de.marvin.cps.core.message.Messages;
@@ -12,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -85,7 +88,7 @@ public class MonitorHandlerImpl implements MonitorHandler {
             @NotNull final Player player,
             @NotNull final UUID uniqueId
     ) {
-        return this.monitor(player, uniqueId, MonitorMode.BASIC);
+        return this.monitor(player, uniqueId, null);
     }
 
     /**
@@ -93,27 +96,62 @@ public class MonitorHandlerImpl implements MonitorHandler {
      *
      * @param player {@link Player} to start monitor for
      * @param uniqueId {@link UUID} of the user to monitor
-     * @param mode {@link MonitorMode} to use for monitoring
+     * @param patternType {@link PatternType} to use for monitoring
      * @return {@link MonitorResult} of the operation.
      */
     @Override
     public MonitorResult monitor(
             @NotNull final Player player,
             @NotNull final UUID uniqueId,
-            @NotNull final MonitorMode mode
+            @Nullable final PatternType patternType
+    ) {
+        return this.monitor(player, uniqueId, patternType, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param player {@link Player} to start monitor for
+     * @param uniqueId {@link UUID} of the user to monitor
+     * @param patternType {@link PatternType} to use for monitoring
+     * @param clickType {@link ClickType} to use for monitoring
+     * @return {@link MonitorResult} of the operation.
+     */
+    @Override
+    public MonitorResult monitor(
+            @NotNull final Player player,
+            @NotNull final UUID uniqueId,
+            @Nullable final PatternType patternType,
+            @Nullable final ClickType clickType
     ) {
         var user = this.userHandler.user(uniqueId);
         if (user == null) return MonitorResult.USER_NOT_FOUND;
 
         var monitor = this.access(player);
         if (monitor != null && monitor.user().uniqueId().equals(uniqueId)) {
-            if (monitor.mode().equals(mode)) return MonitorResult.ALREADY_MONITORING;
-            monitor.setMode(mode);
-            this.displayModeExplanation(player, monitor);
+            if (patternType == null) return MonitorResult.ALREADY_MONITORING;
+
+            var patternTypeAlreadySet = monitor.patternType().equals(patternType);
+            var clickTypeAlreadySet = monitor.clickType().equals(clickType);
+
+            if (patternTypeAlreadySet && clickType == null
+                    || patternTypeAlreadySet && clickTypeAlreadySet) return MonitorResult.ALREADY_MONITORING;
+
+            if (!clickTypeAlreadySet)
+                monitor.setClickType(clickType == null ? ClickType.LEFT_CLICK : clickType);
+
+            if (!patternTypeAlreadySet) {
+                monitor.setPatternType(patternType);
+                this.displayModeExplanation(player, monitor);
+            }
             return MonitorResult.SUCCESS;
         }
 
-        monitor = new Monitor(user, mode);
+        monitor = new Monitor(
+                user,
+                clickType == null ? ClickType.LEFT_CLICK : clickType,
+                patternType == null ? PatternType.BASIC : patternType
+        );
         this.monitoring.put(player, monitor);
         this.displayModeExplanation(player, monitor);
         return MonitorResult.SUCCESS;
@@ -137,11 +175,34 @@ public class MonitorHandlerImpl implements MonitorHandler {
     /**
      * {@inheritDoc}
      *
-     * @param player {@link Player} to switch {@link MonitorMode} for
+     * @param player {@link Player} to switch {@link ClickType} for
      * @return {@link MonitorResult} of the operation.
      */
     @Override
-    public MonitorResult nextMode(
+    public MonitorResult nextClickType(
+            @NotNull final Player player
+    ) {
+        var monitor = this.access(player);
+        if (monitor == null) return MonitorResult.NOT_MONITORING;
+        if (monitor.isPaused()) return MonitorResult.IS_PAUSED;
+
+        this.switching.computeIfPresent(player.getUniqueId(), (uuid, tasks) -> {
+            tasks.forEach(BukkitTask::cancel);
+            return null;
+        });
+
+        monitor.nextClickType();
+        return MonitorResult.SUCCESS;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param player {@link Player} to switch {@link PatternType} for
+     * @return {@link MonitorResult} of the operation.
+     */
+    @Override
+    public MonitorResult nextPatternType(
             @NotNull final Player player
     ) {
         var monitor = this.access(player);
@@ -152,7 +213,7 @@ public class MonitorHandlerImpl implements MonitorHandler {
             return null;
         });
 
-        monitor.nextMode();
+        monitor.nextPatternType();
         this.displayModeExplanation(player, monitor);
         return MonitorResult.SUCCESS;
     }
@@ -188,17 +249,26 @@ public class MonitorHandlerImpl implements MonitorHandler {
             // Do not send update if the monitor is paused
             if (monitor.isPaused()) continue;
 
-            var pattern = user.currentPattern();
+            var clickSession = user.clickSession();
+
+            var highlightLeftIfRequired = monitor.clickType().isLeftClick() ? "§n" : "";
+            var highlightRightIfRequired = monitor.clickType().isRightClick() ? "§n" : "";
+
             this.protocolAdapter.sendActionBarMessage(
                     player,
                     Messages.formatted(
-                            monitor.mode().format(),
+                            monitor.pattern().format(),
                             Map.of(
                                     "player_name", user.name(),
-                                    "cps", pattern.clicksPerSecond(false),
-                                    "attack_cps", pattern.clicksPerSecond(true),
-                                    "pattern", monitor.mode().equals(MonitorMode.STREAK) ? pattern.streak()
-                                            : pattern.history()
+                                    "left_cps", highlightLeftIfRequired
+                                            + clickSession.clicksPerSecond(ClickType.LEFT_CLICK) + ChatColor.RESET,
+                                    "attack_cps", highlightLeftIfRequired
+                                            + clickSession.clicksPerSecond(ClickType.ATTACK) + ChatColor.RESET,
+                                    "right_cps", highlightRightIfRequired
+                                            + clickSession.clicksPerSecond(ClickType.RIGHT_CLICK) + ChatColor.RESET,
+                                    "placement_cps", highlightRightIfRequired
+                                            + clickSession.clicksPerSecond(ClickType.PLACEMENT) + ChatColor.RESET,
+                                    "pattern", monitor.printPattern()
                             )
                     )
             );
@@ -208,7 +278,7 @@ public class MonitorHandlerImpl implements MonitorHandler {
     // Helper methods
 
     /**
-     * Displays the explanation of the current {@link MonitorMode}
+     * Displays the explanation of the current {@link PatternType}
      * in the action bar of the given {@link Player}.
      *
      * @param player {@link Player} to display the explanation to
@@ -220,49 +290,54 @@ public class MonitorHandlerImpl implements MonitorHandler {
     ) {
         monitor.setPaused(true);
 
-        this.protocolAdapter.sendActionBarMessage(
-                player,
-                selection(monitor.mode())
-        );
+        // Delay by two ticks to ensure the pattern selection
+        // menu is sent after the previous one
+        SchedulerUtil.delayAsync(() -> {
+            this.protocolAdapter.sendActionBarMessage(
+                    player,
+                    selection(monitor.patternType())
+            );
 
-        var tasks = new ArrayList<BukkitTask>();
-        this.switching.put(player.getUniqueId(), tasks);
+            var tasks = new ArrayList<BukkitTask>();
+            this.switching.put(player.getUniqueId(), tasks);
 
-        tasks.add(SchedulerUtil.delayAsync(() -> this.protocolAdapter.sendActionBarMessage(
-                player,
-                Messages.formatted(
-                        monitor.mode().format(),
-                        Map.of(
-                                "player_name", "player",
-                                "cps", "clicks",
-                                "attack_cps", "attacks",
-                                "pattern", monitor.mode().equals(MonitorMode.STREAK)
-                                        ? "§aC = Click§7, §aA = Attack§7, §a§mC§r§a = Invalid click§7; §eStreakCount(§aCCCCCC§e)"
-                                        : "§aC = Click§7, §aA = Attack§7, §a§mC§r§a = Invalid click§7; §eC = 2 c/t§7, §cC = 3+ c/t"
-                        )
-                )
-        ), 20L));
-        tasks.add(SchedulerUtil.delayAsync(() -> {
-            monitor.setPaused(false);
-            this.switching.remove(player.getUniqueId());
-        }, 40L));
+            tasks.add(SchedulerUtil.delayAsync(() -> this.protocolAdapter.sendActionBarMessage(
+                    player,
+                    Messages.formatted(
+                            monitor.pattern().format(),
+                            Map.of(
+                                    "player_name", "player",
+                                    "left_cps", "left_clicks",
+                                    "attack_cps", "attacks",
+                                    "right_cps", "right_clicks",
+                                    "placement_cps", "placements",
+                                    "pattern", monitor.pattern().explanation()
+                            )
+                    )
+            ), 20L));
+
+            tasks.add(SchedulerUtil.delayAsync(() -> {
+                monitor.setPaused(false);
+                this.switching.remove(player.getUniqueId());
+            }, 40L));
+        }, 2L);
     }
 
     /**
-     * Gets a formatted selection of all {@link MonitorMode MonitorModes}.
+     * Gets a formatted selection of all {@link PatternType MonitorModes}.
      *
-     * @param selected {@link MonitorMode} that is currently selected
-     * @return Formatted selection of all {@link MonitorMode MonitorModes}.
+     * @param selected {@link PatternType} that is currently selected
+     * @return Formatted selection of all {@link PatternType MonitorModes}.
      */
     private String selection(
-            @NotNull final MonitorMode selected
+            @NotNull final PatternType selected
     ) {
         var builder = new StringBuilder();
-        for (var mode : MonitorMode.values()) {
+        for (var mode : PatternType.values()) {
             builder.append(mode.equals(selected)
                     ? "" + ChatColor.RED + ChatColor.UNDERLINE
                     : ChatColor.GRAY).append(mode.name());
-            if (mode != MonitorMode.values()[MonitorMode.values().length - 1])
+            if (mode != PatternType.values()[PatternType.values().length - 1])
                 builder.append(ChatColor.RESET)
                         .append(ChatColor.DARK_GRAY)
                         .append(" ┃ ")

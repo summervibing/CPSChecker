@@ -2,7 +2,8 @@ package de.marvin.cps.core;
 
 import de.marvin.cps.api.click.ClickHandler;
 import de.marvin.cps.api.monitor.MonitorHandler;
-import de.marvin.cps.core.click.pattern.Pattern;
+import de.marvin.cps.core.click.ClickSession;
+import de.marvin.cps.core.pattern.PatternType;
 import de.marvin.cps.core.config.SettingConfig;
 import de.marvin.cps.core.message.Messages;
 import de.marvin.cps.core.monitor.Monitor;
@@ -59,7 +60,7 @@ public final class CPSChecker {
 
         // Loads configured values from configuration.yml
         this.settingConfig = new SettingConfig(plugin);
-        Pattern.configure(
+        ClickSession.configure(
                 this.settingConfig.patternSize(),
                 this.settingConfig.patternDisplaySize()
         );
@@ -70,7 +71,7 @@ public final class CPSChecker {
 
     /**
      * Asynchronous repeating {@link BukkitTask} to update
-     * {@link Monitor Monitors} and {@link Pattern Patterns}
+     * {@link Monitor Monitors} and {@link PatternType Patterns}
      * on every server tick.
      */
     private void updateTask() {

@@ -23,6 +23,16 @@ public enum MonitorResult {
     /**
      * Indicates that the user to be monitored was not found.
      */
-    USER_NOT_FOUND
+    USER_NOT_FOUND,
+
+    /**
+     * Indicates that the monitor currently is paused.
+     */
+    IS_PAUSED,
+
+    /**
+     * Usually unreachable error state.
+     */
+    UNKNOWN_ERROR;
 
 }
