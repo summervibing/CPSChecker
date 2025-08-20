@@ -247,7 +247,8 @@ public class MaterialUtil {
      * Checks if the given {@link Material} can be broken instantly.
      *
      * @param material {@link Material} to check
-     * @return {@code true} if the material can be broken instantly, {@code false} otherwise.
+     * @return {@code true} if the material can be broken instantly,
+     *         {@code false} otherwise.
      */
     public static boolean isInstantBreakable(
             @NotNull final Material material

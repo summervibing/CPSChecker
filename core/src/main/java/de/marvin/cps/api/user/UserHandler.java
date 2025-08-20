@@ -24,7 +24,7 @@ public interface UserHandler {
      * Retrieves all registered {@link User Users}.
      *
      * @param online if {@code true}, only returns {@link User Users}
-     *               with {@link User#isOnline()} status as {@code true}.
+     *               with {@link User#isOnline()} status as {@code true}
      * @return {@link Collection} of all registered {@link User Users}.
      */
     Collection<User> users(boolean online);

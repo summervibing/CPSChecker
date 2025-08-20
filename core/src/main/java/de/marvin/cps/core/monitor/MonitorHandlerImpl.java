@@ -56,7 +56,8 @@ public class MonitorHandlerImpl implements MonitorHandler {
      * {@inheritDoc}
      *
      * @param player {@link Player} to check monitoring status for
-     * @return {@code true} if the player is monitoring, otherwise {@code false}.
+     * @return {@code true} if the player is monitoring,
+     *         {@code false} otherwise.
      */
     @Override
     public boolean isMonitoring(

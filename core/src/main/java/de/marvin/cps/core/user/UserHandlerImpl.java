@@ -29,7 +29,8 @@ public class UserHandlerImpl implements UserHandler {
      * {@inheritDoc}
      *
      * @param online if {@code true}, only returns {@link User Users}
-     *               with {@link User#isOnline()} status as {@code true}.
+     *               with {@link User#isOnline()} status as {@code true},
+     *               otherwise returns all registered {@link User Users}
      * @return {@link Collection} of all registered {@link User Users}.
      */
     @Override

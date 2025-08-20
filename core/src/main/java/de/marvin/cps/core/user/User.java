@@ -11,6 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Represents a {@link User} object.
+ * <p>
+ * Objects of the class hold user-specific data such as
+ * the {@link User#name username}, their {@link UUID}, the
+ * {@link ClickSession} and {@link Violation Violations}.
+ * They also provide methods to manage this data.
+ */
 public class User {
 
     private final String name;
@@ -51,7 +59,8 @@ public class User {
     /**
      * Checks if the user is currently online.
      *
-     * @return {@code true} if the user is online, {@code false} otherwise.
+     * @return {@code true} if the user is online,
+     *         {@code false} otherwise.
      */
     public boolean isOnline() {
         return this.isOnline;
@@ -80,8 +89,8 @@ public class User {
     }
 
     /**
-     * Gets the list of {@link Violation Violations}
-     * the user received.
+     * Gets the list of {@link Violation Violations} the {@link User}
+     * received.
      *
      * @return List of {@link Violation Violations}.
      */
@@ -90,9 +99,10 @@ public class User {
     }
 
     /**
-     * Sets the {@link User#isOnline} status of the user.
+     * Sets the {@link User#isOnline} status of the {@link User}.
      *
-     * @param isOnline {@code true} if the user is online, {@code false} otherwise.
+     * @param isOnline {@code true} if the {@link User} is online,
+     *                 {@code false} otherwise
      */
     public void setOnline(
             final boolean isOnline

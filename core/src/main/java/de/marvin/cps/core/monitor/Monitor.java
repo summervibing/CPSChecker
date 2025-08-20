@@ -91,9 +91,10 @@ public class Monitor {
     }
 
     /**
-     * Checks if the monitor is paused.
+     * Checks if the monitor is {@link Monitor#paused}.
      *
-     * @return {@code true} if the monitor is paused, otherwise {@code false}.
+     * @return {@code true} if the monitor is paused,
+     *         {@code false} otherwise.
      */
     public boolean isPaused() {
         return this.paused;
@@ -151,7 +152,8 @@ public class Monitor {
     /**
      * Sets the paused state of the monitor.
      *
-     * @param paused {@code true} to pause the monitor, otherwise {@code false}.
+     * @param paused {@code true} to pause the monitor,
+     *               {@code false} otherwise.
      */
     public void setPaused(
             final boolean paused

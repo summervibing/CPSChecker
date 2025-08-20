@@ -4,6 +4,7 @@ import de.marvin.cps.core.monitor.Monitor;
 import de.marvin.cps.core.click.ClickType;
 import de.marvin.cps.core.pattern.PatternType;
 import de.marvin.cps.core.monitor.MonitorResult;
+import de.marvin.cps.core.user.User;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +31,8 @@ public interface MonitorHandler {
      * currently monitoring any user.
      *
      * @param player {@link Player} to check monitoring status for
-     * @return {@code true} if the player is monitoring, otherwise {@code false}.
+     * @return {@code true} if the player is monitoring,
+     *         {@code false} otherwise.
      */
     boolean isMonitoring(@NotNull Player player);
 
@@ -44,8 +46,8 @@ public interface MonitorHandler {
     Map<Player, Monitor> monitors();
 
     /**
-     * Starts monitor for given {@link Player} of
-     * the user with the given {@link UUID}.
+     * Starts monitor for given {@link Player} of the
+     * {@link User} with the given {@link UUID}.
      *
      * @param player {@link Player} to start monitor for
      * @param uniqueId {@link UUID} of the user to monitor

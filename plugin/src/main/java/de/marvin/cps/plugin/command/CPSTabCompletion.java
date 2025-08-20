@@ -74,7 +74,7 @@ public class CPSTabCompletion implements TabCompleter {
      *
      * @param input Input to check
      * @return {@code true} if the input is a valid {@link UUID},
-     * {@code false} otherwise.
+     *         {@code false} otherwise.
      */
     private boolean isUniqueId(
             @NotNull final String input
