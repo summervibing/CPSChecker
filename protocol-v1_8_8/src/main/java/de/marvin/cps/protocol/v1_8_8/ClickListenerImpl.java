@@ -29,7 +29,6 @@ public class ClickListenerImpl implements ClickListener {
     private final ClickHandler clickHandler;
 
     private final Set<UUID> isDigging = new HashSet<>();
-    private final Set<UUID> lastClickInvalid = new HashSet<>();
 
     @Inject
     public ClickListenerImpl(
@@ -68,7 +67,10 @@ public class ClickListenerImpl implements ClickListener {
                 var block = player.getWorld().getBlockAt(position.getX(), position.getY(), position.getZ());
                 // Ignore blocks that can be broken instantly
                 if (MaterialUtil.isInstantBreakable(block.getType())) {
-                    this.lastClickInvalid.add(uniqueId);
+                    this.clickHandler.registerClick(
+                            uniqueId,
+                            ClickType.INVALID_LEFT_CLICK
+                    );
                     return;
                 }
                 this.isDigging.add(uniqueId);
@@ -97,12 +99,11 @@ public class ClickListenerImpl implements ClickListener {
                 uniqueId,
                 ClickType.LEFT_CLICK
         );
-        if (this.lastClickInvalid.contains(uniqueId) || this.isDigging.contains(uniqueId))
+        if (this.isDigging.contains(uniqueId))
             this.clickHandler.registerClick(
                     uniqueId,
                     ClickType.INVALID_LEFT_CLICK
             );
-        this.lastClickInvalid.remove(uniqueId);
     }
 
     /**
