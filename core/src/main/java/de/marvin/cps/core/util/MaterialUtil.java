@@ -223,8 +223,6 @@ public class MaterialUtil {
                 new MaterialData("REDSTONE_WALL_TORCH", MinecraftVersion.v1_13, null)
         );
 
-        add.resolve(new MaterialData("LEVER", null, null));
-
         add.resolve(new MaterialData("TRIPWIRE_HOOK", null, null));
         add.resolve(new MaterialData("TRIPWIRE", null, null));
 
