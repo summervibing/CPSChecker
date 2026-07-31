@@ -101,6 +101,7 @@ public class ProtocolProviderImpl implements ProtocolProvider {
     ) {
         return switch (version) {
             case v1_8_8 -> new de.marvin.cps.protocol.v1_8_8.ProtocolModule();
+            case v1_9 -> new de.marvin.cps.protocol.v1_9.ProtocolModule();
             default -> null;
         };
     }

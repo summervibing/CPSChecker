@@ -18,3 +18,4 @@ include(":core")
 include(":plugin")
 
 include(":protocol-v1_8_8")
+include("protocol-v1_9")

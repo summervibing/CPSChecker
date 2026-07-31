@@ -7,6 +7,7 @@ dependencies {
 
     // Protocol dependencies
     compileOnly(project(":protocol-v1_8_8"))
+    compileOnly(project(":protocol-v1_9"))
 }
 
 val pluginName = project.property("pluginName").toString()
