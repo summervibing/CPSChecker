@@ -1,4 +1,4 @@
-package de.marvin.cps.protocol.v1_8_8;
+package de.marvin.cps.protocol.v1_8_8.packetlistener;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -8,11 +8,12 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import de.marvin.cps.api.click.ClickHandler;
-import de.marvin.cps.api.protocol.ClickListener;
+import de.marvin.cps.api.protocol.packetlistener.ClickListener;
 import de.marvin.cps.core.CPSChecker;
 import de.marvin.cps.core.click.ClickType;
 import de.marvin.cps.core.util.MaterialUtil;
 import de.marvin.cps.core.util.SchedulerUtil;
+import de.marvin.cps.protocol.v1_8_8.VMaterialUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -147,7 +148,7 @@ public class ClickListenerImpl implements ClickListener {
         var block = isValidPosition
                 && pos.getY() >= 0 && pos.getY() < world.getMaxHeight()
                 && world.isChunkLoaded(pos.getX() >> 4, pos.getZ() >> 4)
-                ? player.getWorld().getBlockAt(pos.getX(), pos.getY(), pos.getZ()) // not thread safe
+                ? world.getBlockAt(pos.getX(), pos.getY(), pos.getZ()) // not thread safe
                 : null;
 
         // Clicked block is an interactable block
@@ -239,6 +240,15 @@ public class ClickListenerImpl implements ClickListener {
     @Override
     public Plugin getPlugin() {
         return CPSChecker.instance().javaPlugin();
+    }
+
+    /**
+     * Gets the {@link Set} of {@link UUID UUIDs} that are currently digging.
+     *
+     * @return {@link Set} of {@link UUID UUIDs} that are currently digging.
+     */
+    public Set<UUID> isDigging() {
+        return this.isDigging;
     }
 
 }

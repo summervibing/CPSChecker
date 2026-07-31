@@ -1,4 +1,4 @@
-package de.marvin.cps.protocol.v1_8_8;
+package de.marvin.cps.protocol.v1_8_8.packetlistener;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -9,7 +9,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import de.marvin.cps.core.CPSChecker;
 import de.marvin.cps.api.monitor.MonitorHandler;
-import de.marvin.cps.api.protocol.MonitorListener;
+import de.marvin.cps.api.protocol.packetlistener.MonitorListener;
 import de.marvin.cps.core.pattern.PatternType;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;

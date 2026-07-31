@@ -23,6 +23,7 @@ public class VMaterialUtil {
             Material.CAKE,
             Material.BED,
             Material.DIODE,
+            Material.REDSTONE_COMPARATOR,
             Material.BREWING_STAND_ITEM,
             Material.CAULDRON_ITEM,
             Material.FLOWER_POT_ITEM,
@@ -47,7 +48,12 @@ public class VMaterialUtil {
             Material.STONE_HOE,
             Material.IRON_HOE,
             Material.GOLD_HOE,
-            Material.DIAMOND_HOE
+            Material.DIAMOND_HOE,
+            Material.WOOD_SPADE,
+            Material.STONE_SPADE,
+            Material.IRON_SPADE,
+            Material.GOLD_SPADE,
+            Material.DIAMOND_SPADE
     );
 
     private static final EnumSet<Material> INTERACTABLE_MATERIALS = EnumSet.of(

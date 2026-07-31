@@ -1,4 +1,4 @@
-package de.marvin.cps.api.protocol;
+package de.marvin.cps.api.protocol.packetlistener;
 
 import com.comphenix.protocol.events.PacketListener;
 import de.marvin.cps.api.click.ClickHandler;

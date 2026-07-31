@@ -1,9 +1,10 @@
 package de.marvin.cps.plugin;
 
 import com.comphenix.protocol.ProtocolLibrary;
+import de.marvin.cps.api.protocol.BukkitListenerRegistry;
 import de.marvin.cps.core.CPSChecker;
-import de.marvin.cps.api.protocol.ClickListener;
-import de.marvin.cps.api.protocol.MonitorListener;
+import de.marvin.cps.api.protocol.packetlistener.ClickListener;
+import de.marvin.cps.api.protocol.packetlistener.MonitorListener;
 import de.marvin.cps.core.protocol.ProtocolProvider;
 import de.marvin.cps.plugin.command.CPSCommand;
 import de.marvin.cps.plugin.command.CPSTabCompletion;
@@ -12,11 +13,11 @@ import de.marvin.cps.plugin.protocol.ProtocolProviderImpl;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 /**
@@ -48,7 +49,16 @@ public class CPSCheckerPluginLoader extends JavaPlugin {
      * Registers all {@link Listener Listeners}.
      */
     private void registerListeners() {
-        this.registerListener(this.protocolProvider.get(PlayerConnectionListener.class));
+        Consumer<Listener> registry = (listener) -> this.getServer().getPluginManager().registerEvents(
+                listener,
+                this
+        );
+
+        // Main listeners
+        registry.accept(this.protocolProvider.get(PlayerConnectionListener.class));
+
+        // Version-dependent listeners
+        this.protocolProvider.get(BukkitListenerRegistry.class).registerListeners(registry);
 
         // Protocol listeners
         var protocolManager = ProtocolLibrary.getProtocolManager();
@@ -78,20 +88,6 @@ public class CPSCheckerPluginLoader extends JavaPlugin {
     }
 
     // Helper methods
-
-    /**
-     * Registers a listener to the {@link PluginManager}.
-     *
-     * @param listener Listener to register
-     */
-    private void registerListener(
-            @NotNull final Listener listener
-    ) {
-        this.getServer().getPluginManager().registerEvents(
-                listener,
-                this
-        );
-    }
 
     /**
      * Registers a {@link CommandExecutor} and optionally
