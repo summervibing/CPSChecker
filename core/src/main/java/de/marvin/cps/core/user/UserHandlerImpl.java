@@ -5,11 +5,12 @@ import de.marvin.cps.api.user.UserHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 public class UserHandlerImpl implements UserHandler {
 
-    private final Map<UUID, User> users = new HashMap<>();
+    private final Map<UUID, User> users = new ConcurrentHashMap<>();
 
     /**
      * {@inheritDoc}

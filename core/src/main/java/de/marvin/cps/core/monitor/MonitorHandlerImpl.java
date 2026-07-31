@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 public class MonitorHandlerImpl implements MonitorHandler {
@@ -25,9 +26,9 @@ public class MonitorHandlerImpl implements MonitorHandler {
     private final ProtocolAdapter protocolAdapter;
 
     // Holds currently monitoring players and their monitors
-    private final Map<Player, Monitor> monitoring = new HashMap<>();
+    private final Map<Player, Monitor> monitoring = new ConcurrentHashMap<>();
     // Holds players that are switching between monitor modes
-    private final Map<UUID, List<BukkitTask>> switching = new HashMap<>();
+    private final Map<UUID, List<BukkitTask>> switching = new ConcurrentHashMap<>();
 
     @Inject
     public MonitorHandlerImpl(
