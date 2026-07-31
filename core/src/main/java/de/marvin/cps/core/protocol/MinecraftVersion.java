@@ -30,7 +30,9 @@ public enum MinecraftVersion {
     //1.20 and 1.20.1 have the same protocol version. 1.20.3 and 1.20.4 have the same protocol version. 1.20.5 and 1.20.6 have the same protocol version
     v1_20(763), v1_20_1(763), v1_20_2(764), v1_20_3(765), v1_20_4(765), v1_20_5(766), v1_20_6(766),
     //1.21 and 1.21.1 have the same protocol version. 1.21.2 and 1.21.3 have the same protocol version
-    v1_21(767, true), v1_21_1(767), v1_21_2(768), v1_21_3(768), v1_21_4(769), v1_21_5(770),
+    v1_21(767), v1_21_1(767), v1_21_2(768), v1_21_3(768), v1_21_4(769), v1_21_5(770), v_1_21_6(771), v_1_21_7(772), v_1_21_8(772), v_1_21_9(773), v_1_21_10(773), v_1_21_11(774),
+    v26_1_1(775), v26_1_2(775),
+    v_26_2(776),
     //TODO UPDATE Add server version constant
     ERROR(-1, false, true);
 
