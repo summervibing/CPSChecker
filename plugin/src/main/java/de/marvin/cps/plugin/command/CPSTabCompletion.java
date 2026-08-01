@@ -19,7 +19,6 @@ import java.util.stream.Stream;
  * Handles tab completion for the {@link CPSCommand}.
  * Provides completions based on the command context.
  */
-@SuppressWarnings("ResultOfMethodCallIgnored")
 public class CPSTabCompletion implements TabCompleter {
 
     private final JavaPlugin plugin;
@@ -41,11 +40,10 @@ public class CPSTabCompletion implements TabCompleter {
             @NotNull final String label,
             @NotNull final String[] strings
     ) {
-
         // Suggestions for the first argument
         if (strings.length == 1) {
             var completions = new ArrayList<>(List.of("off", "help"));
-            if (sender.hasPermission("cps.use.admin")) completions.addAll(List.of("list", "stop"));
+            if (sender.hasPermission("cps.use.admin")) completions.addAll(List.of("list", "start", "stop"));
             completions.addAll(this.plugin.getServer().getOnlinePlayers().stream().map(Player::getName).toList());
             return completions;
         }
@@ -54,6 +52,8 @@ public class CPSTabCompletion implements TabCompleter {
         if (strings.length == 2) {
             if (strings[0].equalsIgnoreCase("stop") && sender.hasPermission("cps.use.admin"))
                 return this.monitorHandler.monitors().keySet().stream().map(Player::getName).toList();
+            if (strings[0].equalsIgnoreCase("start") && sender.hasPermission("cps.use.admin"))
+                return this.plugin.getServer().getOnlinePlayers().stream().map(Player::getName).toList();
             if ((this.isUniqueId(strings[0]) && this.plugin.getServer().getPlayer(UUID.fromString(strings[0])) != null)
                     || this.plugin.getServer().getPlayer(strings[0]) != null)
                 return Stream.of(PatternType.values()).map(mode -> mode.name().toLowerCase()).toList();
@@ -61,8 +61,22 @@ public class CPSTabCompletion implements TabCompleter {
 
         // Suggestions for the third argument
         if (strings.length == 3) {
+            if (strings[0].equalsIgnoreCase("start") && sender.hasPermission("cps.use.admin"))
+                return this.plugin.getServer().getOnlinePlayers().stream().map(Player::getName).toList();
             if ((this.isUniqueId(strings[0]) && this.plugin.getServer().getPlayer(UUID.fromString(strings[0])) != null)
                     || this.plugin.getServer().getPlayer(strings[0]) != null)
+                return List.of("left", "right");
+        }
+
+        // Suggestions for the fourth argument
+        if (strings.length == 4) {
+            if (strings[0].equalsIgnoreCase("start") && sender.hasPermission("cps.use.admin"))
+                return Stream.of(PatternType.values()).map(mode -> mode.name().toLowerCase()).toList();
+        }
+
+        // Suggestions for the fifth argument
+        if (strings.length == 5) {
+            if (strings[0].equalsIgnoreCase("start") && sender.hasPermission("cps.use.admin"))
                 return List.of("left", "right");
         }
 
@@ -74,7 +88,7 @@ public class CPSTabCompletion implements TabCompleter {
      *
      * @param input Input to check
      * @return {@code true} if the input is a valid {@link UUID},
-     *         {@code false} otherwise.
+     * {@code false} otherwise.
      */
     private boolean isUniqueId(
             @NotNull final String input

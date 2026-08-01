@@ -6,7 +6,18 @@ import org.jetbrains.annotations.NotNull;
 public enum Message {
 
     COMMAND_USAGE("command-usage", "§7Usage: §c/cps <username/uuid/off/help> [<mode>] [<left/right>]"),
-    ADMIN_USAGE("admin-usage", "§7Usage: §c/cps <username/uuid/off/list/stop/help> [<mode>/<username/uuid>] [<left/right>]"),
+    ADMIN_USAGE("admin-usage", """
+            §7§m------------------------------
+            §c§lCPSChecker system help
+            \n§7 §r
+            §c/cps help §8- §7Show click pattern monitor explanation
+            §c/cps <username/uuid> [<mode>] [<left/right>] §8- §7Monitor click pattern
+            §c/cps off §8- §7Stop monitor click pattern
+            §c/cps list §8- §7List active monitors
+            §c/cps start <username/uuid> <username/uuid> [<mode>] [<left/right>] §8- §7Start someone's monitor
+            §c/cps stop <username/uuid> §8- §7Stop someone's monitor
+            §7§m------------------------------
+            """),
     PATTERN_HELP("pattern-help", """
             §7§m------------------------------
             §6§lClick pattern monitor explanation
@@ -46,8 +57,12 @@ public enum Message {
     ADMIN_CURRENT_MONITOR("admin-current-monitor", " §8- §c%player% §7is monitoring §f%monitored%"),
     ADMIN_NO_CURRENT_MONITORS("admin-no-current-monitors", "§cNo players are currently monitoring anyone."),
 
-    ADMIN_STOPPED_MONITOR("admin-stopped-monitor", "§cStopped monitor for §e%player%§c."),
-    ADMIN_NOT_MONITORING("admin-not-monitoring", "§e%player% §cis currently not monitoring."),
+    ADMIN_STARTED_MONITOR("admin-monitoring-player", "§e%controlled% §7is now monitoring §e%player%§7's §e%click% §7clicks in §e%mode% §7mode."),
+    ADMIN_STOPPED_MONITOR("admin-stopped-monitor", "§cStopped monitor for §e%controlled%§c."),
+    ADMIN_ALREADY_MONITORING("admin-already-monitoring", "§e%controlled% §cis already monitoring §e%player%§c's §e%click% §cclicks in §e%pattern% §cmode."),
+    ADMIN_NOT_MONITORING("admin-not-monitoring", "§e%controlled% §cis currently not monitoring."),
+    ADMIN_MONITOR_PLAYER_NOT_FOUND("admin-monitor-player-not-found", "§cThe player to start the monitor for was not found."),
+    ADMIN_MONITORED_PLAYER_NOT_FOUND("admin-monitored-player-not-found", "§cThe player to be monitored could not be found."),
 
     FLAG_CLICK_SPEED_LIMITER("flag-click-speed-limiter", "§e%player% §7failed click speed limiter (§f%cps% §7cps) [§f%latency% §7ms; §f%tps% §7tps]."),
     FLAG_CLICK_PATTERN("flag-click-pattern", "§e%player% §7failed click pattern (§f%pattern%§7) [§f%latency% §7ms; §f%tps% §7tps].");
