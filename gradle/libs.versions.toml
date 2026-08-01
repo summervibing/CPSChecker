@@ -3,14 +3,12 @@
 shadow = "9.0.0-beta17"
 
 # Core spigot
-spigot_1_21_4 = "1.21.4-R0.1-SNAPSHOT"
+spigot_latest = "1.21.4-R0.1-SNAPSHOT"
 
 # Protocol spigots
 spigot_1_8_8 = "1.8.8-R0.1-SNAPSHOT"
 spigot_1_9_0 = "1.9-R0.1-SNAPSHOT"
-spigot_1_18_2 = "1.18.2-R0.1-SNAPSHOT"
-spigot_1_19_4 = "1.19.4-R0.1-SNAPSHOT"
-spigot_1_20_5 = "1.20.5-R0.1-SNAPSHOT"
+spigot_1_17_0 = "1.17-R0.1-SNAPSHOT"
 
 # ProtocolLib
 protocollib = "5.4.0"
@@ -30,15 +28,12 @@ shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 
 [libraries]
 # Core spigot
-spigot_latest = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_21_4" }
+spigot_latest = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_latest" }
 
 # Protocol spigots
 spigot_1_8_8 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_8_8" }
 spigot_1_9_0 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_9_0" }
-spigot_1_13_0 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_13_0" }
-spigot_1_18_2 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_18_2" }
-spigot_1_19_4 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_19_4" }
-spigot_1_20_5 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_20_5" }
+spigot_1_17_0 = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot_1_17_0" }
 
 # ProtocolLib
 protocollib = { group = "net.dmulloy2", name = "ProtocolLib", version.ref = "protocollib" }
