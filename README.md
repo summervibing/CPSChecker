@@ -56,4 +56,4 @@ Unit tests are located under `src/test/java`. Execute them with:
 
 ## License
 
-CPSChecker is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE) file for details.
+CPSChecker is licensed under the GPL-3.0 License. See the [LICENSE](LICENSE) file for details.
