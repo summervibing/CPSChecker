@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 public enum Message {
 
+    ERROR("error", "§cAn error occurred. Please contact an administrator."),
     COMMAND_USAGE("command-usage", "§7Usage: §c/cps <username/uuid/off/help> [<mode>] [<left/right>]"),
     ADMIN_USAGE("admin-usage", """
             §7§m------------------------------
@@ -80,6 +81,7 @@ public enum Message {
 
     /**
      * Config path to the specific message that is stored in {@link MessageConfig}.
+     *
      * @return Configuration path of specific message.
      */
     public String path() {
@@ -88,6 +90,7 @@ public enum Message {
 
     /**
      * Default message that is used if the message is not set in {@link MessageConfig}.
+     *
      * @return Default message of specific message.
      */
     public String defaultMessage() {

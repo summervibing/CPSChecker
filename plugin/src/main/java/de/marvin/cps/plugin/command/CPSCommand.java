@@ -1,47 +1,50 @@
 package de.marvin.cps.plugin.command;
 
 import com.google.inject.Inject;
-import de.marvin.cps.api.monitor.MonitorHandler;
-import de.marvin.cps.core.click.ClickSession;
 import de.marvin.cps.core.click.ClickType;
 import de.marvin.cps.core.message.Message;
 import de.marvin.cps.core.message.Messages;
-import de.marvin.cps.core.monitor.MonitorResult;
 import de.marvin.cps.core.pattern.PatternType;
+import de.marvin.cps.core.util.UniqueIdUtil;
+import de.marvin.cps.permission.Permission;
+import de.marvin.cps.plugin.command.subcommands.CPSSubCommand;
+import de.marvin.cps.plugin.command.subcommands.StartSubCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
- * Handles the main command of the plugin, allowing players
- * to monitor other players' cps and click patterns,
- * stop monitors, list active monitors and display the
- * pattern explanation.
+ * Handles the main command of the plugin, allowing players to monitor other players' cps and click patterns,
+ * stop monitors, list active monitors and display the pattern explanation.
  */
-public class CPSCommand implements CommandExecutor {
+public class CPSCommand implements CommandExecutor, TabCompleter {
 
-    private final MonitorHandler monitorHandler;
+    private final JavaPlugin plugin;
+    private final Map<String, CPSSubCommand> subCommands;
 
     @Inject
-    public CPSCommand(MonitorHandler monitorHandler) {
-        this.monitorHandler = monitorHandler;
+    public CPSCommand(
+            @NotNull JavaPlugin plugin,
+            @NotNull Map<String, CPSSubCommand> subCommands
+    ) {
+        this.plugin = plugin;
+        this.subCommands = subCommands;
     }
 
     /**
-     * Main command of the plugin. Handles monitoring players,
-     * stopping monitors, listing currently active monitors,
-     * and displaying the pattern explanation.
+     * Main command of the plugin. Handles monitoring players, stopping monitors, listing currently active
+     * monitors, and displaying the pattern explanation.
      * <p>
-     * Requires the <code>cps.use</code> permission to execute
-     * the command, and the <code>cps.use.admin</code> permission
-     * to access administrative features such as listing current
-     * monitors as well as starting and stopping others' monitors.
+     * Requires the <code>cps.use</code> permission to execute the command, and the <code>cps.use.admin</code>
+     * permission to access administrative features such as listing current monitors as well as starting and
+     * stopping others' monitors.
      * </p>
      * <p>
      * Command usage:
@@ -67,147 +70,106 @@ public class CPSCommand implements CommandExecutor {
      * @param sender  Source of the command
      * @param command Command which was executed
      * @param label   Alias of the command which was used
-     * @param strings Passed command arguments
-     * @return {@code true} if the command was executed successfully,
-     * {@code false} if an error or usage message is being sent to
-     * the player.
+     * @param args    Passed command arguments
+     * @return {@code true} if the command was executed successfully, {@code false} if an error occurred or
+     * usage message is being sent to the player.
      */
     @Override
     public boolean onCommand(
             @NotNull final CommandSender sender,
             @NotNull final Command command,
             @NotNull final String label,
-            @NotNull final String[] strings
+            @NotNull final String[] args
     ) {
         if (!(sender instanceof final Player player)) {
             sender.sendMessage("This command can only be executed by a player.");
             return false;
         }
 
-        if (strings.length == 0) {
-            sendUsageMessage(player);
+        if (args.length == 0) {
+            Messages.sendUsageMessage(player);
             return false;
         }
 
-        if (strings[0].equalsIgnoreCase("help")) {
-            var displaySize = ClickSession.displaySize();
-            Messages.send(player, Message.PATTERN_HELP, Map.of(
-                    "seconds", displaySize / 20,
-                    "ticks", displaySize
-            ));
-            return true;
-        }
+        var subCommand = this.subCommands.get(args[0].toLowerCase());
+        if (subCommand == null) {
+            var possibleTargetPlayer = UniqueIdUtil.isUniqueId(args[0])
+                    ? player.getServer().getPlayer(UUID.fromString(args[0]))
+                    : player.getServer().getPlayer(args[0]);
 
-        if (strings[0].equalsIgnoreCase("list") && player.hasPermission("cps.use.admin")) {
-            var monitors = this.monitorHandler.monitors();
-            if (monitors.isEmpty()) {
-                Messages.send(player, Message.ADMIN_NO_CURRENT_MONITORS);
-                return false;
-            }
-
-            Messages.send(player, Message.ADMIN_CURRENT_MONITORS_HEADER, Map.of("count", monitors.size()));
-            monitors.forEach((p, monitor) -> Messages.send(player, Message.ADMIN_CURRENT_MONITOR,
-                    Map.of("player", p.getName(), "monitored", monitor.user().name())
-            ));
-            return true;
-        }
-
-        if (strings[0].equalsIgnoreCase("start") && player.hasPermission("cps.use.admin")) {
-            if (strings.length < 3) {
-                sendUsageMessage(player);
-                return false;
-            }
-
-            var controlledPlayer = isUniqueId(strings[1])
-                    ? player.getServer().getPlayer(UUID.fromString(strings[1]))
-                    : player.getServer().getPlayer(strings[1]);
-            if (controlledPlayer == null) {
-                Messages.send(player, Message.ADMIN_MONITOR_PLAYER_NOT_FOUND);
-                return false;
-            }
-
-            var targetPlayer = isUniqueId(strings[2])
-                    ? player.getServer().getPlayer(UUID.fromString(strings[2]))
-                    : player.getServer().getPlayer(strings[2]);
-            if (targetPlayer == null) {
-                Messages.send(player, Message.ADMIN_MONITORED_PLAYER_NOT_FOUND);
+            if (possibleTargetPlayer == null) {
+                Messages.sendUsageMessage(player);
                 return false;
             }
 
             return monitor(
                     player,
-                    controlledPlayer,
-                    targetPlayer,
-                    strings.length > 3 ? strings[3] : null,
-                    strings.length > 4 ? strings[4] : null
+                    possibleTargetPlayer,
+                    args.length > 1 ? args[1] : null,
+                    args.length > 2 ? args[2] : null
             );
         }
 
-        if (strings[0].equalsIgnoreCase("stop") && player.hasPermission("cps.use.admin")) {
-            if (strings.length < 2) {
-                sendUsageMessage(player);
-                return false;
-            }
-
-            var controlledPlayer = isUniqueId(strings[1])
-                    ? player.getServer().getPlayer(UUID.fromString(strings[1]))
-                    : player.getServer().getPlayer(strings[1]);
-            if (controlledPlayer == null) {
-                Messages.send(player, Message.PLAYER_NOT_FOUND);
-                return false;
-            }
-
-            var result = this.monitorHandler.stop(controlledPlayer);
-            if (result == MonitorResult.NOT_MONITORING) {
-                Messages.send(player, Message.ADMIN_NOT_MONITORING,
-                        Map.of("controlled", controlledPlayer.getName())
-                );
-                return false;
-            }
-
-            Messages.send(player, Message.ADMIN_STOPPED_MONITOR,
-                    Map.of("controlled", controlledPlayer.getName())
-            );
-            return true;
-        }
-
-        if (strings[0].equalsIgnoreCase("off")) {
-            var result = this.monitorHandler.stop(player);
-            if (result == MonitorResult.NOT_MONITORING) {
-                Messages.send(player, Message.NOT_MONITORING);
-                return false;
-            }
-            Messages.send(player, Message.MONITORING_OFF);
-            return true;
-        }
-
-        var targetPlayer = isUniqueId(strings[0])
-                ? player.getServer().getPlayer(UUID.fromString(strings[0]))
-                : player.getServer().getPlayer(strings[0]);
-        if (targetPlayer == null) {
-            Messages.send(player, Message.PLAYER_NOT_FOUND);
+        var permission = subCommand.permission();
+        if (permission != null && !player.hasPermission(permission)) {
+            Messages.sendUsageMessage(player);
             return false;
         }
 
-        return monitor(
+        return subCommand.onCommand(
                 player,
-                targetPlayer,
-                strings.length > 1 ? strings[1] : null,
-                strings.length > 2 ? strings[2] : null
+                Arrays.copyOfRange(args, 1, args.length)
         );
     }
 
     /**
-     * Starts the monitor for the executing {@link Player} which
-     * then is monitoring the target {@link Player} with the
-     * provided {@link PatternType} and {@link ClickType}.
+     * Handles tab completion for the command.
+     *
+     * @param sender  The {@link CommandSender} of the command
+     * @param command The {@link Command} object representing the command
+     * @param label   The label of the command
+     * @param args    The arguments passed to the command
+     * @return A {@link List} of possible completions for the command
+     */
+    @Override
+    public @Nullable List<String> onTabComplete(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            @NotNull String[] args
+    ) {
+        if (!(sender instanceof Player player)) return List.of();
+
+        if (args.length == 1) {
+            var completions = new ArrayList<>(List.of("off", "help"));
+            if (sender.hasPermission(Permission.ADMIN_COMMAND_USE.toString())) {
+                completions.addAll(List.of("list", "start", "stop"));
+            }
+            completions.addAll(this.plugin.getServer().getOnlinePlayers().stream().map(Player::getName).toList());
+            return completions;
+        }
+
+        var subCommand = this.subCommands.get(args[0].toLowerCase());
+
+        // It is assumed that the player wants to toggle the monitor for themselves if the first argument
+        // does not refer to a sub-command which is why the respective completions are set
+        if (subCommand == null) return monitorCompletions(args.length, false);
+
+        return subCommand.onTabComplete(
+                player,
+                Arrays.copyOfRange(args, 1, args.length)
+        );
+    }
+
+    /**
+     * Starts the monitor for the executing {@link Player} which then is monitoring the target {@link Player}
+     * with the provided {@link PatternType} and {@link ClickType}.
      *
      * @param executingPlayer Executing {@link Player}
      * @param targetPlayer    Monitored {@link Player}
      * @param patternInput    Used {@link PatternType}
      * @param clickInput      Showed {@link ClickType}
-     * @return {@code true} if the monitor was started successfully,
-     * {@code false} otherwise.
+     * @return {@code true} if the monitor was started successfully, {@code false} otherwise
      */
     private boolean monitor(
             @NotNull Player executingPlayer,
@@ -215,128 +177,36 @@ public class CPSCommand implements CommandExecutor {
             @Nullable String patternInput,
             @Nullable String clickInput
     ) {
-        return monitor(executingPlayer, null, targetPlayer, patternInput, clickInput);
-    }
-
-    /**
-     * Starts the monitor for the controlled {@link Player} which
-     * then is monitoring the target {@link Player} with the
-     * provided {@link PatternType} and {@link ClickType}.
-     * <p>
-     * <b>Note:</b> If no controlled {@link Player} is provided the
-     * monitor is started for the executing {@link Player}.
-     *
-     * @param executingPlayer Executing {@link Player}
-     * @param targetPlayer    Monitored {@link Player}
-     * @param patternInput    Used {@link PatternType}
-     * @param clickInput      Showed {@link ClickType}
-     * @return {@code true} if the monitor was started successfully,
-     * {@code false} otherwise.
-     */
-    private boolean monitor(
-            @NotNull Player executingPlayer,
-            @Nullable Player controlledPlayer,
-            @NotNull Player targetPlayer,
-            @Nullable String patternInput,
-            @Nullable String clickInput
-    ) {
-        var monitoringPlayer = controlledPlayer != null ? controlledPlayer : executingPlayer;
-        var monitor = this.monitorHandler.access(monitoringPlayer);
-
-        var patternType = PatternType.BASIC;
-        if (patternInput != null) {
-            patternType = PatternType.fromString(patternInput);
-            if (patternType == null) {
-                sendUsageMessage(executingPlayer);
-                return false;
-            }
-        } else {
-            if (monitor != null) patternType = monitor.patternType();
-        }
-
-        var clickType = ClickType.LEFT_CLICK;
-        if (clickInput != null) {
-            clickType = ClickType.fromString(clickInput);
-            if (clickType == null) {
-                sendUsageMessage(executingPlayer);
-                return false;
-            }
-        } else {
-            if (monitor != null) clickType = monitor.clickType();
-        }
-
-        var result = this.monitorHandler.monitor(
-                monitoringPlayer,
-                targetPlayer.getUniqueId(),
-                patternType,
-                clickType
-        );
-
-        if (result == MonitorResult.USER_NOT_FOUND) {
-            Messages.send(executingPlayer, Message.PLAYER_NOT_FOUND);
+        var startSubCommand = (StartSubCommand) this.subCommands.get("start");
+        if (startSubCommand == null) {
+            Messages.send(executingPlayer, Message.ERROR);
             return false;
         }
 
-        if (result == MonitorResult.ALREADY_MONITORING) {
-            Messages.send(
-                    executingPlayer,
-                    controlledPlayer == null ? Message.ALREADY_MONITORING : Message.ADMIN_ALREADY_MONITORING,
-                    Map.of(
-                            "controlled", monitoringPlayer.getName(),
-                            "player", targetPlayer.getName(),
-                            "pattern", patternType.name().toLowerCase(),
-                            "click", clickType.name().toLowerCase().split("_")[0]
-                    )
-            );
-            return false;
-        }
-
-        Messages.send(
+        return startSubCommand.monitor(
                 executingPlayer,
-                controlledPlayer == null ? Message.MONITORING_PLAYER : Message.ADMIN_STARTED_MONITOR,
-                Map.of(
-                        "controlled", monitoringPlayer.getName(),
-                        "player", targetPlayer.getName(),
-                        "mode", patternType.name().toLowerCase(),
-                        "click", clickType.name().toLowerCase().split("_")[0]
-                )
-        );
-        return true;
-    }
-
-    // Helper methods
-
-    /**
-     * Sends a usage message to the {@link Player} based on
-     * their permissions.
-     *
-     * @param player {@link Player} to send the usage message to
-     */
-    private void sendUsageMessage(
-            @NotNull final Player player
-    ) {
-        Messages.send(player, player.hasPermission("cps.use.admin")
-                ? Message.ADMIN_USAGE
-                : Message.COMMAND_USAGE
+                targetPlayer,
+                patternInput,
+                clickInput
         );
     }
 
     /**
-     * Checks if the given input is a valid {@link UUID}.
+     * Returns a {@link List} of tab completions based on the arguments position.
      *
-     * @param input Input to check
-     * @return {@code true} if the input is a valid {@link UUID},
-     * {@code false} otherwise.
+     * @param argumentPosition Position of the argument
+     * @param adminCommand     {@code true} if the administrative monitor start command is to be executed,
+     *                         {@code false} if the executor wants to toggle the monitor for themselves
+     * @return A {@link List} of tab completions based on the arguments position, or an empty {@link List} if
+     * the {@link StartSubCommand} class is not found
      */
-    private boolean isUniqueId(
-            @NotNull final String input
+    private List<String> monitorCompletions(
+            int argumentPosition,
+            boolean adminCommand
     ) {
-        try {
-            UUID.fromString(input);
-            return true;
-        } catch (IllegalArgumentException ignored) {
-            return false;
-        }
+        var startSubCommand = (StartSubCommand) this.subCommands.get("start");
+        if (startSubCommand == null) return List.of();
+        return startSubCommand.monitorCompletions(argumentPosition, adminCommand);
     }
 
 }

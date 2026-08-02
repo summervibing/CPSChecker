@@ -3,11 +3,12 @@ package de.marvin.cps.plugin.protocol;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import de.marvin.cps.core.CoreModule;
 import de.marvin.cps.api.protocol.ProtocolAdapter;
+import de.marvin.cps.core.CoreModule;
 import de.marvin.cps.core.protocol.MinecraftVersion;
 import de.marvin.cps.core.protocol.ProtocolProvider;
 import de.marvin.cps.core.util.MaterialUtil;
+import de.marvin.cps.plugin.command.CommandModule;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -60,9 +61,10 @@ public class ProtocolProviderImpl implements ProtocolProvider {
         // Load all instant breakable materials for the detected version
         MaterialUtil.load(this.detectedVersion);
 
-        // Create Guice injector with CoreModule and version-dependent ProtocolModule
+        // Create Guice injector with CoreModule, CommandModule and version-dependent ProtocolModule
         this.injector = Guice.createInjector(
                 new CoreModule(this.plugin),
+                new CommandModule(),
                 this.protocolModule(this.implementationVersion)
         );
 

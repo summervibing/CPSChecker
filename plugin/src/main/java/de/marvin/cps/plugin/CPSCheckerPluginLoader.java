@@ -2,12 +2,11 @@ package de.marvin.cps.plugin;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import de.marvin.cps.api.protocol.BukkitListenerRegistry;
-import de.marvin.cps.core.CPSChecker;
 import de.marvin.cps.api.protocol.packetlistener.ClickListener;
 import de.marvin.cps.api.protocol.packetlistener.MonitorListener;
+import de.marvin.cps.core.CPSChecker;
 import de.marvin.cps.core.protocol.ProtocolProvider;
 import de.marvin.cps.plugin.command.CPSCommand;
-import de.marvin.cps.plugin.command.CPSTabCompletion;
 import de.marvin.cps.plugin.listener.PlayerConnectionListener;
 import de.marvin.cps.plugin.protocol.ProtocolProviderImpl;
 import org.bukkit.command.CommandExecutor;
@@ -74,7 +73,7 @@ public class CPSCheckerPluginLoader extends JavaPlugin {
         this.registerCommand(
                 "cps",
                 this.protocolProvider.get(CPSCommand.class),
-                this.protocolProvider.get(CPSTabCompletion.class)
+                this.protocolProvider.get(CPSCommand.class)
         );
     }
 

@@ -1,7 +1,8 @@
 package de.marvin.cps.core.message;
 
-import de.marvin.cps.core.config.MessageConfig;
 import de.marvin.cps.core.CPSChecker;
+import de.marvin.cps.core.config.MessageConfig;
+import de.marvin.cps.permission.Permission;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,7 +35,7 @@ public class Messages {
      * Gets the specified message out of {@link Messages#cached}.
      *
      * @param message {@link Message} to return
-     * @return Specified {@link Message} out of {@link Messages#cached}.
+     * @return Specified {@link Message} out of {@link Messages#cached}
      */
     private static String get(
             @NotNull final Message message
@@ -50,7 +51,7 @@ public class Messages {
      * Gets specified message and returns it formatted.
      *
      * @param message {@link Message} to return
-     * @return Formatted {@link Message}.
+     * @return Formatted {@link Message}
      */
     public static String message(
             @NotNull final Message message
@@ -63,7 +64,7 @@ public class Messages {
      *
      * @param message      {@link Message} to return
      * @param placeholders Placeholders to replace in message
-     * @return Formatted {@link Message}.
+     * @return Formatted {@link Message}
      */
     public static String formatted(
             @NotNull final Message message,
@@ -106,6 +107,21 @@ public class Messages {
     ) {
         if (!player.isOnline()) return;
         player.sendMessage(formatted(message, placeholders));
+    }
+
+    /**
+     * Sends a usage message to the {@link Player} based on
+     * their permissions.
+     *
+     * @param player {@link Player} to send the usage message to
+     */
+    public static void sendUsageMessage(
+            @NotNull final Player player
+    ) {
+        send(player, player.hasPermission(Permission.ADMIN_COMMAND_USE.toString())
+                ? Message.ADMIN_USAGE
+                : Message.COMMAND_USAGE
+        );
     }
 
 }
