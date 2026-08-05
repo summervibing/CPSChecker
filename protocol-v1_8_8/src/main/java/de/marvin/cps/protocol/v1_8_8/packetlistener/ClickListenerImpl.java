@@ -5,6 +5,7 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.ListeningWhitelist;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import de.marvin.cps.api.click.ClickHandler;
@@ -20,7 +21,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -35,7 +35,7 @@ public class ClickListenerImpl implements ClickListener {
     /**
      * Tracks the {@link UUID UUIDs} of players that are currently digging.
      */
-    private final @NotNull Set<UUID> isDigging = new HashSet<>();
+    private final @NotNull Set<UUID> isDigging = Sets.newConcurrentHashSet();
 
     @Inject
     public ClickListenerImpl(
