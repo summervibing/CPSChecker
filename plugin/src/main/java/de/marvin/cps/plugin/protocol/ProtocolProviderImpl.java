@@ -79,7 +79,9 @@ public class ProtocolProviderImpl implements ProtocolProvider {
                 Level.INFO,
                 "Using protocol support %s for detected Minecraft version: %s"
                         .formatted(
-                                this.protocolAdapter.version().releaseName(),
+                                this.protocolAdapter != null
+                                        ? this.protocolAdapter.version().releaseName()
+                                        : "unknown",
                                 this.detectedVersion.releaseName()
                         )
         );
