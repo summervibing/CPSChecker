@@ -84,6 +84,13 @@ public final class CPSChecker {
         var monitorHandler = this.protocolProvider.get(MonitorHandler.class);
         var clickHandler = this.protocolProvider.get(ClickHandler.class);
 
+        if (monitorHandler == null || clickHandler == null) {
+            var missing = monitorHandler == null ? "monitor handler" : "click handler";
+            this.log(Level.SEVERE, "Failed to initialize %s. Disabling plugin...".formatted(missing));
+            this.plugin.getServer().getPluginManager().disablePlugin(this.plugin);
+            return;
+        }
+
         SchedulerUtil.repeatAsync(() -> {
             monitorHandler.update();
             clickHandler.update();
