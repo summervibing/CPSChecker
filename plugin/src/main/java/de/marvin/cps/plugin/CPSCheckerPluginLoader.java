@@ -57,7 +57,8 @@ public class CPSCheckerPluginLoader extends JavaPlugin {
         registry.accept(this.protocolProvider.get(PlayerConnectionListener.class));
 
         // Version-dependent listeners
-        this.protocolProvider.get(BukkitListenerRegistry.class).registerListeners(registry);
+        var bukkitListenerRegistry = this.protocolProvider.get(BukkitListenerRegistry.class);
+        if (bukkitListenerRegistry != null) bukkitListenerRegistry.registerListeners(registry);
 
         // Protocol listeners
         var protocolManager = ProtocolLibrary.getProtocolManager();
@@ -70,11 +71,14 @@ public class CPSCheckerPluginLoader extends JavaPlugin {
      * {@link org.bukkit.command.TabCompleter TabCompleters}.
      */
     private void registerCommands() {
-        this.registerCommand(
-                "cps",
-                this.protocolProvider.get(CPSCommand.class),
-                this.protocolProvider.get(CPSCommand.class)
-        );
+        var cpsCommand = this.protocolProvider.get(CPSCommand.class);
+        if (cpsCommand == null) {
+            this.getLogger().log(Level.SEVERE, "Failed to initialize CPS command. Disabling plugin...");
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        this.registerCommand("cps", cpsCommand, cpsCommand);
     }
 
     /**
