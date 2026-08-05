@@ -24,8 +24,8 @@ import java.util.stream.Stream;
  */
 public class StartSubCommand extends CPSSubCommand {
 
-    private final JavaPlugin plugin;
-    private final MonitorHandler monitorHandler;
+    private final @NotNull JavaPlugin plugin;
+    private final @NotNull MonitorHandler monitorHandler;
 
     @Inject
     public StartSubCommand(

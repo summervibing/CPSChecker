@@ -7,24 +7,36 @@ import de.marvin.cps.api.protocol.packetlistener.ClickListener;
 import de.marvin.cps.protocol.v1_8_8.bukkitlistener.PlayerQuitListener;
 import de.marvin.cps.protocol.v1_8_8.packetlistener.ClickListenerImpl;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
+/**
+ * Registry for Bukkit {@link Listener Listeners}.
+ */
 @Singleton
 public class BukkitListenerRegistryImpl implements BukkitListenerRegistry {
 
-    private final ClickListenerImpl clickListener;
+    private final @NotNull ClickListenerImpl clickListener;
 
     @Inject
     public BukkitListenerRegistryImpl(
-            @NotNull final ClickListener clickListener
+            @NotNull ClickListener clickListener
     ) {
         this.clickListener = (ClickListenerImpl) clickListener;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param registry {@link Consumer} that accepts {@link Listener} instances to register them to the
+     *                 {@link PluginManager}
+     */
     @Override
-    public void registerListeners(@NotNull Consumer<Listener> registry) {
+    public void registerListeners(
+            @NotNull Consumer<Listener> registry
+    ) {
         registry.accept(new PlayerQuitListener(this.clickListener));
     }
 

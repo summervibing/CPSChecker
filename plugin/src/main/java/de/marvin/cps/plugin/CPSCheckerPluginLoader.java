@@ -20,8 +20,8 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 
 /**
- * Entrypoint of the plugin. It initializes the plugin core and
- * version-dependent, registers listeners, and commands.
+ * Entrypoint of the plugin. It initializes the plugin core and version-dependent, registers listeners, and
+ * commands.
  */
 public class CPSCheckerPluginLoader extends JavaPlugin {
 
@@ -66,8 +66,8 @@ public class CPSCheckerPluginLoader extends JavaPlugin {
     }
 
     /**
-     * Registers all {@link org.bukkit.command.Command Commands} and
-     * their {@link org.bukkit.command.TabCompleter TabCompleters}.
+     * Registers all {@link org.bukkit.command.Command Commands} and their
+     * {@link org.bukkit.command.TabCompleter TabCompleters}.
      */
     private void registerCommands() {
         this.registerCommand(
@@ -78,9 +78,9 @@ public class CPSCheckerPluginLoader extends JavaPlugin {
     }
 
     /**
-     * Gets the instance of the {@link CPSCheckerPluginLoader}.
+     * Returns the instance of the {@link CPSCheckerPluginLoader}.
      *
-     * @return Instance of {@link CPSCheckerPluginLoader}.
+     * @return Instance of {@link CPSCheckerPluginLoader}
      */
     public static CPSCheckerPluginLoader loader() {
         return CPSCheckerPluginLoader.loader;
@@ -89,17 +89,16 @@ public class CPSCheckerPluginLoader extends JavaPlugin {
     // Helper methods
 
     /**
-     * Registers a {@link CommandExecutor} and optionally
-     * a {@link TabCompleter} to the given command.
+     * Registers a {@link CommandExecutor} and optionally a {@link TabCompleter} to the given command.
      *
-     * @param commandName          name of the command
-     * @param commandInstance      command executor instance
-     * @param tabCompleterInstance tab completer instance
+     * @param commandName          Name of the command
+     * @param commandInstance      {@link CommandExecutor} instance
+     * @param tabCompleterInstance {@link TabCompleter} instance
      */
     private void registerCommand(
-            @NotNull final String commandName,
-            @NotNull final CommandExecutor commandInstance,
-            @Nullable final TabCompleter tabCompleterInstance
+            @NotNull String commandName,
+            @NotNull CommandExecutor commandInstance,
+            @Nullable TabCompleter tabCompleterInstance
     ) {
         // In case a command somehow is not defined in plugin.yml
         var command = this.getCommand(commandName);

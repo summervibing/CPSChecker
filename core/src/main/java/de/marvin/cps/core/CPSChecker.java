@@ -16,9 +16,18 @@ import org.jetbrains.annotations.NotNull;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The {@link CPSChecker} class is the core of the CPSChecker plugin.
+ */
 public final class CPSChecker {
 
+    /**
+     * Singleton instance of the {@link CPSChecker} core.
+     */
     private final static CPSChecker INSTANCE = new CPSChecker();
+    /**
+     * Flag to indicate whether the core has been initialized.
+     */
     private boolean initialized = false;
 
     private JavaPlugin plugin;
@@ -29,15 +38,13 @@ public final class CPSChecker {
     private SettingConfig settingConfig;
 
     /**
-     * Initializes the {@link CPSChecker} core and
-     * sets up all necessary components.
+     * Initializes the {@link CPSChecker} core and sets up all necessary components.
      *
-     * @param plugin {@link JavaPlugin} instance
-     *               to use for initialization
+     * @param plugin {@link JavaPlugin} instance to use for initialization
      */
     public void setup(
-            @NotNull final JavaPlugin plugin,
-            @NotNull final ProtocolProvider protocolProvider
+            @NotNull JavaPlugin plugin,
+            @NotNull ProtocolProvider protocolProvider
     ) {
         // To prevent multiple initializations
         if (this.initialized) {
@@ -70,9 +77,8 @@ public final class CPSChecker {
     }
 
     /**
-     * Asynchronous repeating {@link BukkitTask} to update
-     * {@link Monitor Monitors} and {@link PatternType Patterns}
-     * on every server tick.
+     * Asynchronous repeating {@link BukkitTask} to update {@link Monitor Monitors} and
+     * {@link PatternType Patterns} on every server tick.
      */
     private void updateTask() {
         var monitorHandler = this.protocolProvider.get(MonitorHandler.class);
@@ -87,18 +93,18 @@ public final class CPSChecker {
     // Getter methods
 
     /**
-     * Gets the instance of the {@link CPSChecker} core.
+     * Returns the instance of the {@link CPSChecker} core.
      *
-     * @return Instance of {@link CPSChecker}.
+     * @return Instance of {@link CPSChecker} core
      */
-    public static CPSChecker instance() {
+    public static @NotNull CPSChecker instance() {
         return CPSChecker.INSTANCE;
     }
 
     /**
-     * Gets the {@link JavaPlugin} instance.
+     * Returns the {@link JavaPlugin} instance.
      *
-     * @return Instance of {@link JavaPlugin}.
+     * @return Instance of {@link JavaPlugin}
      */
     public JavaPlugin javaPlugin() {
         if (this.plugin == null) throw new IllegalStateException("JavaPlugin is not initialized.");
@@ -106,15 +112,14 @@ public final class CPSChecker {
     }
 
     /**
-     * Logs a message to the {@link Logger}
-     * with the specified {@link Level}.
+     * Logs a message to the {@link Logger} with the specified {@link Level}.
      *
      * @param level   {@link Level} of the log message
-     * @param message message to log
+     * @param message Message to log
      */
     public void log(
-            @NotNull final Level level,
-            @NotNull final String message
+            @NotNull Level level,
+            @NotNull String message
     ) {
         if (this.logger == null) throw new IllegalStateException("Core is not set up.");
         this.logger.log(level, message);

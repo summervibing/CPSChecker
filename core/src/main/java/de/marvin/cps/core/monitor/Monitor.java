@@ -7,18 +7,18 @@ import de.marvin.cps.core.user.User;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents a {@link AbstractPattern Pattern} {@link Monitor} of
- * a {@link User} in the given {@link ClickType} and {@link PatternType}.
+ * Represents a {@link AbstractPattern Pattern} {@link Monitor} of a {@link User} in the given
+ * {@link ClickType} and {@link PatternType}.
  */
 public class Monitor {
 
-    private final User user;
-    private ClickType clickType;
-    private PatternType patternType;
+    private final @NotNull User user;
+    private @NotNull ClickType clickType;
+    private @NotNull PatternType patternType;
     private boolean paused = false;
 
     public Monitor(
-            @NotNull final User user
+            @NotNull User user
     ) {
         this.user = user;
         this.clickType = ClickType.LEFT_CLICK;
@@ -26,8 +26,8 @@ public class Monitor {
     }
 
     public Monitor(
-            @NotNull final User user,
-            @NotNull final PatternType patternType
+            @NotNull User user,
+            @NotNull PatternType patternType
     ) {
         this.user = user;
         this.clickType = ClickType.LEFT_CLICK;
@@ -35,9 +35,9 @@ public class Monitor {
     }
 
     public Monitor(
-            @NotNull final User user,
-            @NotNull final ClickType clickType,
-            @NotNull final PatternType patternType
+            @NotNull User user,
+            @NotNull ClickType clickType,
+            @NotNull PatternType patternType
     ) {
         this.user = user;
         this.clickType = clickType;
@@ -47,54 +47,53 @@ public class Monitor {
     /**
      * Gets the {@link User} that is being monitored.
      *
-     * @return Monitored {@link User}.
+     * @return Monitored {@link User}
      */
-    public User user() {
+    public @NotNull User user() {
         return this.user;
     }
 
     /**
      * Gets current {@link ClickType} of the monitor.
      *
-     * @return Current {@link ClickType} of the monitor.
+     * @return Current {@link ClickType} of the monitor
      */
-    public ClickType clickType() {
+    public @NotNull ClickType clickType() {
         return this.clickType;
     }
 
     /**
      * Gets current {@link PatternType} of the monitor.
      *
-     * @return Current {@link PatternType} of the monitor.
+     * @return Current {@link PatternType} of the monitor
      */
-    public PatternType patternType() {
+    public @NotNull PatternType patternType() {
         return this.patternType;
     }
 
     /**
      * Gets current {@link AbstractPattern Pattern} of the monitor.
      *
-     * @return Current {@link PatternType} of the monitor.
+     * @return Current {@link PatternType} of the monitor
      */
-    public AbstractPattern pattern() {
+    public @NotNull AbstractPattern pattern() {
         return this.patternType.pattern();
     }
 
     /**
-     * Prints the {@link AbstractPattern Pattern} of the monitor in the
-     * format of the {@link PatternType} for the given {@link ClickType}.
+     * Prints the {@link AbstractPattern Pattern} of the monitor in the format of the {@link PatternType}
+     * for the given {@link ClickType}.
      *
-     * @return Formatted {@link String} representation of the {@link AbstractPattern}.
+     * @return Formatted {@link String} representation of the {@link AbstractPattern}
      */
-    public String printPattern() {
+    public @NotNull String printPattern() {
         return this.user.clickSession().printPattern(this.clickType, this.patternType);
     }
 
     /**
      * Checks if the monitor is {@link Monitor#paused}.
      *
-     * @return {@code true} if the monitor is paused,
-     *         {@code false} otherwise.
+     * @return {@code true} if the monitor is paused, {@code false} otherwise
      */
     public boolean isPaused() {
         return this.paused;
@@ -106,7 +105,7 @@ public class Monitor {
      * @param clickType {@link ClickType} to set
      */
     public void setClickType(
-            @NotNull final ClickType clickType
+            @NotNull ClickType clickType
     ) {
         if (this.paused) return;
         this.clickType = clickType.isLeftClick()
@@ -116,9 +115,9 @@ public class Monitor {
     /**
      * Switches the {@link ClickType}.
      *
-     * @return {@link ClickType} the {@link Monitor} switched to.
+     * @return {@link ClickType} the {@link Monitor} switched to
      */
-    public ClickType nextClickType() {
+    public @NotNull ClickType nextClickType() {
         if (this.paused) return this.clickType;
         return this.clickType = this.clickType.isLeftClick()
                 ? ClickType.RIGHT_CLICK : ClickType.LEFT_CLICK;
@@ -130,7 +129,7 @@ public class Monitor {
      * @param patternType {@link PatternType} to set
      */
     public void setPatternType(
-            @NotNull final PatternType patternType
+            @NotNull PatternType patternType
     ) {
         this.patternType = patternType;
     }
@@ -138,12 +137,11 @@ public class Monitor {
     /**
      * Switches to next {@link PatternType}.
      * <p>
-     * <b>Note:</b> The order is determined by the
-     * {@link PatternType#ordinal()} of the modes.
+     * <b>Note:</b> The order is determined by the {@link PatternType#ordinal()} of the modes.
      *
-     * @return The {@link PatternType} the {@link Monitor} switched to.
+     * @return The {@link PatternType} the {@link Monitor} switched to
      */
-    public PatternType nextPatternType() {
+    public @NotNull PatternType nextPatternType() {
         var next = PatternType.next(this.patternType);
         this.setPatternType(next);
         return next;
@@ -152,11 +150,10 @@ public class Monitor {
     /**
      * Sets the paused state of the monitor.
      *
-     * @param paused {@code true} to pause the monitor,
-     *               {@code false} otherwise.
+     * @param paused {@code true} to pause the monitor, {@code false} otherwise
      */
     public void setPaused(
-            final boolean paused
+            boolean paused
     ) {
         this.paused = paused;
     }

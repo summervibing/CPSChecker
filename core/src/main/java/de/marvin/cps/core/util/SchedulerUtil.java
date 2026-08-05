@@ -12,10 +12,10 @@ public class SchedulerUtil {
     /**
      * Runs {@link Runnable} in primary thread if necessary.
      *
-     * @param runnable task to be run
+     * @param runnable {@link Runnable Task} to be run
      */
     public static void sync(
-            @NotNull final Runnable runnable
+            @NotNull Runnable runnable
     ) {
         if (!Bukkit.isPrimaryThread()) {
             scheduler().runTask(CPSChecker.instance().javaPlugin(), runnable);
@@ -27,10 +27,10 @@ public class SchedulerUtil {
     /**
      * Runs {@link Runnable} asynchronous.
      *
-     * @param runnable task to be run
+     * @param runnable {@link Runnable Task} to be run
      */
     public static void async(
-            @NotNull final Runnable runnable
+            @NotNull Runnable runnable
     ) {
         scheduler().runTaskAsynchronously(CPSChecker.instance().javaPlugin(), runnable);
     }
@@ -40,15 +40,15 @@ public class SchedulerUtil {
     /**
      * Runs repeating {@link Runnable} on main thread.
      *
-     * @param runnable task to be run repeatedly
-     * @param delay    the ticks to wait before starting the runnable
-     * @param period   the ticks to wait between runs
-     * @return a {@link BukkitTask} that can be used to cancel the task
+     * @param runnable {@link Runnable Task} to be run repeatedly
+     * @param delay    The ticks to wait before starting the runnable
+     * @param period   The ticks to wait between runs
+     * @return A {@link BukkitTask} that can be used to cancel the task
      */
     public static BukkitTask repeatSync(
-            @NotNull final Runnable runnable,
-            final long delay,
-            final long period
+            @NotNull Runnable runnable,
+            long delay,
+            long period
     ) {
         return scheduler().runTaskTimer(CPSChecker.instance().javaPlugin(), runnable, delay, period);
     }
@@ -56,13 +56,13 @@ public class SchedulerUtil {
     /**
      * Runs repeating {@link Runnable} on main thread.
      *
-     * @param runnable task to be run repeatedly
-     * @param period   the ticks to wait between runs
-     * @return a {@link BukkitTask} that can be used to cancel the task
+     * @param runnable {@link Runnable Task} to be run repeatedly
+     * @param period   The ticks to wait between runs
+     * @return A {@link BukkitTask} that can be used to cancel the task
      */
     public static BukkitTask repeatSync(
-            @NotNull final Runnable runnable,
-            final long period
+            @NotNull Runnable runnable,
+            long period
     ) {
         return repeatSync(runnable, 0L, period);
     }
@@ -70,15 +70,15 @@ public class SchedulerUtil {
     /**
      * Runs repeating {@link Runnable} on a new thread.
      *
-     * @param runnable task to be run repeatedly
-     * @param delay    the ticks to wait before starting the runnable
-     * @param period   the ticks to wait between runs
-     * @return a {@link BukkitTask} that can be used to cancel the task
+     * @param runnable {@link Runnable Task} to be run repeatedly
+     * @param delay    The ticks to wait before starting the runnable
+     * @param period   The ticks to wait between runs
+     * @return A {@link BukkitTask} that can be used to cancel the task
      */
     public static BukkitTask repeatAsync(
-            @NotNull final Runnable runnable,
-            final long delay,
-            final long period
+            @NotNull Runnable runnable,
+            long delay,
+            long period
     ) {
         return scheduler().runTaskTimerAsynchronously(CPSChecker.instance().javaPlugin(), runnable, delay, period);
     }
@@ -86,11 +86,14 @@ public class SchedulerUtil {
     /**
      * Runs repeating {@link Runnable} on a new thread.
      *
-     * @param runnable task to be run repeatedly
-     * @param period   the ticks to wait between runs
-     * @return a {@link BukkitTask} that can be used to cancel the task
+     * @param runnable {@link Runnable Task} to be run repeatedly
+     * @param period   The ticks to wait between runs
+     * @return A {@link BukkitTask} that can be used to cancel the task
      */
-    public static BukkitTask repeatAsync(Runnable runnable, long period) {
+    public static BukkitTask repeatAsync(
+            @NotNull Runnable runnable,
+            long period
+    ) {
         return repeatAsync(runnable, 0L, period);
     }
 
@@ -99,13 +102,13 @@ public class SchedulerUtil {
     /**
      * Runs delayed {@link Runnable} on main thread.
      *
-     * @param runnable task to be run delayed
-     * @param delay    the ticks to wait before starting the runnable
-     * @return a {@link BukkitTask} that can be used to cancel the task
+     * @param runnable {@link Runnable Task} to be run delayed
+     * @param delay    The ticks to wait before starting the runnable
+     * @return A {@link BukkitTask} that can be used to cancel the task
      */
     public static BukkitTask delaySync(
-            @NotNull final Runnable runnable,
-            final long delay
+            @NotNull Runnable runnable,
+            long delay
     ) {
         return scheduler().runTaskLater(CPSChecker.instance().javaPlugin(), runnable, delay);
     }
@@ -113,24 +116,24 @@ public class SchedulerUtil {
     /**
      * Runs delayed {@link Runnable} on a new thread.
      *
-     * @param runnable task to be run delayed
-     * @param delay    the ticks to wait before starting the runnable
-     * @return a {@link BukkitTask} that can be used to cancel the task
+     * @param runnable {@link Runnable Task} to be run delayed
+     * @param delay    The ticks to wait before starting the runnable
+     * @return A {@link BukkitTask} that can be used to cancel the task
      */
     public static BukkitTask delayAsync(
-            @NotNull final Runnable runnable,
-            final long delay
+            @NotNull Runnable runnable,
+            long delay
     ) {
         return scheduler().runTaskLater(CPSChecker.instance().javaPlugin(), runnable, delay);
     }
 
     /**
-     * Cancels a scheduled task.
+     * Cancels a scheduled {@link BukkitTask}.
      *
-     * @param task task to cancel
+     * @param task {@link BukkitTask} to cancel
      */
     public static void cancel(
-            @Nullable final BukkitTask task
+            @Nullable BukkitTask task
     ) {
         if (task == null) return;
         task.cancel();
@@ -139,10 +142,10 @@ public class SchedulerUtil {
     /**
      * Cancels a scheduled task by its ID.
      *
-     * @param id id of the task to cancel
+     * @param id ID of the task to cancel
      */
     public static void cancel(
-            final int id
+            int id
     ) {
         if (id < 0) return;
         scheduler().cancelTask(id);
@@ -151,9 +154,10 @@ public class SchedulerUtil {
     // Helper methods
 
     /**
-     * Gets the scheduler for managing scheduled events.
+     * Returns the scheduler for managing scheduled events.
      *
      * @return A scheduling service for this server.
+     * @see Bukkit#getScheduler()
      */
     private static BukkitScheduler scheduler() {
         return Bukkit.getScheduler();

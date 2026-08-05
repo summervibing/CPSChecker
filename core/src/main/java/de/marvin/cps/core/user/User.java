@@ -14,23 +14,21 @@ import java.util.UUID;
 /**
  * Represents a {@link User} object.
  * <p>
- * Objects of the class hold user-specific data such as
- * the {@link User#name username}, their {@link UUID}, the
- * {@link ClickSession} and {@link Violation Violations}.
- * They also provide methods to manage this data.
+ * Objects of the class hold user-specific data such as the {@link User#name username}, their {@link UUID},
+ * the {@link ClickSession} and {@link Violation Violations}. They also provide methods to manage this data.
  */
 public class User {
 
-    private final String name;
-    private final UUID uniqueId;
+    private final @NotNull String name;
+    private final @NotNull UUID uniqueId;
     private boolean isOnline = true;
 
-    private ClickSession clickSession;
-    private final List<Violation> violations;
+    private @NotNull ClickSession clickSession;
+    private final @NotNull List<Violation> violations;
 
     public User(
-            @NotNull final String name,
-            @NotNull final UUID uniqueId
+            @NotNull String name,
+            @NotNull UUID uniqueId
     ) {
         this.name = name;
         this.uniqueId = uniqueId;
@@ -39,58 +37,56 @@ public class User {
     }
 
     /**
-     * Gets the name of the user.
+     * Returns the name of the user.
      *
-     * @return Name of the user.
+     * @return Name of the user
      */
-    public String name() {
+    public @NotNull String name() {
         return this.name;
     }
 
     /**
-     * Gets the {@link UUID} of the user.
+     * Returns the {@link UUID} of the user.
      *
-     * @return {@link UUID} of the user.
+     * @return {@link UUID} of the user
      */
-    public UUID uniqueId() {
+    public @NotNull UUID uniqueId() {
         return this.uniqueId;
     }
 
     /**
      * Checks if the user is currently online.
      *
-     * @return {@code true} if the user is online,
-     *         {@code false} otherwise.
+     * @return {@code true} if the user is online, {@code false} otherwise
      */
     public boolean isOnline() {
         return this.isOnline;
     }
 
     /**
-     * Gets the current {@link ClickSession} of the user.
+     * Returns the current {@link ClickSession} of the user.
      *
-     * @return Current {@link ClickSession} of the user.
+     * @return Current {@link ClickSession} of the user
      */
-    public ClickSession clickSession() {
+    public @NotNull ClickSession clickSession() {
         return this.clickSession;
     }
 
     /**
-     * Gets the clicks per second of the last 20 {@link AbstractTick Ticks}
-     * of the current {@link AbstractPattern Pattern}.
+     * Returns the clicks per second of the last 20 {@link AbstractTick Ticks} of the current
+     * {@link AbstractPattern Pattern}.
      *
      * @param type {@link ClickType} to get the clicks per second for
-     * @return Clicks per second of the current {@link AbstractPattern Pattern}.
+     * @return Clicks per second of the current {@link AbstractPattern Pattern}
      */
     public double clicksPerSecond(
-            @NotNull final ClickType type
+            @NotNull ClickType type
     ) {
         return this.clickSession.clicksPerSecond(type);
     }
 
     /**
-     * Gets the list of {@link Violation Violations} the {@link User}
-     * received.
+     * Returns the list of {@link Violation Violations} the {@link User} received.
      *
      * @return List of {@link Violation Violations}.
      */
@@ -101,11 +97,10 @@ public class User {
     /**
      * Sets the {@link User#isOnline} status of the {@link User}.
      *
-     * @param isOnline {@code true} if the {@link User} is online,
-     *                 {@code false} otherwise
+     * @param isOnline {@code true} if the {@link User} is online, {@code false} otherwise
      */
     public void setOnline(
-            final boolean isOnline
+            boolean isOnline
     ) {
         this.isOnline = isOnline;
         if (!isOnline) this.resetClickSession();
@@ -114,8 +109,7 @@ public class User {
     /**
      * Updates the current {@link ClickSession} of the {@link User}.
      * <p>
-     * <b>Note:</b> This method should be called on every
-     * tick for patterns to work correctly.
+     * <b>Note:</b> This method should be called on every tick for patterns to work correctly.
      */
     public void updateClickSession() {
         if (this.clickSession == null) return;
@@ -135,7 +129,7 @@ public class User {
      * @param violation {@link Violation} to add
      */
     public void addViolation(
-            @NotNull final Violation violation
+            @NotNull Violation violation
     ) {
         this.violations.add(violation);
     }

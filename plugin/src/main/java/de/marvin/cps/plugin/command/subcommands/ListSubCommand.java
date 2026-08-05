@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class ListSubCommand extends CPSSubCommand {
 
-    private final MonitorHandler monitorHandler;
+    private final @NotNull MonitorHandler monitorHandler;
 
     @Inject
     public ListSubCommand(

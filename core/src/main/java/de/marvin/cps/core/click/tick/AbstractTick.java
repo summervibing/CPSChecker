@@ -2,13 +2,12 @@ package de.marvin.cps.core.click.tick;
 
 import de.marvin.cps.core.user.User;
 import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents a single {@link AbstractTick Tick}
- * of {@link User User} activity.
+ * Represents a single {@link AbstractTick Tick} of {@link User User} activity.
  * <p>
- * Each {@link AbstractTick Tick} can have multiple
- * {@link AbstractTick#clicks()}.
+ * Each {@link AbstractTick Tick} can have multiple {@link AbstractTick#clicks()}.
  */
 public abstract class AbstractTick {
 
@@ -20,7 +19,8 @@ public abstract class AbstractTick {
     /**
      * Creates a new {@link AbstractTick Tick} with no clicks.
      */
-    public AbstractTick() { }
+    public AbstractTick() {
+    }
 
     /**
      * Adds a click to this {@link AbstractTick Tick}.
@@ -30,54 +30,51 @@ public abstract class AbstractTick {
     }
 
     /**
-     * Gets the number of clicks in this {@link AbstractTick Tick}.
+     * Returns the number of clicks in this {@link AbstractTick Tick}.
      *
-     * @return Number of clicks in this {@link AbstractTick Tick}.
+     * @return Number of clicks in this {@link AbstractTick Tick}
      */
     public int clicks() {
         return clicks;
     }
 
     /**
-     * Gets the {@link AbstractTick Tick} as a {@link Character}.
+     * Returns the {@link AbstractTick Tick} as a {@link Character}.
      * <ul>
      *      <li>No click: ' '</li>
      *      <li>Tick with click and no attack: 'C'</li>
      *      <li>Tick with click and attack: 'A'</li>
      * </ul>
      *
-     * @return The {@link Character} representation of this {@link AbstractTick Tick}.
+     * @return The {@link Character} representation of this {@link AbstractTick Tick}
      */
     public abstract char toChar();
 
     /**
-     * Gets the {@link AbstractTick Tick} as a formatted
-     * {@link String} of {@link AbstractTick#toChar()}.
+     * Returns the {@link AbstractTick Tick} as a formatted {@link String} of {@link AbstractTick#toChar()}.
      *
-     * @return The colored {@link String} representation of
-     * this {@link AbstractTick Tick}.
+     * @return The colored {@link String} representation of this {@link AbstractTick Tick}
      * @see AbstractTick#color()
      * @see AbstractTick#extraFormatting()
      * @see AbstractTick#toChar()
      */
-    public String toFormattedChar() {
+    public @NotNull String toFormattedChar() {
         var click = this.toChar();
         var color = this.color();
-        return color.toString() + this.extraFormatting() + click;
+        return color + this.extraFormatting() + click;
     }
 
     /**
      * Delivers extra formatting for the {@link AbstractTick Tick}.
      *
-     * @return Extra formatting for this {@link AbstractTick Tick}.
+     * @return Extra formatting for this {@link AbstractTick Tick}
      */
-    protected String extraFormatting() {
+    protected @NotNull String extraFormatting() {
         return "";
     }
 
     /**
-     * Gets the {@link ChatColor} of this {@link AbstractTick Tick}
-     * based on the number of clicks.
+     * Returns the {@link ChatColor} of this {@link AbstractTick Tick} based on the number of clicks.
      * <ul>
      *      <li>No clicks: '§r'</li>
      *      <li>One click per tick: '§a'</li>
@@ -85,9 +82,9 @@ public abstract class AbstractTick {
      *      <li>Three or more clicks per tick: '§c'</li>
      * </ul>
      *
-     * @return The color of this tick.
+     * @return The color of this tick
      */
-    private ChatColor color() {
+    private @NotNull ChatColor color() {
         return switch (this.clicks) {
             case 0 -> ChatColor.RESET;      // no clicks
             case 1 -> ChatColor.GREEN;      // one click per tick
@@ -97,11 +94,9 @@ public abstract class AbstractTick {
     }
 
     /**
-     * Checks if this {@link AbstractTick Tick} is empty, meaning
-     * it has no clicks.
+     * Checks if this {@link AbstractTick Tick} is empty, meaning it has no clicks.
      *
-     * @return {@code true} if this {@link AbstractTick Tick} has no clicks,
-     *         {@code false} otherwise.
+     * @return {@code true} if this {@link AbstractTick Tick} has no clicks, {@code false} otherwise
      */
     public abstract boolean isEmpty();
 

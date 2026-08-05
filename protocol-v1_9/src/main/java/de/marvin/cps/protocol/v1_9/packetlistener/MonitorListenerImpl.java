@@ -13,41 +13,51 @@ import de.marvin.cps.core.CPSChecker;
 import de.marvin.cps.core.pattern.PatternType;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
+/**
+ * Handles monitor switching by listening to item drop packets and preventing other plugins from sending
+ * action bar messages to a player who currently is monitoring another player.
+ */
 @Singleton
 public class MonitorListenerImpl implements MonitorListener {
 
-    private final MonitorHandler monitorHandler;
+    private final @NotNull MonitorHandler monitorHandler;
 
     @Inject
-    public MonitorListenerImpl(MonitorHandler monitorHandler) {
+    public MonitorListenerImpl(
+            @NotNull MonitorHandler monitorHandler
+    ) {
         this.monitorHandler = monitorHandler;
     }
 
     /**
-     * Prevents other action bars from being displayed
-     * while monitoring a player.
+     * Prevents other action bars from being displayed while monitoring a player.
      *
-     * @param event packet that should be sent
+     * @param event {@link PacketEvent} when a packet is sent
      */
     @Override
-    public void onPacketSending(PacketEvent event) {
+    public void onPacketSending(
+            PacketEvent event
+    ) {
         if (!event.getPacketType().equals(PacketType.Play.Server.CHAT)) return;
         if (!this.monitorHandler.isMonitoring(event.getPlayer())) return;
 
         var packetContainer = event.getPacket();
-        if (packetContainer.getBytes().size() <= 0 || packetContainer.getBytes().read(0) != (byte) 2) return;
+        if (packetContainer.getBytes().size() <= 0 || packetContainer.getBytes().read(0) != (byte) 2)
+            return;
         event.setCancelled(true);
     }
 
     /**
-     * Listens to item drop packet to switch the current
-     * {@link PatternType}.
+     * Listens to item drop packet to switch the current {@link PatternType}.
      *
-     * @param event packet that has been received
+     * @param event {@link PacketEvent} when a packet is received
      */
     @Override
-    public void onPacketReceiving(PacketEvent event) {
+    public void onPacketReceiving(
+            PacketEvent event
+    ) {
         if (!event.getPacketType().equals(PacketType.Play.Client.BLOCK_DIG)) return;
         var player = event.getPlayer();
         var digType = event.getPacket().getPlayerDigTypes().read(0);

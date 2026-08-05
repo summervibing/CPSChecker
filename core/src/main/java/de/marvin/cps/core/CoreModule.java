@@ -10,12 +10,16 @@ import de.marvin.cps.core.user.UserHandlerImpl;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Binds main service interfaces to their implementations and provides the {@link JavaPlugin} instance
+ * for injection.
+ */
 public class CoreModule extends AbstractModule {
 
-    private final JavaPlugin plugin;
+    private final @NotNull JavaPlugin plugin;
 
     public CoreModule(
-            @NotNull final JavaPlugin plugin
+            @NotNull JavaPlugin plugin
     ) {
         this.plugin = plugin;
     }

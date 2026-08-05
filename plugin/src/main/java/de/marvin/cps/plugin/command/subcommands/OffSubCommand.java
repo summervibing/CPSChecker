@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class OffSubCommand extends CPSSubCommand {
 
-    private final MonitorHandler monitorHandler;
+    private final @NotNull MonitorHandler monitorHandler;
 
     @Inject
     public OffSubCommand(

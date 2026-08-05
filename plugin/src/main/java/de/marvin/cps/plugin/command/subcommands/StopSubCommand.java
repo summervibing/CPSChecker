@@ -21,7 +21,7 @@ import java.util.UUID;
  */
 public class StopSubCommand extends CPSSubCommand {
 
-    private final MonitorHandler monitorHandler;
+    private final @NotNull MonitorHandler monitorHandler;
 
     @Inject
     public StopSubCommand(

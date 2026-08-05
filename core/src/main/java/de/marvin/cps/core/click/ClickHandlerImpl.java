@@ -3,20 +3,24 @@ package de.marvin.cps.core.click;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import de.marvin.cps.api.click.ClickHandler;
-import de.marvin.cps.core.user.User;
 import de.marvin.cps.api.user.UserHandler;
+import de.marvin.cps.core.user.User;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
+/**
+ * Handles {@link ClickSession ClickSessions}.
+ */
 @Singleton
 public class ClickHandlerImpl implements ClickHandler {
 
-    private final UserHandler userHandler;
+    private final @NotNull UserHandler userHandler;
 
     @Inject
     public ClickHandlerImpl(
-            @NotNull final UserHandler userHandler
+            @NotNull UserHandler userHandler
     ) {
         this.userHandler = userHandler;
     }
@@ -29,10 +33,10 @@ public class ClickHandlerImpl implements ClickHandler {
      */
     @Override
     public void registerClick(
-            @NotNull final UUID uniqueId,
-            @NotNull final ClickType type
+            @NotNull UUID uniqueId,
+            @NotNull ClickType type
     ) {
-        User user = this.user(uniqueId);
+        var user = this.user(uniqueId);
         if (user == null) return;
         user.clickSession().registerClick(type);
     }
@@ -48,13 +52,13 @@ public class ClickHandlerImpl implements ClickHandler {
     // Helper methods
 
     /**
-     * Gets the {@link User} for the given {@link UUID}.
+     * Returns the {@link User} for the given {@link UUID}.
      *
      * @param uniqueId {@link UUID} of the user
-     * @return {@link User} associated with the given {@link UUID}.
+     * @return {@link User} associated with the given {@link UUID} or {@code null} if not found
      */
-    private User user(
-            @NotNull final UUID uniqueId
+    private @Nullable User user(
+            @NotNull UUID uniqueId
     ) {
         return this.userHandler.user(uniqueId);
     }

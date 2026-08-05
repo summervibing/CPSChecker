@@ -1,25 +1,36 @@
 package de.marvin.cps.core.event;
 
-import de.marvin.cps.core.user.User;
 import de.marvin.cps.core.check.Violation;
+import de.marvin.cps.core.user.User;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Event that is triggered when a {@link User} receives
- * a {@link Violation} for their click behavior.
+ * Event that is triggered when a {@link User} receives a {@link Violation} for their click behavior.
  */
 public class CPSViolationEvent extends AbstractEvent {
 
-    private final User user;
-    private final Violation violation;
+    /**
+     * The {@link User} that received the {@link Violation}.
+     */
+    private final @NotNull User user;
+    /**
+     * The {@link Violation} that was triggered.
+     */
+    private final @NotNull Violation violation;
+    /**
+     * The previous violation level of the user before the violation was triggered.
+     */
     private final int previousViolationLevel;
+    /**
+     * The new violation level of the user after the violation was triggered.
+     */
     private final int newViolationLevel;
 
     public CPSViolationEvent(
-            @NotNull final User user,
-            @NotNull final Violation violation,
-            final int previousViolationLevel,
-            final int newViolationLevel
+            @NotNull User user,
+            @NotNull Violation violation,
+            int previousViolationLevel,
+            int newViolationLevel
     ) {
         this.user = user;
         this.violation = violation;
@@ -28,37 +39,36 @@ public class CPSViolationEvent extends AbstractEvent {
     }
 
     /**
-     * Gets {@link User} the {@link Violation} is
-     * addressed to.
+     * Returns {@link User} the {@link Violation} is addressed to.
      *
-     * @return {@link User} of the {@link Violation}.
+     * @return {@link User} of the {@link Violation}
      */
-    public User user() {
+    public @NotNull User user() {
         return this.user;
     }
 
     /**
-     * Gets {@link Violation} that was triggered.
+     * Returns {@link Violation} that was triggered.
      *
-     * @return {@link Violation} that was triggered.
+     * @return {@link Violation} that was triggered
      */
-    public Violation violation() {
+    public @NotNull Violation violation() {
         return this.violation;
     }
 
     /**
-     * Gets the previous violation level of the user.
+     * Returns the previous violation level of the user.
      *
-     * @return Previous violation level of the user.
+     * @return Previous violation level of the user
      */
     public int previousViolationLevel() {
         return this.previousViolationLevel;
     }
 
     /**
-     * Gets the new violation level of the user.
+     * Returns the new violation level of the user.
      *
-     * @return New violation level of the user.
+     * @return New violation level of the user
      */
     public int newViolationLevel() {
         return this.newViolationLevel;

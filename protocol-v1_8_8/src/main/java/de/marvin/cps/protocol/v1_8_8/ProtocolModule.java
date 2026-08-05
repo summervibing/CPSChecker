@@ -8,7 +8,11 @@ import de.marvin.cps.api.protocol.packetlistener.MonitorListener;
 import de.marvin.cps.protocol.v1_8_8.packetlistener.ClickListenerImpl;
 import de.marvin.cps.protocol.v1_8_8.packetlistener.MonitorListenerImpl;
 
+/**
+ * Binds the protocol adapter and packet listeners for the 1.8.8 version of the protocol.
+ */
 public class ProtocolModule extends AbstractModule {
+
     @Override
     protected void configure() {
         bind(ProtocolAdapter.class).to(ProtocolAdapterImpl.class);
@@ -16,4 +20,5 @@ public class ProtocolModule extends AbstractModule {
         bind(MonitorListener.class).to(MonitorListenerImpl.class);
         bind(BukkitListenerRegistry.class).to(BukkitListenerRegistryImpl.class);
     }
+
 }

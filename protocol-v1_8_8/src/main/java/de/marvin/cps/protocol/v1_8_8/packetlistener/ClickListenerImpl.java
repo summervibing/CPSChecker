@@ -24,37 +24,52 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Handles registration of clicks to the {@link ClickHandler}.
+ */
 @Singleton
 public class ClickListenerImpl implements ClickListener {
 
-    private final ClickHandler clickHandler;
+    private final @NotNull ClickHandler clickHandler;
 
-    private final Set<UUID> isDigging = new HashSet<>();
+    /**
+     * Tracks the {@link UUID UUIDs} of players that are currently digging.
+     */
+    private final @NotNull Set<UUID> isDigging = new HashSet<>();
 
     @Inject
     public ClickListenerImpl(
-            @NotNull final ClickHandler clickHandler
+            @NotNull ClickHandler clickHandler
     ) {
         this.clickHandler = clickHandler;
     }
 
+    /**
+     * Filters incoming packets and delegates them accordingly.
+     *
+     * @param event {@link PacketEvent} that has been received
+     */
     @Override
-    public void onPacketReceiving(PacketEvent event) {
+    public void onPacketReceiving(
+            PacketEvent event
+    ) {
         var type = event.getPacketType();
 
-        if (type.equals(PacketType.Play.Client.BLOCK_DIG)) handleInvalidClick(event);
-        if (type.equals(PacketType.Play.Client.ARM_ANIMATION)) handleLeftClick(event);
-        if (type.equals(PacketType.Play.Client.USE_ENTITY)) handleAttack(event);
-        if (type.equals(PacketType.Play.Client.USE_ITEM_ON)) handleRightClick(event);
+        if (type.equals(PacketType.Play.Client.BLOCK_DIG)) this.handleInvalidClick(event);
+        if (type.equals(PacketType.Play.Client.ARM_ANIMATION)) this.handleLeftClick(event);
+        if (type.equals(PacketType.Play.Client.USE_ENTITY)) this.handleAttack(event);
+        if (type.equals(PacketType.Play.Client.USE_ITEM_ON)) this.handleRightClick(event);
     }
 
     /**
      * Tracks a player's current digging state.
      *
-     * @param event packet event of type {@link PacketType.Play.Client#BLOCK_DIG}
-     *              that has been received
+     * @param event {@link PacketEvent} of type {@link PacketType.Play.Client#BLOCK_DIG} that has been
+     *              received
      */
-    private void handleInvalidClick(PacketEvent event) {
+    private void handleInvalidClick(
+            @NotNull PacketEvent event
+    ) {
         var player = event.getPlayer();
         if (player.getGameMode() == GameMode.CREATIVE) return;
 
@@ -91,10 +106,12 @@ public class ClickListenerImpl implements ClickListener {
     /**
      * Handles left click registration.
      *
-     * @param event packet event of type {@link PacketType.Play.Client#ARM_ANIMATION}
-     *              that has been received
+     * @param event {@link PacketEvent} of type {@link PacketType.Play.Client#ARM_ANIMATION} that has been
+     *              received
      */
-    private void handleLeftClick(PacketEvent event) {
+    private void handleLeftClick(
+            @NotNull PacketEvent event
+    ) {
         var uniqueId = event.getPlayer().getUniqueId();
         this.clickHandler.registerClick(
                 uniqueId,
@@ -110,10 +127,12 @@ public class ClickListenerImpl implements ClickListener {
     /**
      * Handles attack registration.
      *
-     * @param event packet event of type {@link PacketType.Play.Client#USE_ENTITY}
-     *              that has been received
+     * @param event {@link PacketEvent} of type {@link PacketType.Play.Client#USE_ENTITY} that has been
+     *              received
      */
-    private void handleAttack(PacketEvent event) {
+    private void handleAttack(
+            @NotNull PacketEvent event
+    ) {
         var action = event.getPacket().getEntityUseActions().read(0);
         if (action != EnumWrappers.EntityUseAction.ATTACK) return;
 
@@ -127,10 +146,12 @@ public class ClickListenerImpl implements ClickListener {
     /**
      * Handles right click registration.
      *
-     * @param event packet event of type {@link PacketType.Play.Client#USE_ITEM_ON}
-     *              that has been received
+     * @param event {@link PacketEvent} of type {@link PacketType.Play.Client#USE_ITEM_ON} that has been
+     *              received
      */
-    private void handleRightClick(PacketEvent event) {
+    private void handleRightClick(
+            @NotNull PacketEvent event
+    ) {
         var player = event.getPlayer();
         var uniqueId = player.getUniqueId();
         var packet = event.getPacket();
@@ -216,8 +237,10 @@ public class ClickListenerImpl implements ClickListener {
     }
 
     @Override
-    public void onPacketSending(PacketEvent event) {
-        // no implementation needed
+    public void onPacketSending(
+            @NotNull PacketEvent event
+    ) {
+        // No implementation needed
     }
 
     @Override
@@ -243,11 +266,11 @@ public class ClickListenerImpl implements ClickListener {
     }
 
     /**
-     * Gets the {@link Set} of {@link UUID UUIDs} that are currently digging.
+     * Returns the {@link Set} of {@link UUID UUIDs} that are currently digging.
      *
-     * @return {@link Set} of {@link UUID UUIDs} that are currently digging.
+     * @return {@link Set} of {@link UUID UUIDs} that are currently digging
      */
-    public Set<UUID> isDigging() {
+    public @NotNull Set<UUID> isDigging() {
         return this.isDigging;
     }
 

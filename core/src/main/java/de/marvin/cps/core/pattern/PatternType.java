@@ -4,41 +4,56 @@ import de.marvin.cps.core.pattern.types.BasicPattern;
 import de.marvin.cps.core.pattern.types.HistoryPattern;
 import de.marvin.cps.core.pattern.types.StreakPattern;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
+/**
+ * Represents the different available {@link AbstractPattern} types.
+ */
 public enum PatternType {
 
+    /**
+     * Represents the {@link BasicPattern} type.
+     */
     BASIC(new BasicPattern()),
+    /**
+     * Represents the {@link HistoryPattern} type.
+     */
     HISTORY(new HistoryPattern()),
+    /**
+     * Represents the {@link StreakPattern} type.
+     */
     STREAK(new StreakPattern());
 
-    private final AbstractPattern pattern;
+    /**
+     * Corresponding {@link AbstractPattern} of the respective {@link PatternType}.
+     */
+    private final @NotNull AbstractPattern pattern;
 
     PatternType(
-            @NotNull final AbstractPattern pattern
+            @NotNull AbstractPattern pattern
     ) {
         this.pattern = pattern;
     }
 
     /**
-     * Gets the {@link AbstractPattern} instance
-     * of this {@link PatternType}.
+     * Returns the {@link AbstractPattern} instance of this {@link PatternType}.
      *
-     * @return {@link AbstractPattern} instance.
+     * @return {@link AbstractPattern} instance of this {@link PatternType}
      */
-    public AbstractPattern pattern() {
+    public @NotNull AbstractPattern pattern() {
         return this.pattern;
     }
 
     /**
-     * Gets {@link PatternType} by its {@link PatternType#name()}.
+     * Returns the {@link PatternType} by its {@link PatternType#name()}.
      *
-     * @param type name of {@link PatternType} to get
-     * @return {@link PatternType} based on given name.
+     * @param type Name of {@link PatternType} to return
+     * @return {@link PatternType} based on given name or {@code null} if no match was found
      */
-    public static PatternType fromString(
-            @NotNull final String type
+    public static @Nullable PatternType fromString(
+            @NotNull String type
     ) {
         return Arrays.stream(values())
                 .filter(monitorMode -> monitorMode.name().equalsIgnoreCase(type))
@@ -46,8 +61,14 @@ public enum PatternType {
                 .orElse(null);
     }
 
-    public static PatternType next(
-            @NotNull final PatternType pattern
+    /**
+     * Returns the next {@link PatternType} in the enum order, wrapping around to the first if at the end.
+     *
+     * @param pattern The current {@link PatternType} to get the next of
+     * @return The next {@link PatternType} in the enum order
+     */
+    public static @NotNull PatternType next(
+            @NotNull PatternType pattern
     ) {
         var ordinal = pattern.ordinal();
         if (ordinal >= values().length - 1) return values()[0];

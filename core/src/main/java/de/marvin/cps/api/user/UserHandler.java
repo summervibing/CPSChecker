@@ -2,6 +2,7 @@ package de.marvin.cps.api.user;
 
 import de.marvin.cps.core.user.User;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -15,23 +16,22 @@ public interface UserHandler {
      * Retrieves the {@link User} associated with the given {@link UUID}.
      *
      * @param uniqueId {@link UUID} of the user
-     * @return {@link User} associated with given {@link UUID}
-     * or {@code null} if not found.
+     * @return {@link User} associated with given {@link UUID} or {@code null} if not found
      */
-    User user(@NotNull UUID uniqueId);
+    @Nullable User user(@NotNull UUID uniqueId);
 
     /**
      * Retrieves all registered {@link User Users}.
      *
-     * @param online if {@code true}, only returns {@link User Users}
-     *               with {@link User#isOnline()} status as {@code true}
-     * @return {@link Collection} of all registered {@link User Users}.
+     * @param online if {@code true}, only returns {@link User Users} with {@link User#isOnline()} status
+     *               as {@code true}, otherwise returns all registered {@link User Users}
+     * @return {@link Collection} of all registered {@link User Users}
      */
-    Collection<User> users(boolean online);
+    @NotNull Collection<User> users(boolean online);
 
     /**
-     * Registers a {@link User} with the given {@link UUID} or
-     * updates the {@link User}'s online status if already registered.
+     * Registers a {@link User} with the given {@link UUID} or updates the {@link User}'s online status if
+     * already registered.
      *
      * @param uniqueId {@link UUID} of the user to register
      */
@@ -45,15 +45,13 @@ public interface UserHandler {
     void logout(@NotNull UUID uniqueId);
 
     /**
-     * Resets the {@link User} associated with
-     * the given {@link UUID}.
+     * Resets the {@link User} associated with the given {@link UUID} if present.
      * <p>
-     * <b>Note:</b> This will also reset violation level and
-     * suspicious patterns of the user.
+     * <b>Note:</b> This will also reset violation level and suspicious patterns of the user.
      *
      * @param uniqueId {@link UUID} of the user to reset
-     * @return the previous registered {@link User} object.
+     * @return The previous registered {@link User} object or {@code null} if no user was found
      */
-    User reset(@NotNull UUID uniqueId);
+    @Nullable User reset(@NotNull UUID uniqueId);
 
 }

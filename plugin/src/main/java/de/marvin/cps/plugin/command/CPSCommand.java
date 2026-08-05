@@ -26,8 +26,8 @@ import java.util.*;
  */
 public class CPSCommand implements CommandExecutor, TabCompleter {
 
-    private final JavaPlugin plugin;
-    private final Map<String, CPSSubCommand> subCommands;
+    private final @NotNull JavaPlugin plugin;
+    private final @NotNull Map<String, CPSSubCommand> subCommands;
 
     @Inject
     public CPSCommand(
@@ -76,12 +76,12 @@ public class CPSCommand implements CommandExecutor, TabCompleter {
      */
     @Override
     public boolean onCommand(
-            @NotNull final CommandSender sender,
-            @NotNull final Command command,
-            @NotNull final String label,
-            @NotNull final String[] args
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            @NotNull String[] args
     ) {
-        if (!(sender instanceof final Player player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("This command can only be executed by a player.");
             return false;
         }
@@ -200,7 +200,7 @@ public class CPSCommand implements CommandExecutor, TabCompleter {
      * @return A {@link List} of tab completions based on the arguments position, or an empty {@link List} if
      * the {@link StartSubCommand} class is not found
      */
-    private List<String> monitorCompletions(
+    private @NotNull List<String> monitorCompletions(
             int argumentPosition,
             boolean adminCommand
     ) {

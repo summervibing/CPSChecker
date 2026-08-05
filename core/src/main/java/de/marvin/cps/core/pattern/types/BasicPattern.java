@@ -5,6 +5,10 @@ import de.marvin.cps.core.message.Message;
 import de.marvin.cps.core.pattern.AbstractPattern;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents a basic pattern that displays the current left and right clicks per second without any
+ * additional visual representation.
+ */
 public class BasicPattern extends AbstractPattern {
 
     public BasicPattern() {
@@ -15,18 +19,16 @@ public class BasicPattern extends AbstractPattern {
     }
 
     /**
-     * Prints no pattern since {@link BasicPattern} just
-     * displays the current clicks per second.
+     * Prints no pattern since {@link BasicPattern} just displays the current clicks per second.
      *
-     * @param ticks        Array of {@link AbstractTick} to print
-     *                     the current pattern of
+     * @param ticks        Array of {@link AbstractTick} to print the current pattern of
      * @param currentIndex Current index in the tick array
-     * @return An empty string, since no pattern is printed.
+     * @return An empty string, since no pattern is printed
      */
     @Override
-    public String print(
+    public @NotNull String print(
             @NotNull AbstractTick[] ticks,
-            final int currentIndex
+            int currentIndex
     ) {
         return "";
     }

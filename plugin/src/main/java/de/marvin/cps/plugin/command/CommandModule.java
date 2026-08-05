@@ -4,6 +4,9 @@ import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.MapBinder;
 import de.marvin.cps.plugin.command.subcommands.*;
 
+/**
+ * Binds all {@link CPSSubCommand CPSSubCommands} for injection.
+ */
 public class CommandModule extends AbstractModule {
 
     @Override

@@ -6,40 +6,44 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Registers users to the {@link UserHandler} and
- * handles their logout events.
+ * Registers users to the {@link UserHandler} and handles their logout events.
  */
 public class PlayerConnectionListener implements Listener {
 
-    private final UserHandler userHandler;
+    private final @NotNull UserHandler userHandler;
 
     @Inject
-    public PlayerConnectionListener(UserHandler userHandler) {
+    public PlayerConnectionListener(
+            @NotNull UserHandler userHandler
+    ) {
         this.userHandler = userHandler;
     }
 
     /**
-     * Registers a user to the {@link UserHandler}
-     * when they log on to the server.
+     * Registers a user to the {@link UserHandler} when they log on to the server.
      *
-     * @param event player login event
+     * @param event {@link PlayerLoginEvent} to handle
      */
     @EventHandler
-    public void handle(PlayerLoginEvent event) {
+    public void handle(
+            @NotNull PlayerLoginEvent event
+    ) {
         var player = event.getPlayer();
         this.userHandler.register(player.getName(), player.getUniqueId());
     }
 
     /**
-     * Sets the user offline in the {@link UserHandler}
-     * when they leave the server.
+     * Sets the user offline in the {@link UserHandler} when they leave the server.
      *
-     * @param event player quit event
+     * @param event {@link PlayerQuitEvent} to handle
      */
     @EventHandler
-    public void handle(PlayerQuitEvent event) {
+    public void handle(
+            @NotNull PlayerQuitEvent event
+    ) {
         var player = event.getPlayer();
         this.userHandler.logout(player.getUniqueId());
     }

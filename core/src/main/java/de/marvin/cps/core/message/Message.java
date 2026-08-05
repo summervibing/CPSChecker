@@ -3,6 +3,9 @@ package de.marvin.cps.core.message;
 import de.marvin.cps.core.config.MessageConfig;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents a message that can be sent to players.
+ */
 public enum Message {
 
     ERROR("error", "§cAn error occurred. Please contact an administrator."),
@@ -68,12 +71,12 @@ public enum Message {
     FLAG_CLICK_SPEED_LIMITER("flag-click-speed-limiter", "§e%player% §7failed click speed limiter (§f%cps% §7cps) [§f%latency% §7ms; §f%tps% §7tps]."),
     FLAG_CLICK_PATTERN("flag-click-pattern", "§e%player% §7failed click pattern (§f%pattern%§7) [§f%latency% §7ms; §f%tps% §7tps].");
 
-    private final String path;
-    private final String defaultMessage;
+    private final @NotNull String path;
+    private final @NotNull String defaultMessage;
 
     Message(
-            @NotNull final String path,
-            @NotNull final String defaultMessage
+            @NotNull String path,
+            @NotNull String defaultMessage
     ) {
         this.path = path;
         this.defaultMessage = defaultMessage;
@@ -82,18 +85,18 @@ public enum Message {
     /**
      * Config path to the specific message that is stored in {@link MessageConfig}.
      *
-     * @return Configuration path of specific message.
+     * @return Configuration path of specific message
      */
-    public String path() {
+    public @NotNull String path() {
         return this.path;
     }
 
     /**
      * Default message that is used if the message is not set in {@link MessageConfig}.
      *
-     * @return Default message of specific message.
+     * @return Default message of specific message
      */
-    public String defaultMessage() {
+    public @NotNull String defaultMessage() {
         return this.defaultMessage;
     }
 

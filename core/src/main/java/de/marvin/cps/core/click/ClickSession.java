@@ -11,19 +11,46 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Level;
 
+/**
+ * Represents a session with all real-time click patterns of a {@link User}.
+ * <p>
+ * The {@link ClickSession} stores the last {@link ClickSession#patternSize} ticks and displays the last
+ * {@link ClickSession#displaySize} ticks of left and right clicks.
+ */
 public class ClickSession {
 
+    /**
+     * Size of the pattern in ticks.
+     * <p>
+     * <b>Note:</b> This value can be configured in the configuration file.
+     */
     private static int patternSize = 100; // In ticks
+    /**
+     * Display size of the pattern in ticks.
+     * <p>
+     * <b>Note:</b> This value can be configured in the configuration file.
+     */
     private static int displaySize = 40; // In ticks
 
+    /**
+     * Array of {@link LeftClickTick} representing the last {@link ClickSession#patternSize} ticks of left
+     * clicks.
+     */
     private final LeftClickTick[] leftClickTicks = new LeftClickTick[ClickSession.patternSize];
+    /**
+     * Array of {@link RightClickTick} representing the last {@link ClickSession#patternSize} ticks of right
+     * clicks.
+     */
     private final RightClickTick[] rightClickTicks = new RightClickTick[ClickSession.patternSize];
 
+    /**
+     * Current position in the tick arrays, representing the most recent tick.
+     */
     private int currentIndex = 0;
 
     /**
-     * Creates a new {@link ClickSession} instance with a fixed size
-     * of {@link ClickSession#patternSize} ticks.
+     * Creates a new {@link ClickSession} instance with a fixed size of {@link ClickSession#patternSize}
+     * ticks.
      */
     public ClickSession() {
         for (int i = 0; i < ClickSession.patternSize; i++) this.updateTickAt(i);
@@ -46,7 +73,7 @@ public class ClickSession {
      * @param type {@link ClickType} of click to register
      */
     public void registerClick(
-            @NotNull final ClickType type
+            @NotNull ClickType type
     ) {
         switch (type) {
             case LEFT_CLICK -> this.leftClickTicks[this.currentIndex].addClick();
@@ -59,14 +86,13 @@ public class ClickSession {
     }
 
     /**
-     * Calculates the clicks per second in the last 20
-     * {@link AbstractTick Ticks}.
+     * Calculates the clicks per second in the last 20 {@link AbstractTick Ticks}.
      *
      * @param type {@link ClickType} to calculate clicks per second for
-     * @return Number of clicks per second in the last 20 ticks.
+     * @return Number of clicks per second in the last 20 ticks
      */
     public int clicksPerSecond(
-            @NotNull final ClickType type
+            @NotNull ClickType type
     ) {
         var totalClicks = 0;
 
@@ -90,11 +116,11 @@ public class ClickSession {
      * @param patternType {@link PatternType} to print
      * @param clickType   {@link ClickType#LEFT_CLICK} for pattern of left clicks,
      *                    {@link ClickType#RIGHT_CLICK} for pattern of right clicks.
-     * @return {@link AbstractPattern Pattern} as a {@link String}.
+     * @return {@link AbstractPattern Pattern} as a {@link String}
      */
-    public String printPattern(
-            @NotNull final ClickType clickType,
-            @NotNull final PatternType patternType
+    public @NotNull String printPattern(
+            @NotNull ClickType clickType,
+            @NotNull PatternType patternType
     ) {
         return patternType.pattern().print(
                 clickType.isLeftClick() ? this.leftClickTicks : this.rightClickTicks,
@@ -105,22 +131,21 @@ public class ClickSession {
     // Helper methods
 
     /**
-     * Updates {@link AbstractTick Tick} at given position in
-     * {@link ClickSession#leftClickTicks} and {@link ClickSession#rightClickTicks}
-     * arrays.
+     * Updates {@link AbstractTick Tick} at given position in {@link ClickSession#leftClickTicks} and
+     * {@link ClickSession#rightClickTicks} arrays.
      *
      * @param position Position of arrays to update the {@link AbstractTick} at
      */
     private void updateTickAt(
-            final int position
+            int position
     ) {
         this.leftClickTicks[position] = new LeftClickTick();
         this.rightClickTicks[position] = new RightClickTick();
     }
 
     /**
-     * Configures the cached {@link ClickSession#patternSize} and
-     * {@link ClickSession#displaySize} of {@link AbstractPattern Patterns}.
+     * Configures the cached {@link ClickSession#patternSize} and {@link ClickSession#displaySize} of
+     * {@link AbstractPattern Patterns}.
      * <p>
      * If the given values are invalid, default values are used.
      *
@@ -128,8 +153,8 @@ public class ClickSession {
      * @param displaySize Display size of the pattern in ticks (default: 40)
      */
     public static void configure(
-            final int patternSize,
-            final int displaySize
+            int patternSize,
+            int displaySize
     ) {
         if (patternSize < 20 || patternSize > 1200) {
             CPSChecker.instance().log(
@@ -165,33 +190,33 @@ public class ClickSession {
     }
 
     /**
-     * Gets the {@link ClickSession#patternSize} of tick arrays.
+     * Returns the {@link ClickSession#patternSize} of tick arrays.
      *
-     * @return {@link ClickSession#patternSize} of a tick arrays.
+     * @return {@link ClickSession#patternSize} of a tick arrays
      */
     public static int patternSize() {
         return ClickSession.patternSize;
     }
 
     /**
-     * Gets the {@link ClickSession#displaySize} of a {@link AbstractPattern} in ticks.
+     * Returns the {@link ClickSession#displaySize} of a {@link AbstractPattern} in ticks.
      *
-     * @return {@link ClickSession#displaySize} of a {@link AbstractPattern} in ticks.
+     * @return {@link ClickSession#displaySize} of a {@link AbstractPattern} in ticks
      */
     public static int displaySize() {
         return ClickSession.displaySize;
     }
 
     /**
-     * Gets relative index of {@link AbstractTick} in {@link ClickSession}
-     * based tick array on the given position in the {@link AbstractPattern}.
+     * Returns relative index of {@link AbstractTick} in {@link ClickSession} based tick array on the given
+     * position in the {@link AbstractPattern}.
      *
      * @param currentIndex Current index in tick array of {@link User}
-     * @return Index in {@link ClickSession} based tick array on given position.
+     * @return Index in {@link ClickSession} based tick array on given position
      */
     public static int indexFrom(
-            final int currentIndex,
-            final int position
+            int currentIndex,
+            int position
     ) {
         return (currentIndex - position + ClickSession.patternSize()) % ClickSession.patternSize();
     }

@@ -10,6 +10,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 
+/**
+ * This class represents a configuration file. It provides methods to load, save, and manage the
+ * configuration file.
+ */
 public abstract class AbstractConfig {
 
     private final JavaPlugin plugin;
@@ -17,8 +21,8 @@ public abstract class AbstractConfig {
     private final FileConfiguration configuration;
 
     public AbstractConfig(
-            @NotNull final JavaPlugin plugin,
-            @NotNull final String fileName
+            @NotNull JavaPlugin plugin,
+            @NotNull String fileName
     ) {
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), fileName);
@@ -63,9 +67,9 @@ public abstract class AbstractConfig {
     }
 
     /**
-     * Gets the file configuration.
+     * Returns the {@link FileConfiguration}.
      *
-     * @return The file configuration.
+     * @return The {@link FileConfiguration}
      */
     public FileConfiguration file() {
         return this.configuration;

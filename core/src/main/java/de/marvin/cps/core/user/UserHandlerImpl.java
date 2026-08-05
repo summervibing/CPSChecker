@@ -3,25 +3,30 @@ package de.marvin.cps.core.user;
 import com.google.inject.Singleton;
 import de.marvin.cps.api.user.UserHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Handles user management within the system.
+ */
 @Singleton
 public class UserHandlerImpl implements UserHandler {
 
-    private final Map<UUID, User> users = new ConcurrentHashMap<>();
+    private final @NotNull Map<UUID, User> users = new ConcurrentHashMap<>();
 
     /**
      * {@inheritDoc}
      *
      * @param uniqueId {@link UUID} of the user
-     * @return {@link User} associated with given {@link UUID}
-     * or {@code null} if not found.
+     * @return {@link User} associated with given {@link UUID} or {@code null} if not found
      */
     @Override
-    public User user(
-            @NotNull final UUID uniqueId
+    public @Nullable User user(
+            @NotNull UUID uniqueId
     ) {
         return this.users.get(uniqueId);
     }
@@ -29,14 +34,13 @@ public class UserHandlerImpl implements UserHandler {
     /**
      * {@inheritDoc}
      *
-     * @param online if {@code true}, only returns {@link User Users}
-     *               with {@link User#isOnline()} status as {@code true},
-     *               otherwise returns all registered {@link User Users}
-     * @return {@link Collection} of all registered {@link User Users}.
+     * @param online if {@code true}, only returns {@link User Users} with {@link User#isOnline()} status
+     *               as {@code true}, otherwise returns all registered {@link User Users}
+     * @return {@link Collection} of all registered {@link User Users}
      */
     @Override
-    public Collection<User> users(
-            final boolean online
+    public @NotNull Collection<User> users(
+            boolean online
     ) {
         if (!online) return this.users.values();
         return this.users.values().stream().filter(User::isOnline).toList();
@@ -49,8 +53,8 @@ public class UserHandlerImpl implements UserHandler {
      */
     @Override
     public void register(
-            @NotNull final String username,
-            @NotNull final UUID uniqueId
+            @NotNull String username,
+            @NotNull UUID uniqueId
     ) {
         var user = this.user(uniqueId);
         if (user != null) {
@@ -68,7 +72,7 @@ public class UserHandlerImpl implements UserHandler {
      */
     @Override
     public void logout(
-            @NotNull final UUID uniqueId
+            @NotNull UUID uniqueId
     ) {
         var user = this.user(uniqueId);
         if (user == null) return;
@@ -79,13 +83,14 @@ public class UserHandlerImpl implements UserHandler {
      * {@inheritDoc}
      *
      * @param uniqueId {@link UUID} of the user to reset
-     * @return the previous registered {@link User} object.
+     * @return The previous registered {@link User} object or {@code null} if no user was found
      */
     @Override
-    public User reset(
-            @NotNull final UUID uniqueId
+    public @Nullable User reset(
+            @NotNull UUID uniqueId
     ) {
-        var user = this.users.get(uniqueId);
+        var user = this.user(uniqueId);
+        if (user == null) return null;
         this.users.put(uniqueId, new User(user.name(), uniqueId));
         return user;
     }

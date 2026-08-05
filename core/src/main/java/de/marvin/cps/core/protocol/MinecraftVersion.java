@@ -18,6 +18,7 @@
 package de.marvin.cps.core.protocol;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Server Version.
@@ -32,7 +33,7 @@ public enum MinecraftVersion {
 
     v1_8_8(47, true),
     v1_9(107, true), v1_9_1(108), v1_9_2(109), v1_9_4(110),
-    //1.10 and 1.10.1 are redundant
+    // 1.10 and 1.10.1 have the same protocol version
     v1_10(210), v1_10_1(210), v1_10_2(210),
     v1_11(315), v1_11_2(316),
     v1_12(335), v1_12_1(338), v1_12_2(340),
@@ -42,19 +43,20 @@ public enum MinecraftVersion {
     v1_16(735), v1_16_1(736), v1_16_2(751), v1_16_3(753), v1_16_4(754), v1_16_5(754),
     v1_17(755), v1_17_1(756),
     v1_18(757), v1_18_1(757), v1_18_2(758),
-    //1.19.1 and 1.19.2 have the same protocol version
+    // 1.19.1 and 1.19.2 have the same protocol version
     v1_19(759), v1_19_1(760), v1_19_2(760), v1_19_3(761), v1_19_4(762),
-    //1.20 and 1.20.1 have the same protocol version. 1.20.3 and 1.20.4 have the same protocol version. 1.20.5 and 1.20.6 have the same protocol version
+    // 1.20 and 1.20.1 have the same protocol version; 1.20.3 and 1.20.4 have the same protocol version; 1.20.5 and 1.20.6 have the same protocol version
     v1_20(763), v1_20_1(763), v1_20_2(764), v1_20_3(765), v1_20_4(765), v1_20_5(766), v1_20_6(766),
-    //1.21 and 1.21.1 have the same protocol version. 1.21.2 and 1.21.3 have the same protocol version
+    // 1.21 and 1.21.1 have the same protocol version; 1.21.2 and 1.21.3 have the same protocol version; 1.21.7 and 1.21.8 have the same protocol version; 1.21.9 and 1.21.10 have the same protocol version
     v1_21(767), v1_21_1(767), v1_21_2(768), v1_21_3(768), v1_21_4(769), v1_21_5(770), v_1_21_6(771), v_1_21_7(772), v_1_21_8(772), v_1_21_9(773), v_1_21_10(773), v_1_21_11(774),
+    // 26.1.1 and 26.1.2 have the same protocol version
     v26_1_1(775), v26_1_2(775),
     v_26_2(776),
     //TODO UPDATE Add server version constant
     ERROR(-1, false, true);
 
-    private static final MinecraftVersion[] VALUES = values();
-    private static final MinecraftVersion[] REVERSED_VALUES;
+    private static final @NotNull MinecraftVersion[] VALUES = values();
+    private static final @NotNull MinecraftVersion[] REVERSED_VALUES;
 
     static {
         REVERSED_VALUES = values();
@@ -65,68 +67,81 @@ public enum MinecraftVersion {
         }
     }
 
+    /**
+     * The protocol version of this {@link MinecraftVersion}.
+     */
     private final int protocolVersion;
-    private final String releaseName;
+    /**
+     * The release name of this {@link MinecraftVersion}.
+     */
+    private final @NotNull String releaseName;
+    /**
+     * Whether the plugin has an implementation for this {@link MinecraftVersion}.
+     */
     private final boolean isImplemented;
 
     MinecraftVersion(
-            final int protocolVersion
+            int protocolVersion
     ) {
         this.protocolVersion = protocolVersion;
-        this.releaseName = name().substring(1).replace("_", ".");
-        isImplemented = false;
+        this.releaseName = this.name().substring(1).replace("_", ".");
+        this.isImplemented = false;
     }
 
     MinecraftVersion(
-            final int protocolVersion,
-            final boolean isImplemented
+            int protocolVersion,
+            boolean isImplemented
     ) {
         this(protocolVersion, isImplemented, false);
     }
 
     MinecraftVersion(
-            final int protocolVersion,
-            final boolean isImplemented,
-            final boolean isNotRelease
+            int protocolVersion,
+            boolean isImplemented,
+            boolean isNotRelease
     ) {
         this.protocolVersion = protocolVersion;
         this.isImplemented = isImplemented;
         if (isNotRelease) {
-            this.releaseName = name();
+            this.releaseName = this.name();
         } else {
-            this.releaseName = name().substring(1).replace("_", ".");
+            this.releaseName = this.name().substring(1).replace("_", ".");
         }
     }
 
-
-    public static MinecraftVersion[] reversedValues() {
+    /**
+     * Returns the enum constants in reverse order.
+     *
+     * @return Array of {@link MinecraftVersion MinecraftVersions} in reverse order
+     */
+    public static @NotNull MinecraftVersion[] reversedValues() {
         return REVERSED_VALUES;
     }
 
     /**
-     * Gets the latest protocol version.
+     * Returns the latest protocol version.
      * This is the last enum constant in the ProtocolVersion enum.
      *
-     * @return Latest protocol version.
+     * @return Latest {@link MinecraftVersion}
      */
-    public static MinecraftVersion latest() {
+    public static @NotNull MinecraftVersion latest() {
         return REVERSED_VALUES[1];
     }
 
     /**
-     * Gets the oldest protocol version.
+     * Returns the oldest protocol version.
      * This is the first enum constant in the ProtocolVersion enum.
      *
-     * @return Oldest protocol version.
+     * @return Oldest {@link MinecraftVersion}
      */
-    public static MinecraftVersion oldest() {
+    public static @NotNull MinecraftVersion oldest() {
         return VALUES[0];
     }
 
     //TODO Optimize
     @Deprecated
-    public static MinecraftVersion getById(
-            final int protocolVersion
+    public static @Nullable MinecraftVersion getById(
+            int protocolVersion
     ) {
         for (MinecraftVersion version : VALUES) {
             if (version.protocolVersion == protocolVersion) {
@@ -137,34 +152,34 @@ public enum MinecraftVersion {
     }
 
     /**
-     * Gets the release name of this {@link MinecraftVersion}.
+     * Returns the release name of this {@link MinecraftVersion}.
      * For example, for the V_1_18 enum constant, it would return "1.18".
      *
-     * @return Release name.
+     * @return Release name of this {@link MinecraftVersion}
      */
-    public String releaseName() {
-        return releaseName;
+    public @NotNull String releaseName() {
+        return this.releaseName;
     }
 
     /**
-     * Gets this {@link MinecraftVersion}'s protocol version.
+     * Returns this {@link MinecraftVersion}'s protocol version.
      *
-     * @return Protocol version.
+     * @return Protocol version of this {@link MinecraftVersion}
      */
     public int protocolVersion() {
-        return protocolVersion;
+        return this.protocolVersion;
     }
 
     /**
      * Is this {@link MinecraftVersion} newer than the compared {@link MinecraftVersion}?
-     * This method simply checks if this server version's protocol version is greater than
-     * the compared server version's protocol version.
+     * This method simply checks if this server version's protocol version is greater than the compared
+     * server version's protocol version.
      *
-     * @param target compared {@link MinecraftVersion}
-     * @return Is this {@link MinecraftVersion} newer than the compared {@link MinecraftVersion}.
+     * @param target Compared {@link MinecraftVersion}
+     * @return Whether this {@link MinecraftVersion} is newer than the compared {@link MinecraftVersion}
      */
     public boolean isNewerThan(
-            @NotNull final MinecraftVersion target
+            @NotNull MinecraftVersion target
     ) {
         return this.ordinal() > target.ordinal();
     }
@@ -174,11 +189,11 @@ public enum MinecraftVersion {
      * This method simply checks if this server version's protocol version is less than
      * the compared server version's protocol version.
      *
-     * @param target compared {@link MinecraftVersion}
-     * @return Is this {@link MinecraftVersion} older than the compared {@link MinecraftVersion}.
+     * @param target Compared {@link MinecraftVersion}
+     * @return Whether this {@link MinecraftVersion} is older than the compared {@link MinecraftVersion}
      */
     public boolean isOlderThan(
-            @NotNull final MinecraftVersion target
+            @NotNull MinecraftVersion target
     ) {
         return this.ordinal() < target.ordinal();
     }
@@ -188,11 +203,12 @@ public enum MinecraftVersion {
      * This method simply checks if this server version's protocol version is greater than or
      * equal to the compared server version's protocol version.
      *
-     * @param target compared {@link MinecraftVersion}
-     * @return Is this {@link MinecraftVersion} newer than or equal to the compared {@link MinecraftVersion}.
+     * @param target Compared {@link MinecraftVersion}
+     * @return Whether this {@link MinecraftVersion} is newer than or equal to the compared
+     * {@link MinecraftVersion}
      */
     public boolean isNewerThanOrEquals(
-            @NotNull final MinecraftVersion target
+            @NotNull MinecraftVersion target
     ) {
         return this.ordinal() >= target.ordinal();
     }
@@ -202,30 +218,32 @@ public enum MinecraftVersion {
      * This method simply checks if this server version's protocol version is older than or equal to
      * the compared server version's protocol version.
      *
-     * @param target compared {@link MinecraftVersion}
-     * @return Is this {@link MinecraftVersion} older than or equal to the compared {@link MinecraftVersion}.
+     * @param target Compared {@link MinecraftVersion}
+     * @return Whether this {@link MinecraftVersion} is older than or equal to the compared
+     * {@link MinecraftVersion}
      */
     public boolean isOlderThanOrEquals(
-            @NotNull final MinecraftVersion target
+            @NotNull MinecraftVersion target
     ) {
         return this.ordinal() <= target.ordinal();
     }
 
     /**
-     * Gets the latest implementation of the given {@link MinecraftVersion}.
+     * Returns the latest implementation of the given {@link MinecraftVersion}.
      * If the given version is already implemented, it will return itself.
      * Otherwise, it will return the latest implemented version that is older
      * than the given version.
      * If no implementation is found, it will return {@link MinecraftVersion#ERROR}.
      *
-     * @return The latest implementation of given {@link MinecraftVersion}.
+     * @return The latest implemented {@link MinecraftVersion} that is older than or equal to the given
+     * {@link MinecraftVersion}
      */
-    public MinecraftVersion latestImplementation() {
+    public @NotNull MinecraftVersion latestImplementation() {
         // If the given version already is implemented, return it.
         if (this.isImplemented) return this;
 
         // Iterate through the reversed values to find the latest implementation
-        for (MinecraftVersion version : MinecraftVersion.REVERSED_VALUES)
+        for (var version : MinecraftVersion.REVERSED_VALUES)
             if (version.isImplemented && version.isOlderThanOrEquals(this))
                 return version;
 
@@ -238,49 +256,50 @@ public enum MinecraftVersion {
      * This method simply checks if this server version's protocol version is greater than, less
      * than or equal to the compared server version's protocol version.
      *
-     * @param comparison    Comparison type.
-     * @param targetVersion Compared server version.
-     * @return true or false, based on the comparison type.
+     * @param comparison    The {@link VersionComparison Comparision Type}
+     * @param targetVersion Compared {@link MinecraftVersion}
+     * @return {@code true} if this {@link MinecraftVersion} is newer than, older than or equal to the
+     * compared server version, depending on the comparison type, {@code false} otherwise
      * @see #isNewerThan(MinecraftVersion)
      * @see #isNewerThanOrEquals(MinecraftVersion)
      * @see #isOlderThan(MinecraftVersion)
      * @see #isOlderThanOrEquals(MinecraftVersion)
      */
     public boolean is(
-            @NotNull final VersionComparison comparison,
-            @NotNull final MinecraftVersion targetVersion
+            @NotNull VersionComparison comparison,
+            @NotNull MinecraftVersion targetVersion
     ) {
         return switch (comparison) {
             case EQUALS -> this.protocolVersion == targetVersion.protocolVersion;
-            case NEWER_THAN -> isNewerThan(targetVersion);
-            case NEWER_THAN_OR_EQUALS -> isNewerThanOrEquals(targetVersion);
-            case OLDER_THAN -> isOlderThan(targetVersion);
-            case OLDER_THAN_OR_EQUALS -> isOlderThanOrEquals(targetVersion);
+            case NEWER_THAN -> this.isNewerThan(targetVersion);
+            case NEWER_THAN_OR_EQUALS -> this.isNewerThanOrEquals(targetVersion);
+            case OLDER_THAN -> this.isOlderThan(targetVersion);
+            case OLDER_THAN_OR_EQUALS -> this.isOlderThanOrEquals(targetVersion);
         };
     }
 
     /**
-     * This enum contains all possible comparison types for server versions.
+     * This enum contains all possible comparison types for {@link MinecraftVersion MinecraftVersions}.
      */
     public enum VersionComparison {
-        /*
-        The server version equals the compared server version.
+        /**
+         * The {@link MinecraftVersion} equals the compared {@link MinecraftVersion}.
          */
         EQUALS,
-        /*
-        The server version is newer than the compared server version.
+        /**
+         * The {@link MinecraftVersion} is newer than the compared {@link MinecraftVersion}.
          */
         NEWER_THAN,
-        /*
-        The server version is newer than or equal to the compared server version.
+        /**
+         * The {@link MinecraftVersion} is newer than or equal to the compared {@link MinecraftVersion}.
          */
         NEWER_THAN_OR_EQUALS,
-        /*
-        The server version is older than the compared server version.
+        /**
+         * The {@link MinecraftVersion} is older than the compared {@link MinecraftVersion}.
          */
         OLDER_THAN,
-        /*
-        The server version is older than or equal to the compared server version.
+        /**
+         * The {@link MinecraftVersion} is older than or equal to the compared {@link MinecraftVersion}.
          */
         OLDER_THAN_OR_EQUALS;
     }

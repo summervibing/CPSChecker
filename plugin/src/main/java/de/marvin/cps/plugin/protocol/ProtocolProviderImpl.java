@@ -12,40 +12,45 @@ import de.marvin.cps.plugin.command.CommandModule;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.logging.Level;
 
 /**
- * The {@link ProtocolProviderImpl} class is responsible for detecting
- * the current Minecraft version of the server and providing
- * the appropriate {@link ProtocolAdapter} implementation based
- * on that version.
+ * The {@link ProtocolProviderImpl} class is responsible for detecting the current Minecraft version of the
+ * server and providing the appropriate {@link ProtocolAdapter} implementation based on that version.
  */
 public class ProtocolProviderImpl implements ProtocolProvider {
 
-    private final JavaPlugin plugin;
-    private final MinecraftVersion detectedVersion;
-    private final MinecraftVersion implementationVersion;
-    private final Injector injector;
+    private final @NotNull JavaPlugin plugin;
 
+    /**
+     * The detected Minecraft version of the server.
+     */
+    private final @NotNull MinecraftVersion detectedVersion;
+    /**
+     * The latest implementation version of the detected Minecraft version.
+     */
+    private final @NotNull MinecraftVersion implementationVersion;
+
+    private final Injector injector;
     private final ProtocolAdapter protocolAdapter;
 
     /**
-     * Constructs a new {@link ProtocolProviderImpl} instance.
-     * It detects the current Minecraft version and initializes
-     * the appropriate {@link ProtocolAdapter} implementation.
+     * Constructs a new {@link ProtocolProviderImpl} instance. It detects the current Minecraft version and
+     * initializes the appropriate {@link ProtocolAdapter} implementation.
      *
      * @param plugin {@link JavaPlugin} instance
      */
     public ProtocolProviderImpl(
-            @NotNull final JavaPlugin plugin
+            @NotNull JavaPlugin plugin
     ) {
         this.plugin = plugin;
         this.detectedVersion = this.detectMinecraftVersion();
         this.implementationVersion = this.detectedVersion.latestImplementation();
 
         // Check if the version is supported
-        if (this.implementationVersion == null || this.implementationVersion == MinecraftVersion.ERROR) {
+        if (this.implementationVersion == MinecraftVersion.ERROR) {
             this.injector = null;
             this.protocolAdapter = null;
 
@@ -83,12 +88,12 @@ public class ProtocolProviderImpl implements ProtocolProvider {
     /**
      * {@inheritDoc}
      *
-     * @param type class type to get implementation for
-     * @param <T>  type of the class to get implementation for
-     * @return Implementation instance of the given {@link Class<T>}.
+     * @param type Class type to get implementation for
+     * @param <T>  Type of the class to get implementation for
+     * @return Implementation instance of the given {@link Class<T>}
      */
-    public <T> T get(
-            @NotNull final Class<T> type
+    public <T> @Nullable T get(
+            @NotNull Class<T> type
     ) {
         return this.injector.getInstance(type);
     }
@@ -96,10 +101,10 @@ public class ProtocolProviderImpl implements ProtocolProvider {
     /**
      * Gets {@link AbstractModule} for the detected {@link MinecraftVersion}.
      *
-     * @return {@link AbstractModule} for the detected version.
+     * @return {@link AbstractModule} for the detected version
      */
-    private AbstractModule protocolModule(
-            @NotNull final MinecraftVersion version
+    private @Nullable AbstractModule protocolModule(
+            @NotNull MinecraftVersion version
     ) {
         return switch (version) {
             case v1_8_8 -> new de.marvin.cps.protocol.v1_8_8.ProtocolModule();
@@ -109,17 +114,17 @@ public class ProtocolProviderImpl implements ProtocolProvider {
     }
 
     /**
-     * Detects the current {@link MinecraftVersion} of the server
-     * by comparing {@link Bukkit#getVersion()} with
-     * {@link MinecraftVersion#releaseName()} of each known version.
+     * Detects the current {@link MinecraftVersion} of the server by comparing {@link Bukkit#getVersion()}
+     * with {@link MinecraftVersion#releaseName()} of each known version.
      *
-     * @return The detected {@link MinecraftVersion}.
+     * @return The detected {@link MinecraftVersion}
+     * @see Bukkit#getVersion()
      */
-    private MinecraftVersion detectMinecraftVersion() {
+    private @NotNull MinecraftVersion detectMinecraftVersion() {
         var current = this.plugin.getServer().getVersion();
         var fallback = MinecraftVersion.v1_8_8;
         if (current.toLowerCase().contains("unknown")) return fallback;
-        for (MinecraftVersion version : MinecraftVersion.reversedValues())
+        for (var version : MinecraftVersion.reversedValues())
             if (current.contains(version.releaseName())) return version;
         return fallback;
     }
@@ -127,28 +132,28 @@ public class ProtocolProviderImpl implements ProtocolProvider {
     /**
      * {@inheritDoc}
      *
-     * @return Detected {@link MinecraftVersion}.
+     * @return The detected {@link MinecraftVersion}
      * @see Bukkit#getVersion()
      */
-    public MinecraftVersion version() {
+    public @NotNull MinecraftVersion version() {
         return this.detectedVersion;
     }
 
     /**
      * {@inheritDoc}
      *
-     * @return The implementation {@link MinecraftVersion}.
+     * @return The implementation {@link MinecraftVersion}
      */
-    public MinecraftVersion implementationVersion() {
+    public @NotNull MinecraftVersion implementationVersion() {
         return this.implementationVersion;
     }
 
     /**
      * {@inheritDoc}
      *
-     * @return The {@link ProtocolAdapter} instance.
+     * @return The {@link ProtocolAdapter} instance
      */
-    public ProtocolAdapter protocolAdapter() {
+    public @Nullable ProtocolAdapter protocolAdapter() {
         return this.protocolAdapter;
     }
 

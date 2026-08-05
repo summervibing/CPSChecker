@@ -14,8 +14,8 @@ public interface BukkitListenerRegistry {
     /**
      * Registers given {@link Listener Listeners} to {@link PluginManager}.
      *
-     * @param registry {@link Consumer} that accepts {@link Listener} instances
-     *                 to register them to the {@link PluginManager}
+     * @param registry {@link Consumer} that accepts {@link Listener} instances to register them to the
+     *                 {@link PluginManager}
      */
     void registerListeners(@NotNull Consumer<Listener> registry);
 

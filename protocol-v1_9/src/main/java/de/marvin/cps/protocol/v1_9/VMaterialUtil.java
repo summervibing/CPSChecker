@@ -8,15 +8,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumSet;
 
 /**
- * Version-specific utility class for handling {@link Material}
- * related operations.
+ * Version-specific utility class for handling {@link Material} related operations.
  */
 public class VMaterialUtil {
 
     /**
      * Set of non-block materials that can be placed.
      */
-    private static final EnumSet<Material> PLACEABLE_NON_BLOCK_MATERIALS = EnumSet.of(
+    private static final @NotNull EnumSet<Material> PLACEABLE_NON_BLOCK_MATERIALS = EnumSet.of(
             Material.SIGN,
             Material.WOOD_DOOR,
             Material.IRON_DOOR,
@@ -56,7 +55,7 @@ public class VMaterialUtil {
             Material.DIAMOND_SPADE
     );
 
-    private static final EnumSet<Material> INTERACTABLE_MATERIALS = EnumSet.of(
+    private static final @NotNull EnumSet<Material> INTERACTABLE_MATERIALS = EnumSet.of(
             Material.CHEST, Material.TRAPPED_CHEST, Material.ENDER_CHEST,
             Material.FURNACE, Material.BURNING_FURNACE,
             Material.WORKBENCH,
@@ -81,16 +80,14 @@ public class VMaterialUtil {
     );
 
     /**
-     * Checks if the given {@link Material} is placeable, either through
-     * {@link Material#isBlock()} or, as a non-block item that can be
-     * placed, through {@link VMaterialUtil#PLACEABLE_NON_BLOCK_MATERIALS}.
+     * Checks if the given {@link Material} is placeable, either through {@link Material#isBlock()} or, as
+     * a non-block item that can be placed, through {@link VMaterialUtil#PLACEABLE_NON_BLOCK_MATERIALS}.
      *
      * @param material {@link Material} to check
-     * @return {@code true} if the {@link Material} is placeable,
-     *         {@code false} otherwise.
+     * @return {@code true} if the {@link Material} is placeable, {@code false} otherwise
      */
     public static boolean isPlaceable(
-            @NotNull final Material material
+            @NotNull Material material
     ) {
         return (material.isBlock() && !material.equals(Material.AIR))
                 || VMaterialUtil.isPlaceableNonBlock(material);
@@ -100,17 +97,22 @@ public class VMaterialUtil {
      * Checks if the given {@link Material} is a non-block item that can be placed.
      *
      * @param material {@link Material} to check
-     * @return {@code true} if the {@link Material} is a placeable non-block item,
-     *         {@code false} otherwise.
+     * @return {@code true} if the {@link Material} is a placeable non-block item, {@code false} otherwise
      */
     public static boolean isPlaceableNonBlock(
-            @NotNull final Material material
+            @NotNull Material material
     ) {
         return PLACEABLE_NON_BLOCK_MATERIALS.contains(material);
     }
 
+    /**
+     * Checks if the given {@link Material} is interactable.
+     *
+     * @param material {@link Material} to check
+     * @return {@code true} if the {@link Material} is interactable, {@code false} otherwise
+     */
     public static boolean isInteractable(
-            @NotNull final Material material
+            @NotNull Material material
     ) {
         return INTERACTABLE_MATERIALS.contains(material);
     }
@@ -119,11 +121,10 @@ public class VMaterialUtil {
      * Checks if the given {@link Material} is a minecart.
      *
      * @param material {@link Material} to check
-     * @return {@code true} if the {@link Material} is a minecart,
-     *         {@code false} otherwise.
+     * @return {@code true} if the {@link Material} is a minecart, {@code false} otherwise
      */
     public static boolean isMinecart(
-            @NotNull final Material material
+            @NotNull Material material
     ) {
         return material.equals(Material.MINECART) || material.equals(Material.EXPLOSIVE_MINECART)
                 || material.equals(Material.HOPPER_MINECART) || material.equals(Material.POWERED_MINECART)
@@ -134,11 +135,10 @@ public class VMaterialUtil {
      * Checks if the given {@link ItemStack} is bone meal.
      *
      * @param itemStack {@link ItemStack} to check
-     * @return {@code true} if the {@link ItemStack} is bone meal,
-     *         {@code false} otherwise.
+     * @return {@code true} if the {@link ItemStack} is bone meal, {@code false} otherwise
      */
     public static boolean isBoneMeal(
-            @NotNull final ItemStack itemStack
+            @NotNull ItemStack itemStack
     ) {
         return itemStack.getType().equals(Material.INK_SACK) && itemStack.getDurability() == 15;
     }
@@ -147,11 +147,10 @@ public class VMaterialUtil {
      * Checks if the given {@link ItemStack} can be potted.
      *
      * @param itemStack {@link ItemStack} to check
-     * @return {@code true} if the {@link ItemStack} can be potted,
-     *         {@code false} otherwise.
+     * @return {@code true} if the {@link ItemStack} can be potted, {@code false} otherwise
      */
     public static boolean canBePotted(
-            @Nullable final ItemStack itemStack
+            @Nullable ItemStack itemStack
     ) {
         if (itemStack == null) return false;
         var type = itemStack.getType();

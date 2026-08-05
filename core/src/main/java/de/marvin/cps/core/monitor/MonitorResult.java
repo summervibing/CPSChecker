@@ -1,7 +1,7 @@
 package de.marvin.cps.core.monitor;
 
 /**
- * {@link MonitorResult} of a monitor operation.
+ * Represents the {@link MonitorResult Result} of a monitor operation.
  */
 public enum MonitorResult {
 

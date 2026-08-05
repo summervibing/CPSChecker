@@ -6,6 +6,10 @@ import de.marvin.cps.core.message.Message;
 import de.marvin.cps.core.pattern.AbstractPattern;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents a pattern that extends the {@link BasicPattern} by additionally displaying the history of
+ * clicks over a certain number of ticks.
+ */
 public class HistoryPattern extends AbstractPattern {
 
     public HistoryPattern() {
@@ -16,18 +20,17 @@ public class HistoryPattern extends AbstractPattern {
     }
 
     /**
-     * Prints the current {@link AbstractPattern} as a colored
-     * representation of the number of clicks per {@link AbstractTick}.
+     * Prints the current {@link AbstractPattern} as a colored representation of the number of clicks
+     * per {@link AbstractTick}.
      *
-     * @param ticks        Array of {@link AbstractTick} to print
-     *                     the current pattern of
+     * @param ticks        Array of {@link AbstractTick} to print the current pattern of
      * @param currentIndex Current index in the tick array
-     * @return Colored string representation of the current {@link AbstractPattern}.
+     * @return Colored string representation of the current {@link AbstractPattern}
      */
     @Override
-    public String print(
+    public @NotNull String print(
             @NotNull AbstractTick[] ticks,
-            final int currentIndex
+            int currentIndex
     ) {
         var stringBuilder = new StringBuilder();
         for (int i = 0; i < ClickSession.displaySize(); i++)

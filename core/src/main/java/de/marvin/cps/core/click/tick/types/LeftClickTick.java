@@ -3,15 +3,14 @@ package de.marvin.cps.core.click.tick.types;
 import de.marvin.cps.core.click.tick.AbstractTick;
 import de.marvin.cps.core.user.User;
 import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents a single {@link LeftClickTick} of {@link User User}
- * activity which can include multiple {@link LeftClickTick#clicks} and
- * {@link LeftClickTick#attacks}.
+ * Represents a single {@link LeftClickTick} of {@link User User} activity which can include multiple
+ * {@link LeftClickTick#clicks} and {@link LeftClickTick#attacks}.
  * <p>
- * Each {@link LeftClickTick} can have multiple {@link LeftClickTick#clicks}
- * and {@link LeftClickTick#attacks}, both counted separately. Also, a
- * click can be invalid (e.g., hitting a block) which is tracked by
+ * Each {@link LeftClickTick} can have multiple {@link LeftClickTick#clicks} and {@link LeftClickTick#attacks},
+ * both counted separately. Also, a click can be invalid (e.g., hitting a block) which is tracked by
  * {@link LeftClickTick#invalid}.
  * </p>
  */
@@ -44,7 +43,7 @@ public class LeftClickTick extends AbstractTick {
     /**
      * {@inheritDoc}
      *
-     * @return Number of clicks in this {@link AbstractTick}.
+     * @return Number of clicks in this {@link AbstractTick}
      */
     @Override
     public int clicks() {
@@ -53,20 +52,19 @@ public class LeftClickTick extends AbstractTick {
     }
 
     /**
-     * Gets the number of ({@link org.bukkit.entity.Entity})
-     * {@link LeftClickTick#attacks} in this {@link LeftClickTick}.
+     * Returns the number of ({@link org.bukkit.entity.Entity}) {@link LeftClickTick#attacks} in this
+     * {@link LeftClickTick}.
      *
-     * @return Number of attacks in this {@link LeftClickTick}.
+     * @return Number of attacks in this {@link LeftClickTick}
      */
     public int attacks() {
         return this.attacks;
     }
 
     /**
-     * Gets the number of {@link LeftClickTick#invalid invalid clicks}
-     * in this {@link LeftClickTick}.
+     * Returns the number of {@link LeftClickTick#invalid invalid clicks} in this {@link LeftClickTick}.
      *
-     * @return Number of invalid clicks in this {@link LeftClickTick}.
+     * @return Number of invalid clicks in this {@link LeftClickTick}
      */
     public int invalidClicks() {
         return this.invalid;
@@ -75,7 +73,7 @@ public class LeftClickTick extends AbstractTick {
     /**
      * {@inheritDoc}
      *
-     * @return The {@link Character} representation of this {@link LeftClickTick}.
+     * @return The {@link Character} representation of this {@link LeftClickTick}
      */
     @Override
     public char toChar() {
@@ -86,23 +84,23 @@ public class LeftClickTick extends AbstractTick {
     /**
      * {@inheritDoc}
      *
-     * @return {@link LeftClickTick} as {@link ChatColor#STRIKETHROUGH}
-     * {@link LeftClickTick} if {@link LeftClickTick#invalid invalid clicks} are detected.
+     * @return {@link LeftClickTick} as {@link ChatColor#STRIKETHROUGH} {@link LeftClickTick} if
+     * {@link LeftClickTick#invalid invalid clicks} are detected
      */
     @Override
-    protected String extraFormatting() {
+    protected @NotNull String extraFormatting() {
         return this.invalid > 0 && this.clicks > 0 ? ChatColor.STRIKETHROUGH.toString() : "";
     }
 
     /**
      * {@inheritDoc}
      *
-     * @return {@code true} if this {@link LeftClickTick} has no {@link LeftClickTick#clicks}
-     *          and {@link LeftClickTick#attacks},
-     *         {@code false} otherwise.
+     * @return {@code true} if this {@link LeftClickTick} has no {@link LeftClickTick#clicks} and
+     * {@link LeftClickTick#attacks}, {@code false} otherwise.
      */
     @Override
     public boolean isEmpty() {
         return this.clicks == 0 && this.attacks == 0;
     }
+
 }

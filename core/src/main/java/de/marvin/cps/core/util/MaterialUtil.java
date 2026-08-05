@@ -18,15 +18,16 @@ public class MaterialUtil {
     /**
      * {@link Set} of {@link Material Materials} that can be broken instantly.
      */
-    private static final Set<Material> INSTANT_BREAKABLE = new HashSet<>();
+    private static final @NotNull Set<Material> INSTANT_BREAKABLE = new HashSet<>();
 
     /**
-     * Loads the instant breakable materials based on the provided
-     * {@link MinecraftVersion}.
+     * Loads the instant breakable materials based on the provided {@link MinecraftVersion}.
      *
      * @param version {@link MinecraftVersion} to load materials for
      */
-    public static void load(MinecraftVersion version) {
+    public static void load(
+            @NotNull MinecraftVersion version
+    ) {
         MaterialResolver add = names -> names.stream()
                 .filter(data -> {
                     MinecraftVersion from = data.from();
@@ -245,26 +246,22 @@ public class MaterialUtil {
      * Checks if the given {@link Material} can be broken instantly.
      *
      * @param material {@link Material} to check
-     * @return {@code true} if the material can be broken instantly,
-     *         {@code false} otherwise.
+     * @return {@code true} if the material can be broken instantly, {@code false} otherwise
      */
     public static boolean isInstantBreakable(
-            @NotNull final Material material
+            @NotNull Material material
     ) {
         return INSTANT_BREAKABLE.contains(material);
     }
 
     /**
-     * Represents a material name and {@link MinecraftVersion} range in which it is
-     * available.
+     * Represents a material name and {@link MinecraftVersion} range in which it is available.
      *
-     * @param name name of the material
-     * @param from first {@link MinecraftVersion} from which the material is available,
-     *             or {@code null} if it is available from the earliest version known by
-     *             this plugin
-     * @param to   latest {@link MinecraftVersion} to which the material is available,
-     *             or {@code null} if it is available till the newest version known by
-     *             this plugin
+     * @param name Name of the material
+     * @param from First {@link MinecraftVersion} from which the material is available or {@code null} if
+     *             it is available from the earliest version known by this plugin
+     * @param to   Latest {@link MinecraftVersion} to which the material is available or {@code null} if
+     *             it is available till the newest version known by this plugin
      */
     private record MaterialData(
             @NotNull String name,
@@ -274,9 +271,8 @@ public class MaterialUtil {
     }
 
     /**
-     * Functional interface used for resolving material names
-     * (as strings) into {@link Material} instances and registering
-     * them into the {@link MaterialUtil#INSTANT_BREAKABLE} set.
+     * Functional interface used for resolving material names (as strings) into {@link Material} instances
+     * and registering them into the {@link MaterialUtil#INSTANT_BREAKABLE} set.
      */
     @FunctionalInterface
     private interface MaterialResolver {

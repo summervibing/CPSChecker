@@ -1,9 +1,9 @@
 package de.marvin.cps.api.click;
 
+import de.marvin.cps.core.click.ClickSession;
 import de.marvin.cps.core.click.ClickType;
 import de.marvin.cps.core.user.User;
 import org.jetbrains.annotations.NotNull;
-import de.marvin.cps.core.click.ClickSession;
 
 import java.util.UUID;
 
@@ -13,8 +13,7 @@ import java.util.UUID;
 public interface ClickHandler {
 
     /**
-     * Registers a click in the current {@link ClickSession}
-     * of the user with the given {@link UUID}.
+     * Registers a click in the current {@link ClickSession} of the user with the given {@link UUID}.
      * <p>
      * Possible {@link ClickType ClickTypes} are:
      * <ul>
@@ -26,18 +25,16 @@ public interface ClickHandler {
      * </ul>
      *
      * @param uniqueId {@link UUID} of the user
-     * @param type {@link ClickType} of the click
+     * @param type     {@link ClickType} of the click
      */
     void registerClick(@NotNull UUID uniqueId, @NotNull ClickType type);
 
 
     /**
-     * Updates the {@link ClickSession ClickSessions}
-     * of all online {@link User Users}.
+     * Updates the {@link ClickSession ClickSessions} of all online {@link User Users}.
      * <p>
-     * <b>Note:</b> This method needs to be called
-     * every tick to ensure that the {@link ClickSession ClickSessions}
-     * are updated correctly.
+     * <b>Note:</b> This method needs to be called every tick to ensure that the
+     * {@link ClickSession ClickSessions} are updated correctly.
      */
     void update();
 

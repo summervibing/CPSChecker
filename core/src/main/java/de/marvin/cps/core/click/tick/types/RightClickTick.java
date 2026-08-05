@@ -3,12 +3,14 @@ package de.marvin.cps.core.click.tick.types;
 import de.marvin.cps.core.click.tick.AbstractTick;
 
 /**
- * Represents a single {@link RightClickTick} of user activity
- * which can include multiple {@link RightClickTick#clicks} and
- * {@link RightClickTick#placements}.
+ * Represents a single {@link RightClickTick} of user activity which can include multiple
+ * {@link RightClickTick#clicks} and {@link RightClickTick#placements}.
  */
 public class RightClickTick extends AbstractTick {
 
+    /**
+     * The number of placed blocks in this {@link RightClickTick}.
+     */
     private int placements = 0;
 
     /**
@@ -19,10 +21,9 @@ public class RightClickTick extends AbstractTick {
     }
 
     /**
-     * Gets the number of {@link RightClickTick#placements}
-     * in this {@link RightClickTick}.
+     * Returns the number of {@link RightClickTick#placements} in this {@link RightClickTick}.
      *
-     * @return Number of placements in this {@link RightClickTick}.
+     * @return Number of placements in this {@link RightClickTick}
      */
     public int placements() {
         return this.placements;
@@ -31,7 +32,7 @@ public class RightClickTick extends AbstractTick {
     /**
      * {@inheritDoc}
      *
-     * @return The {@link Character} representation of this {@link RightClickTick}.
+     * @return The {@link Character} representation of this {@link RightClickTick}
      */
     @Override
     public char toChar() {
@@ -42,12 +43,12 @@ public class RightClickTick extends AbstractTick {
     /**
      * {@inheritDoc}
      *
-     * @return {@code true} if this {@link RightClickTick} has no {@link RightClickTick#clicks}
-     *          and {@link RightClickTick#placements},
-     *         {@code false} otherwise.
+     * @return {@code true} if this {@link RightClickTick} has no {@link RightClickTick#clicks} and
+     * {@link RightClickTick#placements}, {@code false} otherwise
      */
     @Override
     public boolean isEmpty() {
         return this.clicks == 0 && this.placements == 0;
     }
+
 }

@@ -20,11 +20,10 @@ public final class UniqueIdUtil {
      * Checks if the given input is a valid {@link UUID}.
      *
      * @param input Input to check
-     * @return {@code true} if the input is a valid {@link UUID},
-     * {@code false} otherwise.
+     * @return {@code true} if the input is a valid {@link UUID}, {@code false} otherwise
      */
     public static boolean isUniqueId(
-            @NotNull final String input
+            @NotNull String input
     ) {
         try {
             UUID.fromString(input);
