@@ -2,7 +2,7 @@ package de.marvin.cps.core.message;
 
 import de.marvin.cps.core.CPSChecker;
 import de.marvin.cps.core.config.MessageConfig;
-import de.marvin.cps.permission.Permission;
+import de.marvin.cps.core.permission.Permission;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;

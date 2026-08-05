@@ -8,7 +8,7 @@ import de.marvin.cps.core.message.Messages;
 import de.marvin.cps.core.monitor.MonitorResult;
 import de.marvin.cps.core.pattern.PatternType;
 import de.marvin.cps.core.util.UniqueIdUtil;
-import de.marvin.cps.permission.Permission;
+import de.marvin.cps.core.permission.Permission;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;

@@ -1,4 +1,4 @@
-package de.marvin.cps.permission;
+package de.marvin.cps.core.permission;
 
 import org.jetbrains.annotations.NotNull;
 

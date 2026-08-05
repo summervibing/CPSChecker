@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import de.marvin.cps.api.monitor.MonitorHandler;
 import de.marvin.cps.core.message.Message;
 import de.marvin.cps.core.message.Messages;
-import de.marvin.cps.permission.Permission;
+import de.marvin.cps.core.permission.Permission;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
