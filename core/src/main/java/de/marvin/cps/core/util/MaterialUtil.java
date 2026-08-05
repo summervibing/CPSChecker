@@ -13,7 +13,15 @@ import java.util.Set;
 /**
  * Utility class for handling {@link Material} related operations.
  */
-public class MaterialUtil {
+public final class MaterialUtil {
+
+    /**
+     * Do not instantiate this class. It is a utility class and should only be used statically.
+     */
+    private MaterialUtil() {
+        throw new AssertionError("Utility classes cannot be instantiated.");
+    }
+
 
     /**
      * {@link Set} of {@link Material Materials} that can be broken instantly.

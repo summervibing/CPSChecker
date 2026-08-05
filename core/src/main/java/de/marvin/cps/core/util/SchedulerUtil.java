@@ -7,7 +7,17 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SchedulerUtil {
+/**
+ * Utility class for scheduling tasks in Bukkit/Spigot.
+ */
+public final class SchedulerUtil {
+
+    /**
+     * Do not instantiate this class. It is a utility class and should only be used statically.
+     */
+    private SchedulerUtil() {
+        throw new AssertionError("Utility classes cannot be instantiated.");
+    }
 
     /**
      * Runs {@link Runnable} in primary thread if necessary.
