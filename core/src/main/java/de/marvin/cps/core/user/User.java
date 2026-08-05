@@ -112,7 +112,6 @@ public class User {
      * <b>Note:</b> This method should be called on every tick for patterns to work correctly.
      */
     public void updateClickSession() {
-        if (this.clickSession == null) return;
         this.clickSession.nextTick();
     }
 
